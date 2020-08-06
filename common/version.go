@@ -2,7 +2,9 @@ package common
 
 const (
 	// AppName const
-	AppName = "virzz"
+	AppName = "Virzz"
+	// BinName const
+	BinName = "virzz"
 	// Version const
 	Version = "0.1.0"
 	// VersionInt const
