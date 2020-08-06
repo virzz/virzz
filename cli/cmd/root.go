@@ -19,6 +19,7 @@ var rootCmd = &cobra.Command{
 			printVersion()
 			return
 		}
+		cmd.Help()
 	},
 }
 
