@@ -52,7 +52,12 @@ lint:
 	echo Done
 
 install: current
+	rm /usr/local/bin/${APPNAME}
 	cp -f ${TARGET}/${APPNAME} /usr/local/bin/${APPNAME}
+
+link: current
+	rm /usr/local/bin/${APPNAME}
+	ln -s `pwd`/${TARGET}/${APPNAME} /usr/local/bin/${APPNAME}
 
 clean:
 	@rm -rf ${TARGET}/* ; \
