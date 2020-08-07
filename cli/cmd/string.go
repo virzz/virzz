@@ -5,7 +5,7 @@ import (
 	"github.com/virink/virzz/misc/basic"
 )
 
-// str2asciiCmd represents the stringx command
+// str2asciiCmd
 var str2asciiCmd = &cobra.Command{
 	Use:   "str2ascii",
 	Short: "String -> ASCII",
@@ -22,7 +22,7 @@ var str2asciiCmd = &cobra.Command{
 	},
 }
 
-// ascii2strCmd represents the stringx command
+// ascii2strCmd
 var ascii2strCmd = &cobra.Command{
 	Use:   "ascii2str",
 	Short: "String -> ASCII",
@@ -39,7 +39,7 @@ var ascii2strCmd = &cobra.Command{
 	},
 }
 
-// hex2strCmd represents the stringx command
+// hex2strCmd
 var hex2strCmd = &cobra.Command{
 	Use:   "hex2str",
 	Short: "Hex -> String",
@@ -56,7 +56,7 @@ var hex2strCmd = &cobra.Command{
 	},
 }
 
-// str2hexCmd represents the stringx command
+// str2hexCmd
 var str2hexCmd = &cobra.Command{
 	Use:   "str2hex",
 	Short: "String -> Hex",
@@ -73,7 +73,7 @@ var str2hexCmd = &cobra.Command{
 	},
 }
 
-// hex2decCmd represents the stringx command
+// hex2decCmd
 var hex2decCmd = &cobra.Command{
 	Use:   "hex2dec",
 	Short: "Hex -> Dec",
@@ -90,7 +90,7 @@ var hex2decCmd = &cobra.Command{
 	},
 }
 
-// dec2hexCmd represents the stringx command
+// dec2hexCmd
 var dec2hexCmd = &cobra.Command{
 	Use:   "dec2hex",
 	Short: "Dec -> Hex",
@@ -107,7 +107,7 @@ var dec2hexCmd = &cobra.Command{
 	},
 }
 
-// hex2bytesCmd represents the stringx command
+// hex2bytesCmd
 var hex2bytesCmd = &cobra.Command{
 	Use:   "hex2bytes",
 	Short: "Hex -> Bytes String",
@@ -124,7 +124,7 @@ var hex2bytesCmd = &cobra.Command{
 	},
 }
 
-// bytes2hexCmd represents the stringx command
+// bytes2hexCmd
 var bytes2hexCmd = &cobra.Command{
 	Use:   "bytes2hex",
 	Short: "ByteString -> Hex",
@@ -141,7 +141,7 @@ var bytes2hexCmd = &cobra.Command{
 	},
 }
 
-// bytes2strCmd represents the stringx command
+// bytes2strCmd
 var bytes2strCmd = &cobra.Command{
 	Use:   "bytes2str",
 	Short: "ByteString -> String",
@@ -158,7 +158,7 @@ var bytes2strCmd = &cobra.Command{
 	},
 }
 
-// // stringxCmd represents the stringx command
+// // stringxCmd
 // var stringxCmd = &cobra.Command{
 // 	Use:   "stringx",
 // 	Short: "A brief description of your command",
