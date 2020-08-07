@@ -44,6 +44,7 @@ func getArgs(args []string) (string, error) {
 func output(s string) error {
 	outBuf := bufio.NewWriter(os.Stdout)
 	outBuf.WriteString(s)
+	outBuf.WriteString("\n")
 	outBuf.Flush()
 	return os.Stdout.Close()
 }
