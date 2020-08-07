@@ -6,9 +6,9 @@ const (
 	// BinName const
 	BinName = "virzz"
 	// Version const
-	Version = "0.1.0"
+	Version = "0.1.1"
 	// VersionInt const
-	VersionInt = 0x000100
+	VersionInt = 0x000101
 	// Author const
 	Author = "Virink"
 	// Email const
