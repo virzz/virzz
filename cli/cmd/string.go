@@ -158,6 +158,40 @@ var bytes2strCmd = &cobra.Command{
 	},
 }
 
+// urlencodeCmd
+var urlencodeCmd = &cobra.Command{
+	Use:   "urle",
+	Short: "URL Encode",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		s, err := getArgs(args)
+		if err != nil {
+			return err
+		}
+		r, err := basic.URLEncode(s)
+		if err != nil {
+			return err
+		}
+		return output(r)
+	},
+}
+
+// urldecodeCmd
+var urldecodeCmd = &cobra.Command{
+	Use:   "urld",
+	Short: "URL Decode",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		s, err := getArgs(args)
+		if err != nil {
+			return err
+		}
+		r, err := basic.URLDecode(s)
+		if err != nil {
+			return err
+		}
+		return output(r)
+	},
+}
+
 // // stringxCmd
 // var stringxCmd = &cobra.Command{
 // 	Use:   "stringx",
@@ -177,5 +211,8 @@ func init() {
 	rootCmd.AddCommand(hex2bytesCmd)
 	rootCmd.AddCommand(bytes2hexCmd)
 	rootCmd.AddCommand(bytes2strCmd)
+
+	rootCmd.AddCommand(urlencodeCmd)
+	rootCmd.AddCommand(urldecodeCmd)
 	// rootCmd.AddCommand(stringxCmd)
 }
