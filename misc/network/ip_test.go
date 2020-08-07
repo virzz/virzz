@@ -48,3 +48,25 @@ func TestHexToIP(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestMACToDec(t *testing.T) {
+	r, err := MACToDec("00:00:5e:00:53:01")
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(r)
+	if r != "1577079553" {
+		t.Fail()
+	}
+}
+
+func TestDecToMAC(t *testing.T) {
+	r, err := DecToMAC("1577079553")
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(r)
+	if r != "00:00:5e:00:53:01" {
+		t.Fail()
+	}
+}
