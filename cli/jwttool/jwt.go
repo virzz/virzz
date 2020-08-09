@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -62,8 +62,6 @@ var jwtModifyCmd = &cobra.Command{
 		return output(r)
 	},
 }
-
-// const defaultAlpabet = "abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 var (
 	minLen   = 4

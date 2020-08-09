@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"bufio"
@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 func getArgs(args []string) (string, error) {
@@ -49,4 +51,20 @@ func output(s string) error {
 	return os.Stdout.Close()
 }
 
-// FIXME: I don't know why "virzz b64e README.md | virzz b64d" was faild
+var rootCmd = &cobra.Command{
+	Use:   "jwttool",
+	Short: "A jwt tool with Print/Crack/Modify",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmd.Help()
+	},
+}
+
+func init() {
+	rootCmd.SuggestionsMinimumDistance = 1
+}
+
+func main() {
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
+}
