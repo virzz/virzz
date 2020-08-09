@@ -13,7 +13,7 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:   common.BinName,
-	Short: "A tools for terminal",
+	Short: "The Cyber Swiss Army Knife for terminal",
 	Run: func(cmd *cobra.Command, args []string) {
 		if showVersion {
 			printVersion()
