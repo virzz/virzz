@@ -87,6 +87,7 @@ func fetchCommitObjects(downClient *downloader.Downloader, baseURL, tempDir stri
 		if len(hashArr) < 3 {
 			break
 		}
+		common.Logger.Debugln(hashArr)
 		curHash = hashArr[1]
 		target := filepath.Join(".git", "objects", curHash[:2], curHash[2:40])
 		downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), filepath.Join(tempDir, target))
@@ -131,7 +132,6 @@ func gitHack(targetURL string, limit, delay int64) (err error) {
 	}
 	common.Logger.Debugln("baseURL:", baseURL)
 	common.Logger.Debugln("tempDir:", tempDir)
-
 	// NewDownloader
 	download := downloader.NewDownloader().SetLimit(limit).SetDelay(delay)
 	// Download Base Files
