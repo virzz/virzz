@@ -97,6 +97,9 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 		common.Logger.Errorln("Do", err)
 		return
 	}
+	if resp.StatusCode == 404 {
+		return
+	}
 	err = os.MkdirAll(filepath.Dir(work.DestPath), 0700)
 	if err != nil && !os.IsExist(err) {
 		return
@@ -145,7 +148,7 @@ func (d *Downloader) Start() error {
 				select {
 				case <-d.cancelChan:
 					return
-				case <-time.After(time.Duration(d.timeout) * time.Second):
+				case <-time.After(3 * time.Second):
 					defer func() {
 						if recover() != nil {
 						}
@@ -185,6 +188,6 @@ func (d *Downloader) Start() error {
 // NewDownloader -
 func NewDownloader() *Downloader {
 	d := &Downloader{}
-	d.Init().SetLimit(10).SetDelay(0).SetTimetou(1)
+	d.Init().SetLimit(10).SetDelay(0).SetTimetou(3)
 	return d
 }
