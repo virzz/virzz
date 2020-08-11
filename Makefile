@@ -6,7 +6,13 @@ GCFLAGS="all=-trimpath=$(shell pwd)"
 ASMFLAGS="all=-trimpath=$(shell pwd)"
 GOPATH=$(shell go env GOPATH)
 SOURCE="./cli/"
-APPNAMES=$(shell cd ./cli/ && ls)
+ifeq ($(B), all)
+APPNAMES := $(shell cd ./cli/ && ls)
+else ifneq ($(B),)
+APPNAMES := $B
+else 
+APPNAMES := virzz
+endif
 
 current:
 	@mkdir -p ${TARGET}/
@@ -65,10 +71,12 @@ update:
 	echo "[+] Updated."
 
 link: current
-	@echo "[*] Link ${APPNAME} ..." ; \
-	rm /usr/local/bin/${APPNAME}; \
-	ln -s `pwd`/${TARGET}/${APPNAME} /usr/local/bin/${APPNAME}; \
-	test -f /usr/local/bin/${APPNAME} && echo "[+] ${APPNAME} Linked";
+	@for APPNAME in ${APPNAMES}; do \
+		echo "[*] Link $${APPNAME} ..." ; \
+		test -f /usr/local/bin/$${APPNAME} && rm /usr/local/bin/$${APPNAME}; \
+		ln -s `pwd`/${TARGET}/$${APPNAME} /usr/local/bin/$${APPNAME}; \
+		test -f /usr/local/bin/$${APPNAME} && echo "[+] $${APPNAME} Linked" || echo "[-] Fail"; \
+	done;
 
 install: current
 	@for APPNAME in ${APPNAMES}; do \
@@ -83,7 +91,7 @@ remove:
 	@for APPNAME in ${APPNAMES}; do \
 		echo "[*] Remove $${APPNAME} ..." ; \
 		rm -f ${GOPATH}/bin/$${APPNAME}; \
-		rm /usr/local/bin/${APPNAME}; \
+		rm /usr/local/bin/$${APPNAME}; \
 		test -f ${GOPATH}/bin/$${APPNAME} || \
 		test -f ${GOPATH}/bin/$${APPNAME}  || \
 		echo "[+] $${APPNAME} Removed"; \

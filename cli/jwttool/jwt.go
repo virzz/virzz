@@ -15,7 +15,7 @@ var jwtPrintCmd = &cobra.Command{
 	Use:   "jwt",
 	Short: "JWT Print",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -24,7 +24,7 @@ var jwtPrintCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return common.Output(r)
 	},
 }
 
@@ -33,7 +33,7 @@ var jwtCrackCmd = &cobra.Command{
 	Use:   "jwtc",
 	Short: "JWT Crack",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -41,7 +41,7 @@ var jwtCrackCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return common.Output(r)
 	},
 }
 
@@ -50,7 +50,7 @@ var jwtModifyCmd = &cobra.Command{
 	Use:   "jwtm",
 	Short: "JWT Modify",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -59,7 +59,7 @@ var jwtModifyCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return common.Output(r)
 	},
 }
 

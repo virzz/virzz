@@ -3,12 +3,12 @@ package common
 import (
 	"os"
 
-	"github.com/sirupsen/logrus"
+	log "github.com/virink/vlogger"
 )
 
 var (
 	// Logger 日志工具
-	Logger *logrus.Logger
+	Logger *log.Logger
 
 	// DebugMode -
 	DebugMode bool = false
@@ -19,10 +19,4 @@ func init() {
 	if debugEnv != "" && debugEnv != "0" && debugEnv != "false" {
 		DebugMode = true
 	}
-	// Debug Mode
-	level := logrus.InfoLevel
-	if DebugMode {
-		level = logrus.DebugLevel
-	}
-	Logger = InitLogger("virzz.log", level)
 }
