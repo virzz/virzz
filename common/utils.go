@@ -1,4 +1,4 @@
-package cmd
+package common
 
 import (
 	"bufio"
@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-func getArgs(args []string) (string, error) {
+// GetArgs -
+func GetArgs(args []string) (string, error) {
 	// Priority: Args > Stdin > nil
-
 	// Args
 	if len(args) > 0 {
 		f, err := os.Stat(args[0])
@@ -41,7 +41,8 @@ func getArgs(args []string) (string, error) {
 	return "", fmt.Errorf("not found args")
 }
 
-func output(s string) error {
+// Output -
+func Output(s string) error {
 	outBuf := bufio.NewWriter(os.Stdout)
 	outBuf.WriteString(s)
 	outBuf.WriteString("\n")

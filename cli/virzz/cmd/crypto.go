@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/virink/virzz/crypto"
+	"github.com/virink/virzz/common"
 )
 
 // caesarCmd
@@ -10,12 +11,12 @@ var caesarCmd = &cobra.Command{
 	Use:   "caesar",
 	Short: "Caesar Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
 		r, _ := crypto.Caesar(s)
-		return output(r)
+		return common.Output(r)
 	},
 }
 
@@ -24,12 +25,12 @@ var rot13Cmd = &cobra.Command{
 	Use:   "rot13",
 	Short: "Rot13 By Caesar Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
 		r, _ := crypto.Rot13(s)
-		return output(r)
+		return common.Output(r)
 	},
 }
 
@@ -38,7 +39,7 @@ var morseCmd = &cobra.Command{
 	Use:   "morse",
 	Short: "Morse Code 摩尔斯电码",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -46,7 +47,7 @@ var morseCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return common.Output(r)
 	},
 }
 
@@ -55,7 +56,7 @@ var morseDecodeCmd = &cobra.Command{
 	Use:   "morsed",
 	Short: "Morse Code Decode 摩尔斯电码",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -63,7 +64,7 @@ var morseDecodeCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return common.Output(r)
 	},
 }
 

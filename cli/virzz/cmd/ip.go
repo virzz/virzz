@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	cm "github.com/virink/virzz/common"
 	"github.com/virink/virzz/misc/network"
 )
 
@@ -10,7 +11,7 @@ var ip2decCmd = &cobra.Command{
 	Use:   "ip2dec",
 	Short: "IPv4 -> Dec",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -18,7 +19,7 @@ var ip2decCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -27,7 +28,7 @@ var dec2ipCmd = &cobra.Command{
 	Use:   "dec2ip",
 	Short: "Dec -> IPv4",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -35,7 +36,7 @@ var dec2ipCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -44,7 +45,7 @@ var ip2hexCmd = &cobra.Command{
 	Use:   "ip2hex",
 	Short: "IPv4 -> Hex",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -52,7 +53,7 @@ var ip2hexCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -61,7 +62,7 @@ var hex2ipCmd = &cobra.Command{
 	Use:   "hex2ip",
 	Short: "Hex -> IPv4",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -69,7 +70,7 @@ var hex2ipCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -78,7 +79,7 @@ var mac2decCmd = &cobra.Command{
 	Use:   "mac2dec",
 	Short: "MAC -> Dec",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -86,7 +87,7 @@ var mac2decCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -95,7 +96,7 @@ var dec2macCmd = &cobra.Command{
 	Use:   "dec2mac",
 	Short: "Dec -> MAC",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -103,7 +104,7 @@ var dec2macCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 

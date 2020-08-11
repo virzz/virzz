@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	cm "github.com/virink/virzz/common"
 	"github.com/virink/virzz/misc/basic"
 )
 
@@ -12,7 +13,7 @@ var b64eCmd = &cobra.Command{
 	Use:   "b64e",
 	Short: "Base64 Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -20,7 +21,7 @@ var b64eCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -29,7 +30,7 @@ var b64dCmd = &cobra.Command{
 	Use:   "b64d",
 	Short: "Base64 Decode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -37,7 +38,7 @@ var b64dCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -46,7 +47,7 @@ var b32eCmd = &cobra.Command{
 	Use:   "b32e",
 	Short: "Base32 Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -54,7 +55,7 @@ var b32eCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -63,7 +64,7 @@ var b32dCmd = &cobra.Command{
 	Use:   "b32d",
 	Short: "Base64 Decode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -71,7 +72,7 @@ var b32dCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -80,7 +81,7 @@ var b58eCmd = &cobra.Command{
 	Use:   "b58e",
 	Short: "Base58 Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -88,7 +89,7 @@ var b58eCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -97,7 +98,7 @@ var b58dCmd = &cobra.Command{
 	Use:   "b58d",
 	Short: "Base58 Decode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -105,7 +106,7 @@ var b58dCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 

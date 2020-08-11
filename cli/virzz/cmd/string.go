@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	cm "github.com/virink/virzz/common"
 	"github.com/virink/virzz/misc/basic"
 )
 
@@ -10,7 +11,7 @@ var str2asciiCmd = &cobra.Command{
 	Use:   "str2ascii",
 	Short: "String -> ASCII",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -18,7 +19,7 @@ var str2asciiCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -27,7 +28,7 @@ var ascii2strCmd = &cobra.Command{
 	Use:   "ascii2str",
 	Short: "String -> ASCII",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -35,7 +36,7 @@ var ascii2strCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -44,7 +45,7 @@ var hex2strCmd = &cobra.Command{
 	Use:   "hex2str",
 	Short: "Hex -> String",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -52,7 +53,7 @@ var hex2strCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -61,7 +62,7 @@ var str2hexCmd = &cobra.Command{
 	Use:   "str2hex",
 	Short: "String -> Hex",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -69,7 +70,7 @@ var str2hexCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -78,7 +79,7 @@ var hex2decCmd = &cobra.Command{
 	Use:   "hex2dec",
 	Short: "Hex -> Dec",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -86,7 +87,7 @@ var hex2decCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -95,7 +96,7 @@ var dec2hexCmd = &cobra.Command{
 	Use:   "dec2hex",
 	Short: "Dec -> Hex",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -103,7 +104,7 @@ var dec2hexCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -112,7 +113,7 @@ var hex2bytesCmd = &cobra.Command{
 	Use:   "hex2bytes",
 	Short: "Hex -> Bytes String",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -120,7 +121,7 @@ var hex2bytesCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -129,7 +130,7 @@ var bytes2hexCmd = &cobra.Command{
 	Use:   "bytes2hex",
 	Short: "ByteString -> Hex",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -137,7 +138,7 @@ var bytes2hexCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -146,7 +147,7 @@ var bytes2strCmd = &cobra.Command{
 	Use:   "bytes2str",
 	Short: "ByteString -> String",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -154,7 +155,7 @@ var bytes2strCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -163,7 +164,7 @@ var urlencodeCmd = &cobra.Command{
 	Use:   "urle",
 	Short: "URL Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -171,7 +172,7 @@ var urlencodeCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -180,7 +181,7 @@ var urldecodeCmd = &cobra.Command{
 	Use:   "urld",
 	Short: "URL Decode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := getArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -188,7 +189,7 @@ var urldecodeCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return output(r)
+		return cm.Output(r)
 	},
 }
 

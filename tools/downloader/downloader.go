@@ -3,6 +3,7 @@ package downloader
 import (
 	"crypto/tls"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -23,6 +24,8 @@ type Downloader struct {
 	workers    chan downloadTask
 	cancelChan chan bool
 	errFile    map[string]int
+	results    map[string]interface{}
+	result     bool
 }
 
 type downloadTask struct {
@@ -57,6 +60,12 @@ func (d *Downloader) SetDelay(delay int64) *Downloader {
 	return d
 }
 
+// SetResult -
+func (d *Downloader) SetResult() *Downloader {
+	d.result = !d.result
+	return d
+}
+
 // AddTask -
 func (d *Downloader) AddTask(target, dest string) *Downloader {
 	d.workers <- downloadTask{
@@ -77,7 +86,8 @@ func (d *Downloader) AddTasks(tasks map[string]string) *Downloader {
 // Init -
 func (d *Downloader) Init() *Downloader {
 	d.workers = make(chan downloadTask, 102400)
-	d.errFile = make(map[string]int, 0)
+	d.errFile = make(map[string]int)
+	d.results = make(map[string]interface{})
 	return d
 }
 
@@ -89,16 +99,25 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 	)
 	req, err = http.NewRequest("GET", work.Target, nil)
 	if err != nil {
-		common.Logger.Errorln("NewRequest", err)
+		common.Logger.Error("NewRequest", err)
 		return
 	}
 	resp, err = d.httpClient.Do(req)
 	if err != nil {
-		common.Logger.Errorln("Do", err)
+		common.Logger.Error("Do", err)
 		return
 	}
 	if resp.StatusCode == 404 {
 		return
+	}
+	if d.result {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			common.Logger.Error("Body", err)
+			return err
+		}
+		d.results[work.DestPath] = body
+		return nil
 	}
 	err = os.MkdirAll(filepath.Dir(work.DestPath), 0700)
 	if err != nil && !os.IsExist(err) {
@@ -106,14 +125,19 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 	}
 	f, err := os.Create(work.DestPath)
 	if err != nil {
-		common.Logger.Errorln("Create", err)
+		common.Logger.Error("Create", err)
 		return
 	}
 	_, err = io.Copy(f, resp.Body)
 	if err != nil {
-		common.Logger.Errorln("Copy", err)
+		common.Logger.Error("Copy", err)
 	}
 	return
+}
+
+// Results -
+func (d *Downloader) Results() map[string]interface{} {
+	return d.results
 }
 
 // Reset -
@@ -155,14 +179,14 @@ func (d *Downloader) Start() error {
 					}()
 					close(d.cancelChan)
 				case work := <-d.workers:
-					common.Logger.Debugln("Downloder Fetch", work.Target)
+					common.Logger.Debug("Downloder Fetch", work.Target)
 					// Fetch
 					if err := d.Fetch(work); err != nil {
-						common.Logger.Debugln(err)
+						common.Logger.Debug(err.Error())
 						num, ok := d.errFile[work.Target]
 						if ok {
 							if num > 2 {
-								common.Logger.Errorln(err)
+								common.Logger.Error(err.Error())
 							} else {
 								d.workers <- work
 								d.errFile[work.Target]++
