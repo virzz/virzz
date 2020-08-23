@@ -11,8 +11,12 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/txthinking/runnergroup v0.0.0-20200327135940-540a793bb997 // indirect
+	github.com/txthinking/socks5 v0.0.0-20200811154444-70230f68ccaf
+	github.com/txthinking/x v0.0.0-20200813135806-2c9a7191ffb3 // indirect
 	github.com/virink/vlogger v0.0.2
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
