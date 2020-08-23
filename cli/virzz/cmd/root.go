@@ -30,17 +30,14 @@ var rootCmd = &cobra.Command{
 	SilenceErrors: true,
 	SilenceUsage:  true,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		// Debug Mode
-		debugEnv := os.Getenv("DEBUG")
-		if debugEnv != "" && debugEnv != "0" && debugEnv != "false" {
-			setDebugMode = true
-		}
-		// Logger
 		level := log.LevelError
-		if setDebugMode {
+		// Debug Mode
+		if common.DebugMode || setDebugMode {
+			setDebugMode = true
 			common.DebugMode = true
 			level = log.LevelDebug
 		}
+		// Logger
 		common.InitLogger(level)
 		// Args
 		if len(args) > 0 {

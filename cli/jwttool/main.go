@@ -57,12 +57,12 @@ var rootCmd = &cobra.Command{
 	Use:   "jwttool",
 	Short: "A jwt tool with Print/Crack/Modify",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		debugEnv := os.Getenv("DEBUG")
 		level := log.LevelError
-		if debugEnv != "" && debugEnv != "0" && debugEnv != "false" {
-			common.DebugMode = true
+		// Debug Mode
+		if common.DebugMode {
 			level = log.LevelDebug
 		}
+		// Logger
 		common.InitLogger(level)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
