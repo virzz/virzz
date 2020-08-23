@@ -7,7 +7,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/siddontang/go/log"
 	"github.com/spf13/cobra"
+	"github.com/virink/virzz/common"
 )
 
 func getArgs(args []string) (string, error) {
@@ -54,6 +56,15 @@ func output(s string) error {
 var rootCmd = &cobra.Command{
 	Use:   "jwttool",
 	Short: "A jwt tool with Print/Crack/Modify",
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		debugEnv := os.Getenv("DEBUG")
+		level := log.LevelError
+		if debugEnv != "" && debugEnv != "0" && debugEnv != "false" {
+			common.DebugMode = true
+			level = log.LevelDebug
+		}
+		common.InitLogger(level)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
