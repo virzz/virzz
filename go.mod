@@ -12,6 +12,7 @@ require (
 	github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
+	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/txthinking/runnergroup v0.0.0-20200327135940-540a793bb997 // indirect
