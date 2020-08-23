@@ -2,6 +2,7 @@ package crypto
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -95,4 +96,68 @@ func Morse(s string, decode bool, sep ...string) (string, error) {
 		}
 	}
 	return strings.Join(res, _sep), nil
+}
+
+// Atbash 埃特巴什码
+func Atbash(s string) (string, error) {
+	res := ""
+	s = strings.ToLower(s)
+	for _, r := range s {
+		if r >= 'a' && r <= 'z' {
+			res += string('z' + 'a' - r)
+		} else {
+			res += string(r)
+		}
+	}
+	return res, nil
+}
+
+// Peigen 培根密码
+func Peigen(s string) (string, error) {
+	T := map[rune]string{
+		'H': "aabbb", 'G': "aabba", 'R': "baaab", 'Q': "baaaa",
+		'Z': "bbaab", 'Y': "bbaaa", 'N': "abbab", 'M': "abbaa",
+		'U': "babaa", 'V': "babab", 'I': "abaaa", 'J': "abaab",
+		'F': "aabab", 'E': "aabaa", 'A': "aaaaa", 'B': "aaaab",
+		'T': "baabb", 'S': "baaba", 'C': "aaaba", 'D': "aaabb",
+		'P': "abbbb", 'O': "abbba", 'K': "ababa", 'L': "ababb",
+		'W': "babba", 'X': "babbb",
+	}
+	if len(regexp.MustCompile(`(?m)^[ab]+$`).FindAllString(s, -1)) > 0 {
+		rt := make(map[string]rune, 0)
+		for k, v := range T {
+			rt[v] = k
+		}
+		res := make([]rune, 0)
+		for i := 0; i < len(s); i += 5 {
+			res = append(res, rt[s[i:i+5]])
+		}
+		return strings.ToLower(string(res)), nil
+	}
+	res := make([]string, len(s))
+	for i, c := range strings.ToUpper(s) {
+		res[i] = T[c]
+	}
+	return strings.Join(res, ""), nil
+}
+
+// Vigenere 维吉利亚密码
+func Vigenere(s string) (string, error) {
+	// s = str(s).replace(" ", "").upper()
+	// key = str(key).replace(" ", "").upper()
+	// res = ''
+	// i = 0
+	// while i < len(s):
+	//     j = i % len(key)
+	//     k = U.index(key[j])
+	//     m = U.index(s[i])
+	//     if de:
+	//         if m < k:
+	//             m += 26
+	//         res += U[m - k]
+	//     else:
+	//         res += U[(m + k) % 26]
+	//     i += 1
+	// return res
+	return "", nil
 }
