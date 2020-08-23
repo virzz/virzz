@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/virink/virzz/common"
 	log "github.com/virink/vlogger"
@@ -30,16 +30,25 @@ var rootCmd = &cobra.Command{
 	SilenceErrors: true,
 	SilenceUsage:  true,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		// Debug Mode
+		debugEnv := os.Getenv("DEBUG")
+		if debugEnv != "" && debugEnv != "0" && debugEnv != "false" {
+			setDebugMode = true
+		}
+		// Logger
 		level := log.LevelError
 		if setDebugMode {
 			common.DebugMode = true
 			level = log.LevelDebug
 		}
 		common.InitLogger(level)
-		// FIX ~
-		if strings.HasPrefix(args[0], "~/") {
-			if home := os.Getenv("HOME"); home != "" {
-				args[0] = home
+		// Args
+		if len(args) > 0 {
+			// FIX ~ as HOME
+			if strings.HasPrefix(args[0], "~/") {
+				if home := os.Getenv("HOME"); home != "" {
+					args[0] = filepath.Join(home, args[0][2:len(args[0])])
+				}
 			}
 		}
 	},
@@ -62,11 +71,7 @@ func init() {
 // Execute -
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		color.Set(color.FgHiRed, color.Bold)
-		defer color.Unset()
-		// Error
-		fmt.Fprintf(os.Stderr, "[-] %v\n", err)
-		// UsageHelp
+		common.Logger.Error(err)
 		os.Exit(1)
 	}
 }

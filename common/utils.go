@@ -42,7 +42,11 @@ func GetArgs(args []string) (string, error) {
 }
 
 // Output -
-func Output(s string) error {
+func Output(s string, color ...bool) error {
+	if len(color) > 0 && color[0] {
+		Logger.Success(s)
+		return nil
+	}
 	outBuf := bufio.NewWriter(os.Stdout)
 	outBuf.WriteString(s)
 	outBuf.WriteString("\n")
