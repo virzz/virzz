@@ -42,3 +42,24 @@ func TestMorse(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestAtbash(t *testing.T) {
+	r, _ := Atbash("svool, r'n erirmp!")
+	fmt.Println(r)
+	if r != "hello, i'm virink!" {
+		t.Fail()
+	}
+}
+
+func TestPeigen(t *testing.T) {
+	r, _ := Peigen("aabbbaabaaababbababbabbbababbaabbbabaaabababbaaabb")
+	fmt.Println(r)
+	if r != "helloworld" {
+		t.Fail()
+	}
+	r, _ = Peigen("thepeigenisgood")
+	fmt.Println(r)
+	if r != "baabbaabbbaabaaabbbbaabaaabaaaaabbaaabaaabbababaaabaabaaabbaabbbaabbbaaaabb" {
+		t.Fail()
+	}
+}
