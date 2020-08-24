@@ -4,9 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io/ioutil"
-	"net"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -57,28 +55,3 @@ func Output(s string, color ...bool) error {
 }
 
 // FIXME: I don't know why "virzz b64e README.md | virzz b64d" was faild
-
-// CheckPort -
-func CheckPort(port int) error {
-	if port < 1 || port > 65535 {
-		return fmt.Errorf("port should be a number and the range is [1,65536)")
-	}
-	return nil
-}
-
-// ParseAddr -
-func ParseAddr(addr string) (string, int, error) {
-	ipAndPort := strings.Split(addr, ":")
-	if len(ipAndPort) != 2 {
-		return "", 0, fmt.Errorf("address should be a string like [ip:port]")
-	}
-	ip := net.ParseIP(ipAndPort[0])
-	if ip == nil {
-		return "", 0, fmt.Errorf("parse ip faild")
-	}
-	port, err := strconv.ParseInt(ipAndPort[1], 10, 64)
-	if err != nil {
-		return "", 0, err
-	}
-	return ip.String(), int(port), nil
-}

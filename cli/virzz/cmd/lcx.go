@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/virink/virzz/common"
 	"github.com/virink/virzz/pentest/proxy"
+	"github.com/virink/virzz/utils"
 )
 
 var (
@@ -63,10 +64,10 @@ var listenCmd = &cobra.Command{
 		if remotePort > 0 {
 			rport = remotePort
 		}
-		if err := common.CheckPort(lport); err != nil {
+		if err := utils.CheckPort(lport); err != nil {
 			return err
 		}
-		if err := common.CheckPort(lport); err != nil {
+		if err := utils.CheckPort(lport); err != nil {
 			return err
 		}
 		common.Logger.Debug(lport, rport, timeout)
@@ -92,7 +93,7 @@ var tranCmd = &cobra.Command{
 			lport = int(_port)
 		}
 		if len(args) > 1 {
-			_ip, _port, err := common.ParseAddr(args[1])
+			_ip, _port, err := utils.ParseAddr(args[1])
 			if err != nil {
 				return err
 			}
@@ -108,10 +109,10 @@ var tranCmd = &cobra.Command{
 		if len(remoteHost) > 0 {
 			rhost = remoteHost
 		}
-		if err := common.CheckPort(lport); err != nil {
+		if err := utils.CheckPort(lport); err != nil {
 			return err
 		}
-		if err := common.CheckPort(rport); err != nil {
+		if err := utils.CheckPort(rport); err != nil {
 			return err
 		}
 		return proxy.LcxTran(lport, rhost, rport, timeout)
