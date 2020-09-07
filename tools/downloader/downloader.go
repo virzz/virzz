@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"sync"
 	"syscall"
 	"time"
@@ -18,6 +19,7 @@ import (
 // Downloader -
 type Downloader struct {
 	httpClient *http.Client
+	headers    map[string]string
 	timeout    int64 //  超时
 	limit      int64 // 并发数
 	delay      int64 // 请求延迟(limit = 1)
@@ -33,8 +35,8 @@ type downloadTask struct {
 	DestPath string
 }
 
-// SetTimetou -
-func (d *Downloader) SetTimetou(timeout int64) *Downloader {
+// SetTimeout -
+func (d *Downloader) SetTimeout(timeout int64) *Downloader {
 	if timeout > 30 {
 		timeout = 30
 	}
@@ -57,6 +59,12 @@ func (d *Downloader) SetDelay(delay int64) *Downloader {
 	if delay > 0 {
 		d.limit = 1
 	}
+	return d
+}
+
+// SetHeader -
+func (d *Downloader) SetHeader(key, value string) *Downloader {
+	d.headers[key] = value
 	return d
 }
 
@@ -88,7 +96,34 @@ func (d *Downloader) Init() *Downloader {
 	d.workers = make(chan downloadTask, 102400)
 	d.errFile = make(map[string]int)
 	d.results = make(map[string]interface{})
+	d.headers = make(map[string]string)
 	return d
+}
+
+// Head -
+func (d *Downloader) Head(work downloadTask) (resp *http.Response, err error) {
+	var (
+		req *http.Request
+	)
+	// Head
+	req, err = http.NewRequest("HEAD", work.Target, nil)
+	if err != nil {
+		common.Logger.Error("Head", err)
+		return
+	}
+	// Header
+	for k, v := range d.headers {
+		req.Header.Set(k, v)
+	}
+	resp, err = d.httpClient.Do(req)
+	if err != nil {
+		common.Logger.Error("Do", err)
+		return
+	}
+	if resp.StatusCode == 404 {
+		return
+	}
+	return resp, nil
 }
 
 // Fetch -
@@ -97,10 +132,31 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 		req  *http.Request
 		resp *http.Response
 	)
+	_resp, err := d.Head(work)
+	if err != nil {
+		common.Logger.Error(err)
+		return
+	}
+	size, err := strconv.ParseInt(_resp.Header.Get("Content-Length"), 10, 64)
+	if err != nil {
+		common.Logger.Error(err)
+		return
+	}
+	// Already exists
+	if fi, _ := os.Stat(work.DestPath); fi != nil && fi.Size() == size {
+		common.Logger.Debug("%s is exists", work.DestPath)
+		d.results[work.DestPath] = true
+		return nil
+	}
+	// Get
 	req, err = http.NewRequest("GET", work.Target, nil)
 	if err != nil {
-		common.Logger.Error("NewRequest", err)
+		common.Logger.Error("GET", err)
 		return
+	}
+	// Header
+	for k, v := range d.headers {
+		req.Header.Set(k, v)
 	}
 	resp, err = d.httpClient.Do(req)
 	if err != nil {
@@ -140,9 +196,24 @@ func (d *Downloader) Results() map[string]interface{} {
 	return d.results
 }
 
+// Errors -
+func (d *Downloader) Errors() map[string]int {
+	return d.errFile
+}
+
 // Reset -
 func (d *Downloader) Reset() *Downloader {
 	return d.Init()
+}
+
+// PrintResults -
+func (d *Downloader) PrintResults() {
+	for uri := range d.results {
+		common.Logger.Success("Fetched", uri)
+	}
+	for uri := range d.errFile {
+		common.Logger.Error("Fetched", uri)
+	}
 }
 
 // Start -
@@ -164,7 +235,8 @@ func (d *Downloader) Start() error {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, os.Kill, syscall.SIGTERM)
 
-	for i := int64(0); i < d.limit; i++ {
+	wl := int64(len(d.workers))
+	for i := int64(0); i < d.limit && i < wl; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -212,6 +284,6 @@ func (d *Downloader) Start() error {
 // NewDownloader -
 func NewDownloader() *Downloader {
 	d := &Downloader{}
-	d.Init().SetLimit(10).SetDelay(0).SetTimetou(3)
+	d.Init().SetLimit(10).SetDelay(0).SetTimeout(3)
 	return d
 }
