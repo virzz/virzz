@@ -5,19 +5,10 @@ import (
 	"github.com/virink/virzz/tools/bilibili"
 )
 
-// toolCmd
-var toolCmd = &cobra.Command{
-	Use:   "tool",
-	Short: "tool",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
-}
-
 // bilibiliCmd
 var bilibiliCmd = &cobra.Command{
-	Use:   "bili [bv/url]",
-	Short: "Bilibili Download",
+	Use:   "bilibili [bv/url]",
+	Short: "Download Bilibili video By bv/av/url",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return bilibili.Bilibilis(args...)
@@ -25,6 +16,6 @@ var bilibiliCmd = &cobra.Command{
 }
 
 func init() {
-	toolCmd.AddCommand(bilibiliCmd)
-	rootCmd.AddCommand(toolCmd)
+	rootCmd.AddCommand(bilibiliCmd)
+	// rootCmd.AddCommand(toolCmd)
 }
