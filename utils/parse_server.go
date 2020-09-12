@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"net"
+	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
@@ -126,4 +127,20 @@ func ParseAddr(addr string) (string, int, error) {
 		return "", 0, err
 	}
 	return ip.String(), int(port), nil
+}
+
+// ParseURLToHostAndURI [http/s://]domain/ip[:port]/uri -> host,uri,err
+func ParseURLToHostAndURI(u string) (string, string, error) {
+	if !strings.HasPrefix(u, "http") {
+		u = "http://" + u
+	}
+	us, err := url.Parse(u)
+	if err != nil {
+		return "", "", err
+	}
+	host := us.Host
+	if !strings.Contains(host, ":") {
+		host = host + ":80"
+	}
+	return host, us.RequestURI(), nil
 }

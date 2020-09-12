@@ -9,8 +9,10 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "jwttool",
-	Short: "A jwt tool with Print/Crack/Modify",
+	Use:           "gopher",
+	Short:         "Generate Gopher Exp",
+	SilenceErrors: true,
+	SilenceUsage:  true,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		level := log.LevelError
 		// Debug Mode
@@ -20,8 +22,8 @@ var rootCmd = &cobra.Command{
 		// Logger
 		common.InitLogger(level)
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return cmd.Help()
 	},
 }
 
@@ -31,6 +33,7 @@ func init() {
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
+		common.Logger.Error(err)
 		os.Exit(1)
 	}
 }

@@ -48,14 +48,12 @@ linux:
 	echo "[+] Linux Built."
 
 darwin:
-	@for GOARCH in ${ARCHS}; do \
-		echo "[*] Building for darwin $${GOARCH} ..." ; \
-		for APPNAME in ${APPNAMES}; do \
-			echo "[+] $${APPNAME} ..." ; \
-			GOOS=darwin GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
-			go build -ldflags=${LDFLAGS} -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
-			-o ${TARGET}/$${APPNAME}-darwin-$${GOARCH} ${SOURCE}/$${APPNAME}; \
-		done; \
+	@echo "[*] Building for darwin amd64 ..." ; \
+	for APPNAME in ${APPNAMES}; do \
+		echo "[+] $${APPNAME} ..." ; \
+		GOOS=darwin GOARCH=amd64 GO111MODULE=on CGO_ENABLED=0 \
+		go build -ldflags=${LDFLAGS} -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
+		-o ${TARGET}/$${APPNAME}-darwin-amd64 ${SOURCE}/$${APPNAME}; \
 	done; \
 	echo "[+] Darwin Built."
 
@@ -108,5 +106,6 @@ archive: all
 	for APPNAME in ${APPNAMES}; do \
 		echo "[+] Archive $${APPNAME} ..." ; \
 		sha256sum $${APPNAME}* > SHA256.txt; \
+		rm ../release/$${APPNAME}.zip; \
 		zip ../release/$${APPNAME}.zip -9 $${APPNAME}*; \
 	done;

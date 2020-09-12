@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/virink/virzz/common"
+	cm "github.com/virink/virzz/common"
 	"github.com/virink/virzz/web/jwt"
 )
 
@@ -15,7 +15,7 @@ var jwtPrintCmd = &cobra.Command{
 	Use:   "jwt",
 	Short: "JWT Print",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -24,7 +24,7 @@ var jwtPrintCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -33,7 +33,7 @@ var jwtCrackCmd = &cobra.Command{
 	Use:   "jwtc",
 	Short: "JWT Crack",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -41,7 +41,7 @@ var jwtCrackCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -50,7 +50,7 @@ var jwtModifyCmd = &cobra.Command{
 	Use:   "jwtm",
 	Short: "JWT Modify",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetArgs(args)
+		s, err := cm.GetArgs(args)
 		if err != nil {
 			return err
 		}
@@ -59,7 +59,7 @@ var jwtModifyCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return cm.Output(r)
 	},
 }
 
@@ -80,7 +80,7 @@ func getSecret(s string) string {
 	if err == nil && !f.IsDir() && f.Size() > 0 {
 		data, err := ioutil.ReadFile(s)
 		if err == nil {
-			if common.DebugMode {
+			if cm.DebugMode {
 				fmt.Fprintln(os.Stderr, "secret", string(data))
 			}
 			return string(data)
