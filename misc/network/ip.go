@@ -9,6 +9,8 @@ import (
 	"github.com/virink/virzz/misc/basic"
 )
 
+var errParseIP = fmt.Errorf("parse ip faild")
+
 func inet4aton(ipnr net.IP) int64 {
 	var sum int64
 	bit := 24
@@ -28,22 +30,110 @@ func inet4ntoa(ipnr int64) net.IP {
 	)
 }
 
-// IPToDec -
+// IPToDec 127.0.0.1 -> 2130706433
 func IPToDec(s string) (string, error) {
 	ip := net.ParseIP(s)
 	if ip == nil {
-		return "", fmt.Errorf("parse ip faild")
+		return "", errParseIP
 	}
 	return strconv.FormatInt(inet4aton(ip), 10), nil
 }
 
-// IPToHex -
+// IPToOct 127.0.0.1 -> 2130706433
+func IPToOct(s string) (string, error) {
+	ip := net.ParseIP(s)
+	if ip == nil {
+		return "", errParseIP
+	}
+	return "0" + strconv.FormatInt(inet4aton(ip), 8), nil
+}
+
+// IPToHex 127.0.0.1 -> 0x7f000001
 func IPToHex(s string) (string, error) {
 	s, err := IPToDec(s)
 	if err != nil {
 		return "", err
 	}
 	return basic.DecToHex(s)
+}
+
+// IPToDotOct 127.0.0.1 -> 0x7f.0.0.0x1
+func IPToDotOct(s string) (string, error) {
+	ip := net.ParseIP(s)
+	if ip == nil {
+		return "", errParseIP
+	}
+	rs := make([]string, 0)
+	for _, p := range strings.Split(s, ".") {
+		i, _ := strconv.Atoi(p)
+		if i > 0 {
+			if i > 7 {
+				rs = append(rs, "0"+strconv.FormatInt(int64(i), 8))
+			} else {
+				rs = append(rs, strconv.FormatInt(int64(i), 8))
+			}
+		} else {
+			rs = append(rs, "0")
+		}
+	}
+	return strings.Join(rs, "."), nil
+}
+
+// IPToDotHex 127.0.0.1 -> 0x7f.0.0.0x1
+func IPToDotHex(s string) (string, error) {
+	ip := net.ParseIP(s)
+	if ip == nil {
+		return "", errParseIP
+	}
+	rs := make([]string, 0)
+	for _, p := range strings.Split(s, ".") {
+		i, _ := strconv.Atoi(p)
+		if i > 0 {
+			if i > 9 {
+				rs = append(rs, "0x"+strconv.FormatInt(int64(i), 16))
+			} else {
+				rs = append(rs, strconv.FormatInt(int64(i), 16))
+			}
+		} else {
+			rs = append(rs, "0")
+		}
+	}
+	return strings.Join(rs, "."), nil
+}
+
+// IPToAll -
+func IPToAll(s string) (string, error) {
+	rs := make([]string, 0)
+	// oct
+	if r, err := IPToOct(s); err == nil {
+		rs = append(rs, fmt.Sprintf("Oct:    %s", r))
+	}
+	// dec
+	if r, err := IPToDec(s); err == nil {
+		rs = append(rs, fmt.Sprintf("Dec:    %s", r))
+	}
+	// hex
+	if r, err := IPToHex(s); err == nil {
+		rs = append(rs, fmt.Sprintf("Hex:    %s", r))
+	}
+	// dot oct
+	if r, err := IPToDotOct(s); err == nil {
+		rs = append(rs, fmt.Sprintf("DotOct: %s", r))
+	}
+	// dot hex
+	if r, err := IPToDotHex(s); err == nil {
+		rs = append(rs, fmt.Sprintf("DotHex: %s", r))
+	}
+	return strings.Join(rs, "\r\n"), nil
+}
+
+// OctToIP -
+func OctToIP(s string) (string, error) {
+	d, err := strconv.ParseInt(s, 8, 64)
+	if err != nil {
+		return "", err
+	}
+	return inet4ntoa(d).String(), nil
 }
 
 // DecToIP -
