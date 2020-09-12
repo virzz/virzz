@@ -15,6 +15,16 @@ func TestIPToDec(t *testing.T) {
 		t.Fail()
 	}
 }
+func TestIPToOct(t *testing.T) {
+	r, err := IPToOct("192.168.1.1")
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(r)
+	if r != "030052000401" {
+		t.Fail()
+	}
+}
 
 func TestIPToHex(t *testing.T) {
 	r, err := IPToHex("192.168.1.1")
