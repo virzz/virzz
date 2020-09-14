@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/virink/virzz/crypto"
 	"github.com/virink/virzz/common"
+	"github.com/virink/virzz/crypto/classical"
 )
 
 // caesarCmd
@@ -15,7 +15,7 @@ var caesarCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		r, _ := crypto.Caesar(s)
+		r, _ := classical.Caesar(s)
 		return common.Output(r)
 	},
 }
@@ -29,7 +29,7 @@ var rot13Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		r, _ := crypto.Rot13(s)
+		r, _ := classical.Rot13(s)
 		return common.Output(r)
 	},
 }
@@ -43,7 +43,7 @@ var morseCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		r, err := crypto.Morse(s, decode, sep)
+		r, err := classical.Morse(s, decode, sep)
 		if err != nil {
 			return err
 		}
@@ -60,7 +60,7 @@ var morseDecodeCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		r, err := crypto.Morse(s, true, sep)
+		r, err := classical.Morse(s, true, sep)
 		if err != nil {
 			return err
 		}
