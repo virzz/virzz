@@ -106,6 +106,8 @@ github.com/leodido/go-urn v1.2.0/go.mod h1:+8+nEpDfqqsY+g338gtMEUOtuK+4dEMhiQEgx
 github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491 h1:Xo2fQIr7RBW4ZoVYiAZAm3ApUSgajejzi4Ywvmppcgo=
 github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491/go.mod h1:OjxV/FH+1T6ai0NEQYvxbkzF3AWjiTeYLJ2fWi/VSWQ=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
+github.com/malfunkt/iprange v0.9.0 h1:VCs0PKLUPotNVQTpVNszsut4lP7OCGNBwX+lOYBrnVQ=
+github.com/malfunkt/iprange v0.9.0/go.mod h1:TRGqO/f95gh3LOndUGTL46+W0GXA91WTqyZ0Quwvt4U=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/mitchellh/go-homedir v1.1.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
