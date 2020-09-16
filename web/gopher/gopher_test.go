@@ -16,7 +16,7 @@ func TestRedisWriteAnyFile(t *testing.T) {
 }
 
 func TestExpFastCGI(t *testing.T) {
-	p, _ := ExpFastCGI("127.0.0.1:80", "id", "/usr/share/php/PEAR.php", true)
+	p, _ := ExpFastCGI("127.0.0.1:80", "id", "/usr/share/php/PEAR.php")
 	fmt.Println(p)
 }
 
@@ -27,5 +27,14 @@ func TestExpHTTPUpload(t *testing.T) {
 			"a":    "b",
 			"file": "@gopher_test.go",
 		})
+	fmt.Println(p)
+}
+
+func TestExpGopher(t *testing.T) {
+	p, err := ExpGopher("127.0.0.1:6379", 9527, 1, false)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	fmt.Println(p)
 }
