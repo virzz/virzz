@@ -52,7 +52,7 @@ func ASCIIToString(s string) (string, error) {
 		if err != nil {
 			res[i] = "?"
 		} else {
-			res[i] = string(a)
+			res[i] = string(rune(a))
 		}
 	}
 	return strings.Join(res, ""), nil

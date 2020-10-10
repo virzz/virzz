@@ -13,6 +13,7 @@ func GetArgs(args []string) (string, error) {
 	// Priority: Args > Stdin > nil
 	// Args
 	if len(args) > 0 {
+		// File
 		f, err := os.Stat(args[0])
 		if err == nil && !f.IsDir() {
 			if f.Size() < 104857600 { // 100M
@@ -24,6 +25,7 @@ func GetArgs(args []string) (string, error) {
 			}
 			return "", fmt.Errorf("file is too bigger.(must <= 100M)")
 		}
+		// string
 		return args[0], nil
 	}
 	// Stdin
