@@ -104,7 +104,5 @@ func init() {
 	modifyCmd.Flags().StringVarP(&method, "method", "m", method, "set method")
 	modifyCmd.Flags().StringToStringVarP(&claims, "claims", "c", claims, "modify or add claims")
 
-	rootCmd.AddCommand(printCmd)
-	rootCmd.AddCommand(crackCmd)
-	rootCmd.AddCommand(modifyCmd)
+	rootCmd.AddCommand(printCmd, crackCmd, modifyCmd)
 }

@@ -9,8 +9,9 @@ import (
 func init() {
 	// str2asciiCmd
 	var str2asciiCmd = &cobra.Command{
-		Use:   "str2ascii",
-		Short: "String -> ASCII",
+		Use:     "str2ascii",
+		Aliases: []string{"ords"},
+		Short:   "String -> ASCII",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			s, err := cm.GetArgs(args)
 			if err != nil {
@@ -26,8 +27,9 @@ func init() {
 
 	// ascii2strCmd
 	var ascii2strCmd = &cobra.Command{
-		Use:   "ascii2str",
-		Short: "String -> ASCII",
+		Use:     "ascii2str",
+		Aliases: []string{"chrs"},
+		Short:   "String -> ASCII",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			s, err := cm.GetArgs(args)
 			if err != nil {
@@ -50,7 +52,7 @@ func init() {
 			if err != nil {
 				return err
 			}
-			r, err := basic.ASCIIToString(s)
+			r, err := basic.HexToString(s)
 			if err != nil {
 				return err
 			}

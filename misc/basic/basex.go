@@ -3,6 +3,7 @@ package basic
 import (
 	"encoding/base32"
 	"encoding/base64"
+	"strings"
 
 	"github.com/virink/virzz/misc/basic/base58"
 )
@@ -31,7 +32,7 @@ func Base64Encode(s string, safe ...bool) (string, error) {
 
 // Base64Decode -
 func Base64Decode(s string) (string, error) {
-	s = basePadding(s, 4)
+	s = basePadding(strings.TrimSpace(s), 4)
 	res, err := base64.StdEncoding.DecodeString(s)
 	if err != nil {
 		res, err = base64.URLEncoding.DecodeString(s)
@@ -49,7 +50,7 @@ func Base32Encode(s string) (string, error) {
 
 // Base32Decode -
 func Base32Decode(s string) (string, error) {
-	s = basePadding(s, 8)
+	s = basePadding(strings.TrimSpace(s), 8)
 	res, err := base32.StdEncoding.DecodeString(s)
 	if err != nil {
 		return "", err
@@ -83,6 +84,7 @@ func Base58Decode(s string, enc ...string) (string, error) {
 		res []byte
 		err error
 	)
+	s = strings.TrimSpace(s)
 	if len(enc) > 0 {
 		if enc[0] == "flickr" {
 			res, err = base58.FlickrEncoding.DecodeString(s)
