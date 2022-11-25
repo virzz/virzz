@@ -1,65 +1,60 @@
-package main
+package jwttool
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 
+	"github.com/mozhu1024/virzz/common"
+	"github.com/mozhu1024/virzz/logger"
 	"github.com/spf13/cobra"
-	cm "github.com/virink/virzz/common"
-	"github.com/virink/virzz/web/jwt"
 )
 
-// jwtPrintCmd
 var jwtPrintCmd = &cobra.Command{
 	Use:   "jwt",
 	Short: "JWT Print",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := cm.GetArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
 		secret = getSecret(secret)
-		r, err := jwt.PrintJWT(s, secret)
+		r, err := printJWT(s, secret)
 		if err != nil {
 			return err
 		}
-		return cm.Output(r)
+		return common.Output(r)
 	},
 }
 
-// jwtCrackCmd
 var jwtCrackCmd = &cobra.Command{
 	Use:   "jwtc",
 	Short: "JWT Crack",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := cm.GetArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
-		r, err := jwt.CrackJWT(s, minLen, maxLen, alphabet, prefix, suffix)
+		r, err := crackJWT(s, minLen, maxLen, alphabet, prefix, suffix)
 		if err != nil {
 			return err
 		}
-		return cm.Output(r)
+		return common.Output(r)
 	},
 }
 
-// jwtModifyCmd
 var jwtModifyCmd = &cobra.Command{
 	Use:   "jwtm",
 	Short: "JWT Modify",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := cm.GetArgs(args)
+		s, err := common.GetArgs(args)
 		if err != nil {
 			return err
 		}
 		secret = getSecret(secret)
-		r, err := jwt.ModifyJWT(s, none, secret, claims, method)
+		r, err := modifyJWT(s, none, secret, claims, method)
 		if err != nil {
 			return err
 		}
-		return cm.Output(r)
+		return common.Output(r)
 	},
 }
 
@@ -78,18 +73,25 @@ var (
 func getSecret(s string) string {
 	f, err := os.Stat(s)
 	if err == nil && !f.IsDir() && f.Size() > 0 {
-		data, err := ioutil.ReadFile(s)
+		data, err := os.ReadFile(s)
 		if err == nil {
-			if cm.DebugMode {
-				fmt.Fprintln(os.Stderr, "secret", string(data))
-			}
+			logger.Debug("secret", string(data))
 			return string(data)
 		}
 	}
 	return s
 }
 
+var JWTToolCmd = &cobra.Command{
+	Use:   "jwttool",
+	Short: "A jwt tool with Print/Crack/Modify",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmd.Help()
+	},
+}
+
 func init() {
+
 	jwtPrintCmd.Flags().StringVarP(&secret, "secret", "s", "", "the secret")
 
 	jwtCrackCmd.Flags().IntVarP(&minLen, "min", "m", 4, "the min length secret for crack")
@@ -103,7 +105,6 @@ func init() {
 	jwtModifyCmd.Flags().StringVarP(&method, "method", "m", method, "set method")
 	jwtModifyCmd.Flags().StringToStringVarP(&claims, "claims", "c", claims, "modify or add claims")
 
-	rootCmd.AddCommand(jwtPrintCmd)
-	rootCmd.AddCommand(jwtCrackCmd)
-	rootCmd.AddCommand(jwtModifyCmd)
+	JWTToolCmd.AddCommand(jwtPrintCmd, jwtCrackCmd, jwtModifyCmd)
+	JWTToolCmd.SuggestionsMinimumDistance = 1
 }

@@ -2,18 +2,19 @@ package downloader
 
 import (
 	"crypto/tls"
+	"errors"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
 
-	"github.com/virink/virzz/common"
+	"github.com/mozhu1024/virzz/logger"
 )
 
 // Downloader -
@@ -108,7 +109,7 @@ func (d *Downloader) Head(work downloadTask) (resp *http.Response, err error) {
 	// Head
 	req, err = http.NewRequest("HEAD", work.Target, nil)
 	if err != nil {
-		common.Logger.Error("Head", err)
+		logger.Error("Head", err)
 		return
 	}
 	// Header
@@ -117,7 +118,7 @@ func (d *Downloader) Head(work downloadTask) (resp *http.Response, err error) {
 	}
 	resp, err = d.httpClient.Do(req)
 	if err != nil {
-		common.Logger.Error("Do", err)
+		logger.Error("Do", err)
 		return
 	}
 	if resp.StatusCode == 404 {
@@ -132,26 +133,32 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 		req  *http.Request
 		resp *http.Response
 	)
+	// Fix: Traversal
+	if strings.Contains(work.DestPath, "..") {
+		err = errors.New("it's exist '..' in the path")
+		logger.Error(err)
+		return
+	}
 	_resp, err := d.Head(work)
 	if err != nil {
-		common.Logger.Error(err)
+		logger.Error(err)
 		return
 	}
 	size, err := strconv.ParseInt(_resp.Header.Get("Content-Length"), 10, 64)
 	if err != nil {
-		common.Logger.Error(err)
+		logger.Error(err)
 		return
 	}
 	// Already exists
 	if fi, _ := os.Stat(work.DestPath); fi != nil && fi.Size() == size {
-		common.Logger.Debug("%s is exists", work.DestPath)
+		logger.DebugF("%s is exists", work.DestPath)
 		d.results[work.DestPath] = true
 		return nil
 	}
 	// Get
 	req, err = http.NewRequest("GET", work.Target, nil)
 	if err != nil {
-		common.Logger.Error("GET", err)
+		logger.Error("GET", err)
 		return
 	}
 	// Header
@@ -160,16 +167,16 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 	}
 	resp, err = d.httpClient.Do(req)
 	if err != nil {
-		common.Logger.Error("Do", err)
+		logger.Error("Do", err)
 		return
 	}
 	if resp.StatusCode == 404 {
 		return
 	}
 	if d.result {
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			common.Logger.Error("Body", err)
+			logger.Error("Body", err)
 			return err
 		}
 		d.results[work.DestPath] = body
@@ -181,12 +188,12 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 	}
 	f, err := os.Create(work.DestPath)
 	if err != nil {
-		common.Logger.Error("Create", err)
+		logger.Error("Create", err)
 		return
 	}
 	_, err = io.Copy(f, resp.Body)
 	if err != nil {
-		common.Logger.Error("Copy", err)
+		logger.Error("Copy", err)
 	}
 	return
 }
@@ -209,10 +216,10 @@ func (d *Downloader) Reset() *Downloader {
 // PrintResults -
 func (d *Downloader) PrintResults() {
 	for uri := range d.results {
-		common.Logger.Success("Fetched", uri)
+		logger.Info("Fetched ", uri)
 	}
 	for uri := range d.errFile {
-		common.Logger.Error("Fetched", uri)
+		logger.Error("Fetched ", uri)
 	}
 }
 
@@ -233,7 +240,7 @@ func (d *Downloader) Start() error {
 	d.cancelChan = make(chan bool)
 
 	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt, os.Kill, syscall.SIGTERM)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	wl := int64(len(d.workers))
 	for i := int64(0); i < d.limit && i < wl; i++ {
@@ -247,18 +254,19 @@ func (d *Downloader) Start() error {
 				case <-time.After(3 * time.Second):
 					defer func() {
 						if recover() != nil {
+							return
 						}
 					}()
 					close(d.cancelChan)
 				case work := <-d.workers:
-					common.Logger.Debug("Downloder Fetch", work.Target)
+					logger.Debug("Downloder Fetch ", work.Target)
 					// Fetch
 					if err := d.Fetch(work); err != nil {
-						common.Logger.Debug(err.Error())
+						logger.Debug(err.Error())
 						num, ok := d.errFile[work.Target]
 						if ok {
 							if num > 2 {
-								common.Logger.Error(err.Error())
+								logger.Error(err.Error())
 							} else {
 								d.workers <- work
 								d.errFile[work.Target]++
@@ -286,4 +294,13 @@ func NewDownloader() *Downloader {
 	d := &Downloader{}
 	d.Init().SetLimit(10).SetDelay(0).SetTimeout(3)
 	return d
+}
+
+func SigleFetch(target, dest string) error {
+	d := NewDownloader()
+	err := d.Fetch(downloadTask{Target: target, DestPath: dest})
+	if err != nil {
+		return err
+	}
+	return nil
 }

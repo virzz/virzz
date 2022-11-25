@@ -1,4 +1,4 @@
-package jwt
+package jwttool
 
 import (
 	"encoding/base64"
@@ -13,8 +13,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// PrintJWT - Print JWT
-func PrintJWT(s string, secret ...string) (string, error) {
+func printJWT(s string, secret ...string) (string, error) {
 	secretByte := []byte("")
 	if len(secret) > 0 {
 		secretByte = []byte(secret[0])
@@ -23,13 +22,12 @@ func PrintJWT(s string, secret ...string) (string, error) {
 		return secretByte, nil
 	})
 	res, err := json.MarshalIndent(token, "", "    ")
-	// if claims, ok := token.Claims.(jwt.MapClaims); ok {}
 	return string(res), err
 }
 
-// CrackJWT - Crack JWT
+// crackJWT - Crack JWT
 // args: [start=4] [end=4] [table=alphabet&number] [prefix] [suffix]
-func CrackJWT(s string, args ...interface{}) (string, error) {
+func crackJWT(s string, args ...interface{}) (string, error) {
 	tokenStr := strings.TrimSpace(s)
 	if t, _ := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		return []byte("dbedd"), nil
@@ -109,7 +107,7 @@ func CrackJWT(s string, args ...interface{}) (string, error) {
 	go func() {
 		defer wg.Done()
 		interrupt := make(chan os.Signal, 1)
-		signal.Notify(interrupt, os.Interrupt, os.Kill, syscall.SIGTERM)
+		signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 		for {
 			select {
 			case <-done:
@@ -125,11 +123,10 @@ func CrackJWT(s string, args ...interface{}) (string, error) {
 	if len(res) > 0 {
 		return res, nil
 	}
-	return res, fmt.Errorf("No secret found")
+	return res, fmt.Errorf("no secret found")
 }
 
-// ModifyJWT - ModifyJ JWT
-func ModifyJWT(s string, none bool, secret string, claims map[string]string, method string) (string, error) {
+func modifyJWT(s string, none bool, secret string, claims map[string]string, method string) (string, error) {
 	tokenStr := strings.TrimSpace(s)
 	var t *jwt.Token
 	newClaims := jwt.MapClaims{}

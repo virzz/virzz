@@ -3,7 +3,6 @@ package common
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -17,7 +16,7 @@ func GetArgs(args []string) (string, error) {
 		f, err := os.Stat(args[0])
 		if err == nil && !f.IsDir() {
 			if f.Size() < 104857600 { // 100M
-				data, err := ioutil.ReadFile(args[0])
+				data, err := os.ReadFile(args[0])
 				if err != nil {
 					return "", err
 				}
@@ -44,11 +43,7 @@ func GetArgs(args []string) (string, error) {
 }
 
 // Output -
-func Output(s string, color ...bool) error {
-	if len(color) > 0 && color[0] {
-		Logger.Success(s)
-		return nil
-	}
+func Output(s string) error {
 	outBuf := bufio.NewWriter(os.Stdout)
 	outBuf.WriteString(s)
 	outBuf.WriteString("\n")

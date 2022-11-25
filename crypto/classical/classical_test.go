@@ -31,7 +31,7 @@ func TestRot13(t *testing.T) {
 }
 
 func TestMorse(t *testing.T) {
-	r, _ := Morse("Virink, 123!", false)
+	r, _ := Morse("VirinK, 123!", false)
 	fmt.Println(r)
 	if r != "...-/../.-./../-./-.-/--..--/......../.----/..---/...--/-.-.--" {
 		t.Fail()
@@ -60,6 +60,20 @@ func TestPeigen(t *testing.T) {
 	r, _ = Peigen("thepeigenisgood")
 	fmt.Println(r)
 	if r != "baabbaabbbaabaaabbbbaabaaabaaaaabbaaabaaabbababaaabaabaaabbaabbbaabbbaaaabb" {
+		t.Fail()
+	}
+}
+
+func TestVigenere(t *testing.T) {
+	r, _ := Vigenere("Mozhu is good", "secret")
+	fmt.Println(r)
+	// ESBYYBKKQFH
+	if r != "ESBYYBKKQFH" {
+		t.Fail()
+	}
+	r, _ = Vigenere("ESBYYBKKQFH", "secret", true)
+	fmt.Println(r)
+	if r != "MOZHUISGOOD" {
 		t.Fail()
 	}
 }

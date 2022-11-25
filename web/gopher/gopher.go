@@ -7,17 +7,16 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/virink/virzz/common"
+	"github.com/mozhu1024/virzz/logger"
 )
 
-// ExpGopher -
-func ExpGopher(addr string, port, n int, quit bool) (string, error) {
+func expGopher(addr string, port, n int, quit bool) (string, error) {
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		return "", err
 	}
 	defer ln.Close()
-	common.Logger.Normal("Listen: %s", ln.Addr().String())
+	logger.NormalF("Listen: %s", ln.Addr().String())
 	conn, err := ln.Accept()
 	if err != nil {
 		return "", err
@@ -32,7 +31,7 @@ func ExpGopher(addr string, port, n int, quit bool) (string, error) {
 			return "", err
 		}
 		tmp := string(buff[:n])
-		common.Logger.Debug("buff = %s", tmp)
+		logger.DebugF("buff = %s", tmp)
 		data[i] = tmp
 
 		// Fix redis::command

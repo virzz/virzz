@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/lizongshen/gocommand"
-	"github.com/virink/virzz/common"
-	"github.com/virink/virzz/tools/downloader"
+	"github.com/mozhu1024/virzz/logger"
+	"github.com/mozhu1024/virzz/tools/downloader"
 )
 
 var baseFiles = []string{
@@ -87,7 +87,7 @@ func fetchCommitObjects(downClient *downloader.Downloader, baseURL, tempDir stri
 		if len(hashArr) < 3 {
 			break
 		}
-		common.Logger.Debug(hashArr)
+		logger.Debug(hashArr)
 		curHash = hashArr[1]
 		target := filepath.Join(".git", "objects", curHash[:2], curHash[2:40])
 		downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), filepath.Join(tempDir, target))
@@ -96,7 +96,7 @@ func fetchCommitObjects(downClient *downloader.Downloader, baseURL, tempDir stri
 }
 
 func fixMissingObjects(downClient *downloader.Downloader, baseURL, tempDir string) (err error) {
-	common.Logger.Debug("fixMissingObjects")
+	logger.Debug("fixMissingObjects")
 	var (
 		cmd, out string
 		matches  [][]string
@@ -105,13 +105,13 @@ func fixMissingObjects(downClient *downloader.Downloader, baseURL, tempDir strin
 	if _, out, err = gocommand.NewCommand().Exec(cmd); err != nil {
 		return
 	}
-	common.Logger.Debug(out)
+	logger.Debug(out)
 	matches = regexp.MustCompile(`(?m)([a-fA-F0-9]{40})`).FindAllStringSubmatch(out, -1)
 	// matchMap := make(map[string]int)
 	if len(matches) > 0 {
 		for _, match := range matches {
 			curHash := match[0]
-			common.Logger.Debug("Fetch Object", curHash)
+			logger.Debug("Fetch Object", curHash)
 			target := filepath.Join(".git", "objects", curHash[:2], curHash[2:40])
 			downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), filepath.Join(tempDir, target))
 		}
@@ -125,44 +125,39 @@ func fixMissingObjects(downClient *downloader.Downloader, baseURL, tempDir strin
 
 func gitHack(targetURL string, limit, delay int64) (err error) {
 	var baseURL, tempDir string
-	common.Logger.Success("Attack [%s]\n", targetURL)
+	logger.Info("Attack [%s]\n", targetURL)
 
 	if baseURL, tempDir, err = parserURL(targetURL); err != nil {
 		return
 	}
-	common.Logger.Debug("baseURL:", baseURL)
-	common.Logger.Debug("tempDir:", tempDir)
+	logger.Debug("baseURL:", baseURL)
+	logger.Debug("tempDir:", tempDir)
 	// NewDownloader
 	download := downloader.NewDownloader().SetLimit(limit).SetDelay(delay)
 	// Download Base Files
 	for _, uri := range baseFiles {
 		download.AddTask(fmt.Sprintf("%s/%s", baseURL, uri), filepath.Join(tempDir, uri))
 	}
-	common.Logger.Success("Fetch Base Files...")
+	logger.Info("Fetch Base Files...")
 	download.Start()
 
 	// Fetch Commit Objects
-	common.Logger.Success("Fetch Commit Objects...")
-	fetchCommitObjects(download.Reset(), baseURL, tempDir, false)
+	logger.Info("Fetch Commit Objects...")
+	fetchCommitObjects(download, baseURL, tempDir, false)
 
 	// Fetch Stash Objects
-	common.Logger.Success("Fetch Stash Objects...")
-	fetchCommitObjects(download.Reset(), baseURL, tempDir, true)
+	logger.Info("Fetch Stash Objects...")
+	fetchCommitObjects(download, baseURL, tempDir, true)
 
 	// Fix Missing Objects
-	common.Logger.Success("Fetch Missing Objects...")
-	fixMissingObjects(download.Reset(), baseURL, tempDir)
+	logger.Info("Fetch Missing Objects...")
+	fixMissingObjects(download, baseURL, tempDir)
 
 	// Reset to the last commit
 	cmd := fmt.Sprintf("cd ./%s && git reset --hard > /dev/null", tempDir)
 	if _, _, err := gocommand.NewCommand().Exec(cmd); err != nil {
 		return err
 	}
-	common.Logger.Success("Fetched Success")
+	logger.Info("Fetched Info")
 	return nil
-}
-
-// DoAction -
-func DoAction(targetURL string, limit, delay int64) error {
-	return gitHack(targetURL, limit, delay)
 }

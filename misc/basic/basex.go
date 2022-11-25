@@ -3,9 +3,10 @@ package basic
 import (
 	"encoding/base32"
 	"encoding/base64"
+	"fmt"
 	"strings"
 
-	"github.com/virink/virzz/misc/basic/base58"
+	"github.com/mozhu1024/virzz/misc/basic/base58"
 )
 
 // RFC 4648
@@ -90,9 +91,12 @@ func Base58Decode(s string, enc ...string) (string, error) {
 			res, err = base58.FlickrEncoding.DecodeString(s)
 		} else if enc[0] == "ripple" {
 			res, err = base58.RippleEncoding.DecodeString(s)
+		} else {
+			return "", fmt.Errorf("enc is not support")
 		}
+	} else {
+		res, err = base58.BitcoinEncoding.DecodeString(s)
 	}
-	res, err = base58.BitcoinEncoding.DecodeString(s)
 	if err != nil {
 		return "", err
 	}

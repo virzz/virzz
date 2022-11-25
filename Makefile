@@ -1,63 +1,95 @@
 #!/usr/bin/env make
 TARGET=./build
-ARCHS=amd64 386
-LDFLAGS="-s -w"
+APPNAMES=virzz platform
+OSS=linux windows darwin
+ARCHS=amd64 arm64
 GCFLAGS="all=-trimpath=$(shell pwd)"
 ASMFLAGS="all=-trimpath=$(shell pwd)"
 GOPATH=$(shell go env GOPATH)
 SOURCE="./cli/"
-ifeq ($(B), all)
-APPNAMES := $(shell cd ./cli/ && ls)
-else ifneq ($(B),)
-APPNAMES := $B
-else 
-APPNAMES := virzz
-endif
+PUBLICS := $(shell cd ./cli/public/ && ls)
+# BUILD_ID := $(shell head .buildid)
+VERSION := $(shell git tag | tail -1)
+LDFLAGS := -s -w \
+	-X github.com/mozhu1024/virzz/common.Mode=prod
 
-current:
+%:
+	@function failx(){ \
+		echo "[-] $$1 Fail."; \
+		export B=1; \
+	}; \
+	if [[ -d ./cli/public/$@ ]];then \
+		echo "Building [$@]"; \
+		echo "[*] Building [$@] ... "; \
+		rm -f ./${TARGET}/$@; \
+		BUILD_ID=`head .buildid/$@ 2>/dev/null || echo 0` ; \
+		LDFLAGS="${LDFLAGS} -X main.BuildID=$${BUILD_ID} -X main.Version=dev" ; \
+		GOOS=$${OS} GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
+		go build -ldflags "$${LDFLAGS}" -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
+			-o ${TARGET}/$@ ./cli/public/$@ && \
+			echo "[+] $@ Built." || failx $@ ;\
+		if [ -z "$${B}" ]; then \
+			echo "[+] BuildID = $${BUILD_ID}"; \
+			expr $${BUILD_ID} + 1 > .buildid/$@; \
+		fi \
+	elif [[ "$@" = "public" ]]; then \
+		echo Build ${PUBLICS}; \
+		for APP in ${PUBLICS}; do \
+			echo "[*] Building $${APP} ... "; \
+			rm -f ./${TARGET}/$${APP}; \
+			BUILD_ID=`head .buildid/$${APP} 2>/dev/null || echo 0` ; \
+			LDFLAGS="${LDFLAGS} -X main.BuildID=$${BUILD_ID} -X main.Version=dev" ; \
+			GOOS=$${OS} GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
+			go build -ldflags "$${LDFLAGS}" -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
+				-o ${TARGET}/$${APP} ./cli/public/$${APP}  && \
+				echo "[+] $${APP} Built." || failx $${APP} ; \
+			if [ -z "$${B}" ]; then \
+				echo "[+] BuildID = $${BUILD_ID}"; \
+				expr $${BUILD_ID} + 1 > .buildid/$${APP}; \
+			fi \
+		done; \
+		echo "[+] Finish."; \
+	fi
+
+virzz:
 	@mkdir -p ${TARGET}/
-	@rm -rf ./${TARGET}/*
-	@for APPNAME in ${APPNAMES}; do \
-		echo "[*] Building $${APPNAME} ..." ; \
-		go build -o ${TARGET}/$${APPNAME} ${SOURCE}/$${APPNAME} ; \
-	done; \
-	echo "[+] Current Built."
+	@rm -f ./${TARGET}/$@
+	@echo "[*] Building [$@] ..." ;
+	@go build -o ${TARGET}/$@ ${SOURCE}/$@  && \
+			echo "[+] $@ Built." || \
+			echo "[-] Build [$@] Faild";
 
-windows:
-	@for GOARCH in ${ARCHS}; do \
-		echo "[*] Building for windows $${GOARCH} ..." ; \
-		for APPNAME in ${APPNAMES}; do \
-			echo "[+] $${APPNAME} ..." ; \
-			GOOS=windows GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
-			go build -ldflags=${LDFLAGS} -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
-			-o ${TARGET}/$${APPNAME}-windows-$${GOARCH}.exe ${SOURCE}/$${APPNAME}; \
-		done; \
-	done; \
-	echo "[+] Windows Built."
-
-linux:
-	@for GOARCH in ${ARCHS}; do \
-		echo "[*] Building for linux $${GOARCH} ..." ; \
-		for APPNAME in ${APPNAMES}; do \
-			echo "[+] $${APPNAME} ..." ; \
-			GOOS=linux GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
-			go build -ldflags=${LDFLAGS} -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
-			-o ${TARGET}/$${APPNAME}-linux-$${GOARCH} ${SOURCE}/$${APPNAME}; \
-		done; \
-	done; \
-	echo "[+] Linux Built."
-
-darwin:
-	@echo "[*] Building for darwin amd64 ..." ; \
+release: clean
+	@function fail(){ \
+		echo "[-] $$1 Fail."; \
+		export B=1; \
+	}; \
 	for APPNAME in ${APPNAMES}; do \
-		echo "[+] $${APPNAME} ..." ; \
-		GOOS=darwin GOARCH=amd64 GO111MODULE=on CGO_ENABLED=0 \
-		go build -ldflags=${LDFLAGS} -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
-		-o ${TARGET}/$${APPNAME}-darwin-amd64 ${SOURCE}/$${APPNAME}; \
-	done; \
-	echo "[+] Darwin Built."
+		export B=0; \
+		BUILD_ID=`head .buildid/$${APPNAME} 2>/dev/null || echo 0` ; \
+		LDFLAGS="${LDFLAGS} -X main.BuildID=$${BUILD_ID} -X main.Version=${VERSION}" ; \
+		for OS in ${OSS}; do \
+			for GOARCH in ${ARCHS}; do \
+				echo "[*] Building for $${APPNAME} $${OS} $${GOARCH} ..." ; \
+				GOOS=$${OS} GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
+				go build -ldflags "$${LDFLAGS}" -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
+				-o ${TARGET}/$${APPNAME}-$${OS}-$${GOARCH} ${SOURCE}/$${APPNAME} && \
+				echo "[+] $${APPNAME}-$${OS}-$${GOARCH} Built." || \
+				fail $${APPNAME}-$${OS}-$${GOARCH} ; \
+			done; \
+		done; \
+		if [ $${B}="0" ]; then \
+			echo "[+] BuildID = $${BUILD_ID}"; \
+			expr $${BUILD_ID} + 1 > .buildid/$${APPNAME}; \
+		fi \
+	done;
 
-all: clean darwin linux windows
+archive: release
+	@rm -rf release; \
+	mkdir release; \
+	echo "[+] Archive ..." ; \
+	shasum -a 256 ./${TARGET}/* > ./${TARGET}/SHA256.txt; \
+	zip ./release/virzz.zip -9 ./${TARGET}/* ;
 
 fmt:
 	@go fmt ./...; \
@@ -68,15 +100,7 @@ update:
 	go mod tidy -v; \
 	echo "[+] Updated."
 
-link: current
-	@for APPNAME in ${APPNAMES}; do \
-		echo "[*] Link $${APPNAME} ..." ; \
-		test -f /usr/local/bin/$${APPNAME} && rm /usr/local/bin/$${APPNAME}; \
-		ln -s `pwd`/${TARGET}/$${APPNAME} /usr/local/bin/$${APPNAME}; \
-		test -f /usr/local/bin/$${APPNAME} && echo "[+] $${APPNAME} Linked" || echo "[-] Fail"; \
-	done;
-
-install: current
+install: virzz
 	@for APPNAME in ${APPNAMES}; do \
 		echo "[*] Install $${APPNAME} ..." ; \
 		cp -f ${TARGET}/$${APPNAME} ${GOPATH}/bin/$${APPNAME}; \
@@ -97,15 +121,23 @@ remove:
 
 clean:
 	@rm -rf ${TARGET}/* ; \
+	rm -rf release; \
 	go clean ./... ; \
 	echo "[+] Cleaned."
 
-archive: all
-	@mkdir release; \
-	cd ${TARGET}; \
-	for APPNAME in ${APPNAMES}; do \
-		echo "[+] Archive $${APPNAME} ..." ; \
-		sha256sum $${APPNAME}* > SHA256.txt; \
-		rm ../release/$${APPNAME}.zip; \
-		zip ../release/$${APPNAME}.zip -9 $${APPNAME}*; \
-	done;
+readme:
+	@echo "# Virzz" > README.md ;\
+	echo '![Build](https://github.com/mozhu1024/virzz/workflows/Build/badge.svg)' >> README.md; \
+	echo '' >> README.md; \
+	echo '## Virzz - CLI 命令行小工具' >> README.md; \
+	echo '' >> README.md; \
+	echo '```' >> README.md; \
+	./build/virzz >> README.md; \
+	echo '```' >> README.md; \
+	echo '' >> README.md;
+	echo '## Virzz - Platform 服务端工具' >> README.md; \
+	echo '' >> README.md; \
+	echo '```' >> README.md; \
+	./build/platform >> README.md; \
+	echo '```' >> README.md; \
+	cat README.md

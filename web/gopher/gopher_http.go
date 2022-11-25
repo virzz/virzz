@@ -10,16 +10,7 @@ import (
 	"strings"
 )
 
-// ExpHTTPPost -
-func ExpHTTPPost(addr string, uri string, datas map[string]string) (string, error) {
-	// param := ""
-	// if len(params) > 0 {
-	// 	g := url.Values{}
-	// 	for key, value := range params {
-	// 		g.Add(key, value)
-	// 	}
-	// 	param = fmt.Sprintf("?%s", g.Encode())
-	// }
+func expHTTPPost(addr string, uri string, datas map[string]string) (string, error) {
 	p := url.Values{}
 	for key, value := range datas {
 		p.Add(key, value)
@@ -39,8 +30,7 @@ func ExpHTTPPost(addr string, uri string, datas map[string]string) (string, erro
 	return exp, nil
 }
 
-// ExpHTTPUpload -
-func ExpHTTPUpload(addr string, uri string, datas map[string]string) (string, error) {
+func expHTTPUpload(addr string, uri string, datas map[string]string) (string, error) {
 	bodyBuffer := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuffer)
 	// Field

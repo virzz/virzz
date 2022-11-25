@@ -9,21 +9,15 @@ import (
 	"strings"
 )
 
-// // StringX -
-// type StringX struct{}
-
-// UpPadHex Remove 0x
-func UpPadHex(s string) string {
-	s = strings.ToLower(s)
-	if strings.HasPrefix(s, "0x") {
-		s = s[2:]
-	}
-	return s
+func upPadHex(s string) string {
+	return strings.TrimPrefix(strings.ToLower(s), "0x")
 }
 
-// PadHex Append 0x
-func PadHex(s string) string {
-	return fmt.Sprintf("0x%s", s)
+func padHex(s string) string {
+	if !strings.HasPrefix(s, "0x") {
+		return fmt.Sprintf("0x%s", s)
+	}
+	return s
 }
 
 // StringToASCII 字符串 -> ASCII
@@ -60,7 +54,7 @@ func ASCIIToString(s string) (string, error) {
 
 // HexToString Hex -> String
 func HexToString(s string) (string, error) {
-	s = UpPadHex(s)
+	s = upPadHex(s)
 	bs, err := hex.DecodeString(s)
 	if err != nil {
 		return "", err
@@ -70,7 +64,7 @@ func HexToString(s string) (string, error) {
 
 // StringToHex String -> Hex
 func StringToHex(s string) (string, error) {
-	return PadHex(hex.EncodeToString([]byte(s))), nil
+	return padHex(hex.EncodeToString([]byte(s))), nil
 }
 
 // DecToHex Dec -> Hex
@@ -78,25 +72,25 @@ func DecToHex(s string) (string, error) {
 	n := new(big.Int)
 	var ok bool
 	if n, ok = n.SetString(s, 10); !ok {
-		return "", fmt.Errorf("Convert error")
+		return "", fmt.Errorf("convert error")
 	}
-	return PadHex(n.Text(16)), nil
+	return padHex(n.Text(16)), nil
 }
 
 // HexToDec Hex -> Dec
 func HexToDec(s string) (string, error) {
-	s = UpPadHex(s)
+	s = upPadHex(s)
 	n := new(big.Int)
 	var ok bool
 	if n, ok = n.SetString(s, 16); !ok {
-		return "", fmt.Errorf("Convert error")
+		return "", fmt.Errorf("convert error")
 	}
 	return n.String(), nil
 }
 
 // HexToByteString Hex -> Bytes String
 func HexToByteString(s string) (string, error) {
-	s = UpPadHex(s)
+	s = upPadHex(s)
 	bs, err := hex.DecodeString(s)
 	if err != nil {
 		return "", err
@@ -118,7 +112,7 @@ func ByteStringToHex(s string) (string, error) {
 	var re = regexp.MustCompile(`^b["']([\S|(\\x\w{2})]*?)['"]$`)
 	var matches = re.FindAllStringSubmatch(s, -1)
 	if len(matches) == 0 || len(matches[0]) < 2 {
-		return "", fmt.Errorf("Regexp Match error")
+		return "", fmt.Errorf("regexp Match error")
 	}
 	m := matches[0][1]
 	res := ""
@@ -131,7 +125,7 @@ func ByteStringToHex(s string) (string, error) {
 		res += hex.EncodeToString([]byte{m[p]})
 		p++
 	}
-	return PadHex(res), nil
+	return padHex(res), nil
 }
 
 // ByteStringToString ByteString -> String

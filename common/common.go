@@ -2,24 +2,21 @@ package common
 
 import (
 	"os"
+)
 
-	log "github.com/virink/vlogger"
+const (
+	Author = "陌竹"
+	Email  = "mozhu233@outlook.com"
 )
 
 var (
-	// Logger 日志工具
-	Logger *log.Logger
-
-	// DebugMode -
-	DebugMode bool = false
+	DebugMode bool   = false
+	Mode      string = "dev"
 )
 
 func init() {
-	level := log.LevelError
-	debugEnv := os.Getenv("DEBUG")
-	if debugEnv != "" && debugEnv != "0" && debugEnv != "false" {
+	debugEnv := os.Getenv("MOZHU1024")
+	if debugEnv == "dev" || Mode == "dev" {
 		DebugMode = true
-		level = log.LevelDebug
 	}
-	InitLogger(level)
 }

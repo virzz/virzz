@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/mozhu1024/virzz/logger"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func _caesar(s string, step rune) string {
@@ -81,7 +85,7 @@ func Morse(s string, decode bool, sep ...string) (string, error) {
 		for i, e := range enc {
 			res[i] = morseMap[e]
 		}
-		r := strings.Title(strings.ToLower(string(res)))
+		r := cases.Title(language.English).String(string(res))
 		r = strings.ReplaceAll(r, "\x01", "[ERROR]")
 		return r, nil
 	}
@@ -142,22 +146,26 @@ func Peigen(s string) (string, error) {
 }
 
 // Vigenere 维吉利亚密码
-func Vigenere(s string) (string, error) {
-	// s = str(s).replace(" ", "").upper()
-	// key = str(key).replace(" ", "").upper()
-	// res = ''
-	// i = 0
-	// while i < len(s):
-	//     j = i % len(key)
-	//     k = U.index(key[j])
-	//     m = U.index(s[i])
-	//     if de:
-	//         if m < k:
-	//             m += 26
-	//         res += U[m - k]
-	//     else:
-	//         res += U[(m + k) % 26]
-	//     i += 1
-	// return res
-	return "", nil
+func Vigenere(src, key string, decode ...bool) (string, error) {
+	src = strings.ReplaceAll(strings.ToUpper(src), " ", "")
+	key = strings.ReplaceAll(strings.ToUpper(key), " ", "")
+	logger.DebugF("src = %s , key = %s", src, key)
+	U := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	keyLength := len(key)
+	decodeFlag := (len(decode) > 0 && decode[0])
+	var builder strings.Builder
+	for i := range src {
+		k := strings.IndexByte(U, key[i%keyLength])
+		m := strings.IndexByte(U, src[i])
+		logger.DebugF(
+			"i=%d,  m=%d, k=%d, m-k=%d, (m-k+26)%%26=%d, (m+k)%%26=%d",
+			i, m, k, m-k, (m-k+26)%26, (m+k)%26,
+		)
+		if decodeFlag {
+			builder.WriteByte(U[(m-k+26)%26])
+		} else {
+			builder.WriteByte(U[(m+k)%26])
+		}
+	}
+	return builder.String(), nil
 }

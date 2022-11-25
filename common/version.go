@@ -1,16 +1,20 @@
 package common
 
-const (
-	// AppName const
-	AppName = "Virzz"
-	// BinName const
-	BinName = "virzz"
-	// Version const
-	Version = "0.1.5"
-	// VersionInt const
-	VersionInt = 0x000105
-	// Author const
-	Author = "Virink"
-	// Email const
-	Email = "virink@outlook.com"
+import (
+	"fmt"
+
+	"github.com/spf13/cobra"
 )
+
+func VersionCommand(name, version, buildID string) *cobra.Command {
+	return &cobra.Command{
+		Use:   "version",
+		Short: "Print the version",
+		Run: func(cmd *cobra.Command, args []string) {
+			if buildID == "0" {
+				buildID = "dev"
+			}
+			fmt.Printf("%s %s build-%s\n", name, version, buildID)
+		},
+	}
+}

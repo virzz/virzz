@@ -7,6 +7,7 @@ func replaceFastCGIPayload(p string) string {
 	p = strings.ReplaceAll(p, "%2F", "/")
 	return p
 }
+
 func replaceRedisPayload(p string) string {
 	p = replaceFastCGIPayload(p)
 	p = strings.ReplaceAll(p, "%25", "%")
