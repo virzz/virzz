@@ -3,14 +3,16 @@ package common
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
-// GetArgs -
-func GetArgs(args []string) (string, error) {
+// GetFirstArg -
+func GetFirstArg(args []string) (string, error) {
 	// Priority: Args > Stdin > nil
-	// Args
 	if len(args) > 0 {
 		// File
 		f, err := os.Stat(args[0])
@@ -28,15 +30,16 @@ func GetArgs(args []string) (string, error) {
 		return args[0], nil
 	}
 	// Stdin
-	if fi, err := os.Stdin.Stat(); err == nil &&
-		(fi.Mode()&os.ModeNamedPipe) == os.ModeNamedPipe && fi.Size() > 0 {
-		inBuf := bufio.NewReaderSize(os.Stdin, int(fi.Size()))
-		data := make([]byte, fi.Size())
-		_, err = inBuf.Read(data)
+	fi, err := os.Stdin.Stat()
+	if err != nil {
+		return "", err
+	}
+	// Wait os.Stdin flush
+	if (fi.Mode() & os.ModeNamedPipe) == os.ModeNamedPipe {
+		data, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			return "", err
 		}
-		os.Stdin.Close()
 		return string(data), nil
 	}
 	return "", fmt.Errorf("not found args")
@@ -51,4 +54,21 @@ func Output(s string) error {
 	return os.Stdout.Close()
 }
 
-// FIXME: I don't know why "virzz b64e README.md | virzz b64d" was faild
+func CompletionCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:                   "completion [bash|zsh]",
+		Short:                 "Generate completion script",
+		DisableFlagsInUseLine: true,
+		Hidden:                true,
+		ValidArgs:             []string{"bash", "zsh"},
+		Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+		Run: func(cmd *cobra.Command, args []string) {
+			switch args[0] {
+			case "bash":
+				cmd.Root().GenBashCompletion(os.Stdout)
+			case "zsh":
+				cmd.Root().GenZshCompletion(os.Stdout)
+			}
+		},
+	}
+}

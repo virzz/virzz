@@ -14,12 +14,10 @@ var (
 	BuildID string = "0" // head .buildid
 )
 
-func init() {
-	jwttool.JWTToolCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
-}
-
 func main() {
-	if err := jwttool.JWTToolCmd.Execute(); err != nil {
+	rootCmd := jwttool.ExportCommand()[0]
+	rootCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }

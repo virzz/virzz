@@ -14,12 +14,10 @@ var (
 	BuildID string = "0" // head .buildid
 )
 
-func init() {
-	gopher.GopherCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
-}
-
 func main() {
-	if err := gopher.GopherCmd.Execute(); err != nil {
+	rootCmd := gopher.ExportCommand()[0]
+	rootCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }

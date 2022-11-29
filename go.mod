@@ -14,7 +14,7 @@ require (
 	github.com/panjf2000/ants v1.3.0
 	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/spf13/cobra v1.6.0
+	github.com/spf13/cobra v1.6.1
 	github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d
 	github.com/txthinking/socks5 v0.0.0-20220615051428-39268faee3e6
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37

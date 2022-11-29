@@ -14,12 +14,10 @@ var (
 	BuildID string = "0" // head .buildid
 )
 
-func init() {
-	githack.GithackCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
-}
-
 func main() {
-	if err := githack.GithackCmd.Execute(); err != nil {
+	rootCmd := githack.ExportCommand()[0]
+	rootCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }

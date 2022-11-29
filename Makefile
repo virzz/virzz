@@ -126,18 +126,22 @@ clean:
 	echo "[+] Cleaned."
 
 readme:
-	@echo "# Virzz" > README.md ;\
+	@echo "# Virzz" > README.md ; \
 	echo '![Build](https://github.com/mozhu1024/virzz/workflows/Build/badge.svg)' >> README.md; \
-	echo '' >> README.md; \
-	echo '## Virzz - CLI 命令行小工具' >> README.md; \
-	echo '' >> README.md; \
-	echo '```' >> README.md; \
-	./build/virzz >> README.md; \
-	echo '```' >> README.md; \
 	echo '' >> README.md;
-	echo '## Virzz - Platform 服务端工具' >> README.md; \
-	echo '' >> README.md; \
-	echo '```' >> README.md; \
-	./build/platform >> README.md; \
-	echo '```' >> README.md; \
+	@if test -f ./build/virzz ; then \
+		echo '## Virzz - CLI 命令行小工具' >> README.md; \
+		echo '' >> README.md; \
+		echo '```' >> README.md; \
+		./build/virzz >> README.md; \
+		echo '```' >> README.md; \
+		echo '' >> README.md; \
+	fi
+	@if test -f ./build/platform ; then \
+		echo '## Virzz - Platform 服务端工具' >> README.md; \
+		echo '' >> README.md; \
+		echo '```' >> README.md; \
+		./build/platform >> README.md; \
+		echo '```' >> README.md; \
+	fi
 	cat README.md

@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/crypto/hash"
+	"github.com/mozhu1024/virzz/crypto/hashpow"
 )
 
 var (
@@ -14,12 +14,10 @@ var (
 	BuildID string = "0" // head .buildid
 )
 
-func init() {
-	hash.HashPowCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
-}
-
 func main() {
-	if err := hash.HashPowCmd.Execute(); err != nil {
+	rootCmd := hashpow.ExportCommand()[0]
+	rootCmd.AddCommand(common.VersionCommand(AppName, Version, BuildID))
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
