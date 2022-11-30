@@ -72,3 +72,11 @@ func CompletionCommand() *cobra.Command {
 		},
 	}
 }
+
+func getEnvDefault(key, value string) string {
+	v := os.Getenv(key)
+	if v == "" {
+		return value
+	}
+	return v
+}

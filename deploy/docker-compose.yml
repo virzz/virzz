@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  store:
+    image: mariadb
+    restart: always
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: 1
+      MARIADB_DATABASE: virzz_platform
+      MARIADB_USER: virzz
+      MARIADB_PASSWORD: virzz999
+  cache:
+    image: redis
+    volumes:
+      - ./data/redis:/data
+  platform:
+    image: mozhu1024/virzz_platform
+    build:
+      context: .
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    # default
+    # environment:
+    #   JWT_EXPIRES: 3600
+    #   JWT_SECRET: jwt_secret_anrkjwgnvare
+    #   MYSQL_HOST: mariadb
+    #   MYSQL_USER: virzz
+    #   MYSQL_PASS: virzz9999
+    #   MYSQL_NAME: virzz_platform
+    #   REDIS_HOST: 127.0.0.1
+    #   REDIS_PORT: 6379
+    #   REDIS_DB: 0
+    #   SERVER_HOST: 127.0.0.1
+    #   SERVER_PORT: 9999
+
+

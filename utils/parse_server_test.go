@@ -13,11 +13,9 @@ func TestParseHost(t *testing.T) {
 	ParseHost("192.168.1.100-999/30,192.168.0.1/30")
 	// ParseHost("192.168.1.1/24")
 	// ParseHost("192.168.1.1-100")
-	return
 }
 
 func TestParsePort(t *testing.T) {
 	ps := ParsePort("80,8080,8000-8010,443,8443,81-81,101,02")
 	fmt.Println(ps)
-	return
 }

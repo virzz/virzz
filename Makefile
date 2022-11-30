@@ -91,15 +91,6 @@ archive: release
 	shasum -a 256 ./${TARGET}/* > ./${TARGET}/SHA256.txt; \
 	zip ./release/virzz.zip -9 ./${TARGET}/* ;
 
-fmt:
-	@go fmt ./...; \
-	echo "[+] Fmted."
-
-update:
-	@go get -u; \
-	go mod tidy -v; \
-	echo "[+] Updated."
-
 install: virzz
 	@for APPNAME in ${APPNAMES}; do \
 		echo "[*] Install $${APPNAME} ..." ; \
@@ -145,3 +136,11 @@ readme:
 		echo '```' >> README.md; \
 	fi
 	cat README.md
+
+docker:
+	@test -f ./build/platform-linux-amd64 && \
+	cp ./build/platform-linux-amd64 ./deploy/platform-linux-amd64 && \
+	cd ./deploy && \
+	command -v docker-compose && \
+	docker-compose build platform && \
+	echo "[+] Success" && rm -f platform-linux-amd64 || echo "[-] Fail"
