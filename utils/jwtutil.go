@@ -1,15 +1,13 @@
 package utils
 
 import (
-	"errors"
-	"regexp"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mozhu1024/virzz/common"
 )
-
-var jwtSecret = &common.Conf.Jwt.Secret
 
 // Claims -
 type Claims struct {
@@ -18,22 +16,15 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GetHaderAuthorizationToken(authorization string) (token string, err error) {
-	var (
-		bearer string
-		match  [][]string
-	)
-	match = regexp.MustCompile(`(?m)(Bearer)\s+([a-zA-Z0-9\_\-\.\=]*)`).
-		FindAllStringSubmatch(authorization, -1)
-	if len(match) > 0 && len(match[0]) > 2 {
-		bearer = match[0][1]
-		token = match[0][2]
-		if bearer != "Bearer" {
-			return "", errors.New("lack of Bearer")
-		}
-		return token, nil
+func GetHeaderToken(authorization string) (token string, err error) {
+	tokens := strings.Split(authorization, " ")
+	if len(tokens) != 2 {
+		return "", fmt.Errorf("authorization format error")
 	}
-	return "", errors.New("authorization format error")
+	if tokens[0] != "Bearer" {
+		return "", fmt.Errorf("lack of Bearer")
+	}
+	return tokens[1], nil
 }
 
 // GenerateToken generate tokens used for auth
@@ -48,13 +39,13 @@ func GenerateToken(token, username string) (string, error) {
 			Issuer:    "webkit",
 		},
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(*jwtSecret))
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(common.GetConfig().Jwt.Secret))
 }
 
 // ParseToken parsing token
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(*jwtSecret), nil
+		return []byte(common.GetConfig().Jwt.Secret), nil
 	})
 	if err == nil && tokenClaims != nil {
 		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
@@ -70,7 +61,7 @@ func RefreshToken(tokenString string) (string, error) {
 		jwt.TimeFunc = time.Now
 		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		return token.SignedString([]byte(*jwtSecret))
+		return token.SignedString([]byte(common.GetConfig().Jwt.Secret))
 	}
-	return "", errors.New("couldn't handle this token")
+	return "", fmt.Errorf("couldn't handle this token")
 }

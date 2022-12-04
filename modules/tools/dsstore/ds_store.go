@@ -10,7 +10,7 @@ import (
 
 	"github.com/gehaxelt/ds_store"
 	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils/downloader"
+	"github.com/mozhu1024/virzz/modules/downloader"
 	"gopkg.in/go-playground/validator.v9"
 )
 

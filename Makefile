@@ -49,6 +49,23 @@ LDFLAGS := -s -w \
 			fi \
 		done; \
 		echo "[+] Finish."; \
+	else \
+		for APP in ${APPNAMES}; do \
+			if [ $${APP} = "$@" ]; then \
+				echo "[*] Building $${APP} ... "; \
+				rm -f ./${TARGET}/$${APP}; \
+				BUILD_ID=`head .buildid/$${APP} 2>/dev/null || echo 0` ; \
+				LDFLAGS="${LDFLAGS} -X main.BuildID=$${BUILD_ID} -X main.Version=dev" ; \
+				GOOS=$${OS} GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
+				go build -ldflags "$${LDFLAGS}"  \
+					-o ${TARGET}/$${APP} ./cli/$${APP}  && \
+					echo "[+] $${APP} Built." || failx $${APP} ; \
+				if [ -z "$${B}" ]; then \
+					echo "[+] BuildID = $${BUILD_ID}"; \
+					expr $${BUILD_ID} + 1 > .buildid/$${APP}; \
+				fi \
+			fi \
+		done; \
 	fi
 
 virzz:

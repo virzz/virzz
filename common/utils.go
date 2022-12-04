@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alexeyco/simpletable"
 	"github.com/spf13/cobra"
 )
 
@@ -52,6 +53,42 @@ func Output(s string) error {
 	outBuf.WriteString("\n")
 	outBuf.Flush()
 	return os.Stdout.Close()
+}
+
+// TableOutput func(data []map[int]string, header,footer []string)
+func TableOutput(data []map[int]string, header_footer ...[]string) string {
+	table := simpletable.New()
+	// Body
+	for _, row := range data {
+		cell := []*simpletable.Cell{}
+		for align, text := range row {
+			cell = append(cell, &simpletable.Cell{Align: align, Text: text})
+		}
+		table.Body.Cells = append(table.Body.Cells, cell)
+	}
+	if len(header_footer) > 0 {
+		// Header
+		cell := []*simpletable.Cell{}
+		for _, title := range header_footer[0] {
+			cell = append(cell, &simpletable.Cell{
+				Align: simpletable.AlignCenter,
+				Text:  title,
+			})
+		}
+		table.Header = &simpletable.Header{Cells: cell}
+	}
+	// Footer
+	if len(header_footer) > 1 {
+		cell := []*simpletable.Cell{}
+		for _, title := range header_footer[1] {
+			cell = append(cell, &simpletable.Cell{
+				Align: simpletable.AlignCenter,
+				Text:  title,
+			})
+		}
+		table.Footer = &simpletable.Footer{Cells: cell}
+	}
+	return table.String()
 }
 
 func CompletionCommand() *cobra.Command {

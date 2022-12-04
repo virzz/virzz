@@ -51,7 +51,12 @@ func Connect() error {
 			logger.Error(err)
 			return err
 		}
+
 		return nil
 	})
 
+}
+
+func GetDB() *gorm.DB {
+	return DB
 }

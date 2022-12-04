@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mozhu1024/virzz/common"
 )
 
-type Config struct {
-	Host  string
-	Port  int
-	Debug bool
-}
+// type Config struct {
+// 	Host  string
+// 	Port  int
+// 	Debug bool
+// }
 
 type Resp struct {
 	Code int
@@ -20,9 +21,12 @@ type Resp struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
+var conf common.ServerConfig
+
 // NewWebServer - New Web Server
-func NewWebServer(conf *Config) *http.Server {
-	if conf.Debug {
+func NewWebServer() *http.Server {
+	conf = common.GetConfig().Server
+	if common.DebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)

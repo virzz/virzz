@@ -14,7 +14,10 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	data := common.TemplateConfig()
+	data, err := common.TemplateConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
 	fmt.Println(string(data))
 }
 
@@ -27,13 +30,8 @@ func TestServer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	httpConfig := &Config{
-		Host:  "127.0.0.1",
-		Port:  9999,
-		Debug: true,
-	}
 	// Run HTTP Server
-	httpServer := NewWebServer(httpConfig)
+	httpServer := NewWebServer()
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Error("HTTP server listen: ", err)

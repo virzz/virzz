@@ -2,10 +2,8 @@ package fastcgi
 
 import "bytes"
 
-type recType uint8
-
 const (
-	typeBeginRequest recType = iota + 1
+	typeBeginRequest uint8 = iota + 1
 	typeAbortRequest
 	typeEndRequest
 	typeParams
@@ -17,9 +15,6 @@ const (
 	typeGetValuesResult
 	typeUnknownType
 )
-
-// Role for fastcgi application in spec
-type Role uint16
 
 const (
 	roleResponder = iota + 1 // only Responders are implemented.
@@ -39,7 +34,7 @@ func nameValuePair11(nameData, valueData string) []byte {
 }
 
 func makeRecord(
-	recordType recType,
+	recordType uint8,
 	requestID uint16,
 	contentData []byte,
 ) []byte {

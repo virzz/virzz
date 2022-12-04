@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mozhu1024/virzz/logger"
+	"github.com/mozhu1024/virzz/services/server/models"
 	"github.com/mozhu1024/virzz/utils"
 )
 
@@ -21,7 +22,7 @@ func AuthLoginHandle(c *gin.Context) {
 		c.JSON(400, Resp{Code: -1, Msg: err.Error()})
 		return
 	}
-	user, err := findAuthByUsername(req.Username)
+	user, err := models.FindAuthByUsername(req.Username)
 	if err != nil {
 		logger.Debug(err)
 		c.JSON(500, Resp{Code: -1, Msg: "Username is not exists!"})
@@ -47,7 +48,7 @@ func AuthRegisterHandle(c *gin.Context) {
 		return
 	}
 	password := utils.GeneratePassword(req.Password)
-	_, err := newUser(req.Username, password, req.Email)
+	_, err := models.NewAuth(req.Username, password, req.Email)
 	if err != nil {
 		logger.Debug(err)
 		c.JSON(500, Resp{Code: -1, Msg: "Register error"})
@@ -57,7 +58,7 @@ func AuthRegisterHandle(c *gin.Context) {
 }
 
 func AuthRefreshHandle(c *gin.Context) {
-	token, err := utils.GetHaderAuthorizationToken(c.GetHeader("Authorization"))
+	token, err := utils.GetHeaderToken(c.GetHeader("Authorization"))
 	if err != nil {
 		c.AbortWithStatusJSON(400, Resp{Code: -1, Msg: err.Error()})
 		return

@@ -12,7 +12,7 @@ import (
 
 	"github.com/lizongshen/gocommand"
 	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils/downloader"
+	"github.com/mozhu1024/virzz/modules/downloader"
 )
 
 var baseFiles = []string{

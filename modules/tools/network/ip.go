@@ -9,6 +9,8 @@ import (
 	"github.com/mozhu1024/virzz/modules/misc/basic"
 )
 
+// https://github.com/projectdiscovery/ipranger
+
 var errParseIP = fmt.Errorf("parse ip faild")
 
 func inet4aton(ipnr net.IP) int64 {

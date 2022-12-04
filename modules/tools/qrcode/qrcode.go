@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils/downloader"
+	"github.com/mozhu1024/virzz/modules/downloader"
 	"github.com/skip2/go-qrcode"
 	decode "github.com/tuotoo/qrcode"
 )

@@ -11,48 +11,57 @@ const CONFIG_FILE = "config.yaml"
 
 var Conf Config
 
-// Config Hongyan Config
-type Config struct {
-	MySQL struct {
+func GetConfig() *Config {
+	return &Conf
+}
+
+type (
+	DNSConfig struct {
+		Domain  string `yaml:"domain"`
+		Host    string `yaml:"host"`
+		Port    int    `yaml:"port"`
+		Timeout int    `yaml:"timeout"`
+		TTL     int    `yaml:"ttl"`
+	}
+	MySQLConfig struct {
 		Host    string `yaml:"host"`
 		User    string `yaml:"user"`
 		Pass    string `yaml:"pass"`
 		Name    string `yaml:"name"`
 		Charset string `yaml:"charset"`
-	} `yaml:"mysql"`
-	Redis struct {
+	}
+	RedisConfig struct {
 		Host string `yaml:"host"`
 		Port int    `yaml:"port"`
 		Pass string `yaml:"pass"`
 		Db   int    `yaml:"db"`
-	} `yaml:"redis"`
-	Server struct {
+	}
+	ServerConfig struct {
 		Host string `yaml:"host"`
 		Port int    `yaml:"port"`
-	} `yaml:"server"`
-	// Move
-	Jwt struct {
+	}
+	JWTConfig struct {
 		Secret  string `yaml:"secret"`
 		Expires int    `yaml:"expires"`
-	} `yaml:"jwt"`
-	WeChat struct {
+	}
+	WeChatConfig struct {
 		AppID     string `yaml:"appid"`
 		AppSecret string `yaml:"secret"`
 		Token     string `yaml:"token"`
 		AesKey    string `yaml:"aeskey"`
 		WeChatDb  int    `yaml:"wxdb"`
-	} `yaml:"wechat"`
-	Qiniu struct {
+	}
+	QiniuConfig struct {
 		Access string `yaml:"access"`
 		Secret string `yaml:"secret"`
 		Bucket string `yaml:"bucket"`
-	} `yaml:"qiniu"`
-	QQ struct {
+	}
+	QQConfig struct {
 		Appid  string `yaml:"appid"`
 		Secret string `yaml:"secret"`
 		Token  string `yaml:"token"`
-	} `yaml:"qq"`
-	Mail struct {
+	}
+	MailConfig struct {
 		User string `yaml:"user"`
 		Stmp struct {
 			Host string `yaml:"host"`
@@ -64,7 +73,19 @@ type Config struct {
 			Access string `yaml:"access"`
 			Secret string `yaml:"secret"`
 		} `yaml:"alidirect"`
-	} `yaml:"mail"`
+	}
+)
+
+type Config struct {
+	MySQL  MySQLConfig  `yaml:"mysql"`
+	Redis  RedisConfig  `yaml:"redis"`
+	Server ServerConfig `yaml:"server"`
+	DNS    DNSConfig    `yaml:"dns"`
+	Jwt    JWTConfig    `yaml:"jwt"`
+	WeChat WeChatConfig `yaml:"wechat"`
+	Qiniu  QiniuConfig  `yaml:"qiniu"`
+	QQ     QQConfig     `yaml:"qq"`
+	Mail   MailConfig   `yaml:"mail"`
 }
 
 var (
@@ -72,8 +93,7 @@ var (
 	ConfigName = "config.yaml"
 )
 
-// TemplateConfig show config template
-func TemplateConfig() []byte {
+func defaultConfig() *Config {
 	conf := &Config{}
 
 	conf.Jwt.Expires, _ = strconv.Atoi(getEnvDefault("JWT_EXPIRES", "3600"))
@@ -92,19 +112,31 @@ func TemplateConfig() []byte {
 	conf.Server.Host = getEnvDefault("SERVER_HOST", "127.0.0.1")
 	conf.Server.Port, _ = strconv.Atoi(getEnvDefault("SERVER_PORT", "9999"))
 
+	conf.DNS.Host = getEnvDefault("DNS_HOST", "127.0.0.1")
+	conf.DNS.Domain = getEnvDefault("DNS_DOMAIN", "example.com")
+	conf.DNS.Port, _ = strconv.Atoi(getEnvDefault("DNS_PORT", "53"))
+	conf.DNS.Timeout, _ = strconv.Atoi(getEnvDefault("DNS_TIMEOUT", "5"))
+	conf.DNS.TTL, _ = strconv.Atoi(getEnvDefault("DNS_TTL", "600"))
+
+	return conf
+}
+
+// TemplateConfig show config template
+func TemplateConfig() (data []byte, err error) {
 	// yamlData
-	data, err := yaml.Marshal(conf)
-	if err != nil {
-		return []byte(err.Error())
-	}
-	return data
+	data, err = yaml.Marshal(defaultConfig())
+	return
 }
 
 // LoadConfig -
 func LoadConfig() (err error) {
 	var yf []byte
 	_, err = os.Stat(CONFIG_FILE)
-	if err != nil && os.IsNotExist(err) {
+	if err != nil {
+		if os.IsNotExist(err) {
+			Conf = *defaultConfig()
+			return nil
+		}
 		return err
 	}
 	if yf, err = os.ReadFile(CONFIG_FILE); err != nil {

@@ -1,4 +1,4 @@
-package http
+package models
 
 import (
 	"fmt"
@@ -10,22 +10,22 @@ import (
 
 var (
 	tokenLetters = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
-	db           = mariadb.DB
 )
 
 type Auth struct {
-	ID       uint64 `json:"id"`
+	ID       uint64 `json:"id" gorm:""`
 	Username string `json:"username"`
-	Email    string `json:"email"`
 	Password string `json:"password"`
 	Token    string `json:"token"`
+	Created  int64  `json:"-" gorm:"autoCreateTime"`
+	// Email    string `json:"email"`
 }
 
 func init() {
 	mariadb.RegisterModel(&Auth{})
 }
 
-func newUser(username, password, email string) (auth Auth, err error) {
+func NewAuth(username, password, email string) (auth Auth, err error) {
 	if db.First(&auth, &Auth{Username: username}).RowsAffected > 0 {
 		return auth, fmt.Errorf("username is exists")
 	}
@@ -45,7 +45,7 @@ func newUser(username, password, email string) (auth Auth, err error) {
 
 }
 
-func findAuthByUsername(username string) (auth Auth, err error) {
+func FindAuthByUsername(username string) (auth Auth, err error) {
 	if err = db.Where(&Auth{Username: username}).First(&auth).Error; err != nil {
 		return auth, err
 	}

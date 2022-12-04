@@ -28,7 +28,7 @@ func corsMiddleware(c *gin.Context) {
 }
 
 func JWTAuthMiddleware(c *gin.Context) {
-	token, err := utils.GetHaderAuthorizationToken(c.GetHeader("Authorization"))
+	token, err := utils.GetHeaderToken(c.GetHeader("Authorization"))
 	if err != nil {
 		logger.Error(err.Error())
 		c.AbortWithStatusJSON(http.StatusBadRequest, Resp{

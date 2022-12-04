@@ -13,12 +13,14 @@ import (
 	"github.com/mozhu1024/virzz/modules/crypto/hash"
 	"github.com/mozhu1024/virzz/modules/crypto/hashpow"
 	"github.com/mozhu1024/virzz/modules/misc/basic"
+	"github.com/mozhu1024/virzz/modules/tools/domain"
 	"github.com/mozhu1024/virzz/modules/tools/dsstore"
 	"github.com/mozhu1024/virzz/modules/tools/network"
 	"github.com/mozhu1024/virzz/modules/tools/qrcode"
 	"github.com/mozhu1024/virzz/modules/web/gopher"
 	"github.com/mozhu1024/virzz/modules/web/jwttool"
 	"github.com/mozhu1024/virzz/modules/web/leakcode/githack"
+	"github.com/mozhu1024/virzz/services/server/netlog"
 )
 
 var (
@@ -61,8 +63,6 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(common.CompletionCommand())
 
-	// rootCmd.SuggestionsMinimumDistance = 1
-
 	// CMD
 	// Crypto
 	rootCmd.AddCommand(basic.ExportCommand()...)
@@ -77,6 +77,11 @@ func init() {
 	rootCmd.AddCommand(qrcode.ExportCommand()...)
 	rootCmd.AddCommand(network.ExportCommand()...)
 	rootCmd.AddCommand(dsstore.ExportCommand()...)
+	rootCmd.AddCommand(domain.ExportCommand()...)
+	// Services
+	// -> server
+	rootCmd.AddCommand(netlog.ExportCommand()...)
+
 }
 
 func main() {

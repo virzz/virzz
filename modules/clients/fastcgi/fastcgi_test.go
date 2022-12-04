@@ -12,5 +12,7 @@ func TestNewFastCGIRecord(t *testing.T) {
 		"PHP_VALUE":   "allow_url_include = On",
 	}
 	r := NewFastCGIRecord(env, []byte("orzzzzz"))
-	fmt.Println(url.QueryEscape(string(r)))
+	rs := string(r)
+	fmt.Println(rs)
+	fmt.Println(url.QueryEscape(rs))
 }
