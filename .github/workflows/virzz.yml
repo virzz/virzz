@@ -17,6 +17,11 @@ jobs:
         with:
           go-version-file: go.mod
           architecture: x64
+          check-latest: true
+          cache: true
+
+      - name: Mod Tidy
+        run: go mod tidy
 
       - name: Build virzz
         run: go build -v ./cli/virzz
