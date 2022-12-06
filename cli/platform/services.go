@@ -10,10 +10,10 @@ import (
 
 	"github.com/mozhu1024/virzz/common"
 	"github.com/mozhu1024/virzz/logger"
-	dnsserver "github.com/mozhu1024/virzz/services/server/dns"
-	httpserver "github.com/mozhu1024/virzz/services/server/http"
+	"github.com/mozhu1024/virzz/services/server/dns"
 	"github.com/mozhu1024/virzz/services/server/mariadb"
 	"github.com/mozhu1024/virzz/services/server/models"
+	"github.com/mozhu1024/virzz/services/server/web"
 	"github.com/spf13/cobra"
 )
 
@@ -64,7 +64,7 @@ func ServiceDaemon() (string, error) {
 
 	// Run DNS Server
 	logger.Debug("Run DNS Server ...")
-	dnsServer := dnsserver.NewDNSServer()
+	dnsServer := dns.NewDNSServer()
 	go func() {
 		if err := dnsServer.ListenAndServe(); err != nil {
 			logger.Error("DNS Server Serve Error: ", err)
@@ -74,7 +74,7 @@ func ServiceDaemon() (string, error) {
 
 	// Run HTTP Server
 	logger.Debug("Run HTTP Server ...")
-	httpServer := httpserver.NewWebServer()
+	httpServer := web.NewWebServer()
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Error("HTTP Server Serve Error: ", err)
