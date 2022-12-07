@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/web/gopher"
+	"github.com/virzz/virzz/modules/web/gopher"
 )
 
 var (

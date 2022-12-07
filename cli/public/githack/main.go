@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/web/leakcode/githack"
+	"github.com/virzz/virzz/modules/web/leakcode/githack"
 )
 
 var (

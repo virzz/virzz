@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/crypto/hashpow"
+	"github.com/virzz/virzz/modules/crypto/hashpow"
 )
 
 var (

@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/web/jwttool"
+	"github.com/virzz/virzz/modules/web/jwttool"
 )
 
 var (
