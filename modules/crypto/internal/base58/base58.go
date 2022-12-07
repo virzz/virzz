@@ -1,3 +1,4 @@
+// Package base58, form from https://github.com/itchyny/base58-go
 package base58
 
 import (
@@ -5,9 +6,6 @@ import (
 	"fmt"
 	"math/big"
 )
-
-// https://github.com/itchyny/base58-go/blob/master/base58.go
-// https://github.com/tv42/base58/blob/master/base58.go
 
 // Encoding -
 type Encoding struct {
@@ -24,7 +22,7 @@ const (
 func newEncoding(encoder string) *Encoding {
 	e := new(Encoding)
 	copy(e.encode[:], encoder)
-	for i := 0; i < len(e.decodeMap); i++ {
+	for i := range e.decodeMap {
 		e.decodeMap[i] = 0xFF
 	}
 	for i, b := range encoder {

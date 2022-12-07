@@ -121,9 +121,7 @@ remove:
 	@for APPNAME in ${APPNAMES}; do \
 		echo "[*] Remove $${APPNAME} ..." ; \
 		rm -f ${GOPATH}/bin/$${APPNAME}; \
-		rm /usr/local/bin/$${APPNAME}; \
 		test -f ${GOPATH}/bin/$${APPNAME} || \
-		test -f ${GOPATH}/bin/$${APPNAME}  || \
 		echo "[+] $${APPNAME} Removed"; \
 	done;
 

@@ -1,6 +1,7 @@
 package jwttool
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -11,6 +12,8 @@ import (
 	"syscall"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/mozhu1024/virzz/logger"
+	"github.com/mozhu1024/virzz/utils"
 )
 
 func printJWT(s string, secret ...string) (string, error) {
@@ -18,89 +21,61 @@ func printJWT(s string, secret ...string) (string, error) {
 	if len(secret) > 0 {
 		secretByte = []byte(secret[0])
 	}
-	token, _ := jwt.Parse(strings.TrimSpace(s), func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(strings.TrimSpace(s), func(token *jwt.Token) (interface{}, error) {
 		return secretByte, nil
 	})
+	if err != nil && err.Error() != jwt.ErrSignatureInvalid.Error() {
+		return "", err
+	}
 	res, err := json.MarshalIndent(token, "", "    ")
 	return string(res), err
 }
 
 // crackJWT - Crack JWT
-// args: [start=4] [end=4] [table=alphabet&number] [prefix] [suffix]
-func crackJWT(s string, args ...interface{}) (string, error) {
+func crackJWT(s string, minLen, maxLen int, alphabet, prefix, suffix []byte) (string, error) {
 	tokenStr := strings.TrimSpace(s)
-	if t, _ := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		return []byte("dbedd"), nil
-	}); t == nil {
-		return "", fmt.Errorf("token is malformed")
-	}
-	var (
-		start  = 4
-		end    = 4
-		table  = []byte("abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-		prefix = []byte("")
-		suffix = []byte("")
-	)
-	if len(args) > 0 && args[0].(int) <= 8 {
-		start = args[0].(int)
-		if start > end {
-			end = start
-		}
-	}
-	if len(args) > 1 && args[1].(int) <= 8 && args[1].(int) >= start {
-		end = args[1].(int)
-	}
-	if len(args) > 2 && len(args[2].(string)) >= end {
-		table = []byte(args[2].(string))
-	}
-	if len(args) > 3 && len(args[3].(string)) > 0 {
-		prefix = []byte(args[3].(string))
-	}
-	if len(args) > 4 && len(args[4].(string)) > 0 {
-		suffix = []byte(args[4].(string))
-	}
 	var res = ""
 	done := make(chan struct{})
 	wg := &sync.WaitGroup{}
-
-	for _, ct := range table {
+	var _crack func([]byte)
+	_crack = func(secret []byte) {
 		wg.Add(1)
-		go func(ct byte) {
-			var helper func([]byte)
-			helper = func(secret []byte) {
-				select {
-				case <-done:
+		defer wg.Done()
+		select {
+		case <-done:
+			return
+		default:
+			if len(secret) >= minLen {
+				_secret := bytes.Buffer{}
+				if prefix != nil {
+					_secret.Write(prefix)
+				}
+				_secret.Write(secret)
+				if suffix != nil {
+					_secret.Write(suffix)
+				}
+				tt, _ := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+					return _secret.Bytes(), nil
+				})
+				if tt.Valid {
+					res = _secret.String()
+					close(done)
 					return
-				default:
-					// if len(secret) > 1 && secret[0] == 'c' && secret[1] == 'b' {
-					// 	fmt.Println(string(secret))
-					// }
-					_secret := append(append(prefix, secret...), suffix...)
-					if len(secret) >= start {
-						tt, _ := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-							return _secret, nil
-						})
-						// if err != nil && err != jwt.ErrSignatureInvalid {
-						// 	fmt.Fprintln(os.Stderr, err)
-						// }
-						if tt.Valid {
-							res = string(_secret)
-							close(done)
-							return
-						}
-					}
-					if len(secret) < end {
-						for _, cc := range table {
-							helper(append(secret, cc))
-						}
-					}
 				}
 			}
-			// fmt.Println("go work", string(ct))
-			helper([]byte{ct})
-			// fmt.Println("gone work", string(ct))
-			wg.Done()
-		}(ct)
+			if len(secret) < maxLen {
+				for _, cc := range alphabet {
+					_crack(append(secret, cc))
+				}
+			}
+		}
+	}
+
+	count := utils.CalcPermutationMore(len(alphabet), minLen, maxLen)
+	logger.WarnF("Total crack count: %d", count)
+
+	for _, ct := range alphabet {
+		go _crack([]byte{ct})
 	}
 
 	wg.Add(1)
@@ -113,6 +88,7 @@ func crackJWT(s string, args ...interface{}) (string, error) {
 			case <-done:
 				return
 			case <-interrupt:
+				logger.Debug("interrupt")
 				close(done)
 				return
 			}

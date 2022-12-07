@@ -9,7 +9,7 @@ import (
 )
 
 var jwtPrintCmd = &cobra.Command{
-	Use:   "jwt",
+	Use:   "jwtp",
 	Short: "JWT Print",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := common.GetFirstArg(args)
@@ -33,7 +33,7 @@ var jwtCrackCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		r, err := crackJWT(s, minLen, maxLen, alphabet, prefix, suffix)
+		r, err := crackJWT(s, minLen, maxLen, []byte(alphabet), []byte(prefix), []byte(suffix))
 		if err != nil {
 			return err
 		}

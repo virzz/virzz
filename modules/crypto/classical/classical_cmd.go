@@ -100,19 +100,31 @@ var vigenereCmd = &cobra.Command{
 	},
 }
 
+var classicalCmd = &cobra.Command{
+	Use:   "classical",
+	Short: "Some classical cryptography",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmd.Help()
+	},
+}
+
 func init() {
 	morseCmd.Flags().BoolVarP(&decode, "decode", "d", false, "Decode")
 	morseCmd.Flags().StringVarP(&sep, "sep", "s", "/", "Delimiter")
 	vigenereCmd.Flags().StringVarP(&key, "key", "k", "MOZHU", "Vigenere Key")
-}
 
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{
+	classicalCmd.AddCommand(
 		caesarCmd,
 		rot13Cmd,
 		morseCmd,
 		atbashCmd,
 		peigenCmd,
 		vigenereCmd,
+	)
+}
+
+func ExportCommand() []*cobra.Command {
+	return []*cobra.Command{
+		classicalCmd,
 	}
 }

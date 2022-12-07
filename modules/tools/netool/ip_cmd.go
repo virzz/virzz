@@ -1,4 +1,4 @@
-package network
+package netool
 
 import (
 	"github.com/mozhu1024/virzz/common"
@@ -191,8 +191,16 @@ var dec2macCmd = &cobra.Command{
 	},
 }
 
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{
+var netoolCmd = &cobra.Command{
+	Use:   "netool",
+	Short: "Some net utils",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmd.Help()
+	},
+}
+
+func init() {
+	netoolCmd.AddCommand(
 		// IP ->
 		ip2octCmd, ip2decCmd, ip2hexCmd,
 		// IP -> Plus
@@ -201,5 +209,9 @@ func ExportCommand() []*cobra.Command {
 		oct2ipCmd, dec2ipCmd, hex2ipCmd,
 		// Mac
 		mac2decCmd, dec2macCmd,
-	}
+	)
+}
+
+func ExportCommand() []*cobra.Command {
+	return []*cobra.Command{netoolCmd}
 }

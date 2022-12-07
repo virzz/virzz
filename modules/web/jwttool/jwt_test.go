@@ -15,7 +15,7 @@ func TestPrintJWT(t *testing.T) {
 }
 
 func TestCrackJWT(t *testing.T) {
-	r, err := crackJWT("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidmlyaW5rIn0.63La-xrRjx38xDkgrNHYfYHVgjB83bZsJMSa5luusgY", 4, 5, "abcdefghijklnmopqrstuvwxyz")
+	r, err := crackJWT("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidmlyaW5rIn0.63La-xrRjx38xDkgrNHYfYHVgjB83bZsJMSa5luusgY", 4, 5, []byte("abcdefghijklnmopqrstuvwxyz"), nil, nil)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

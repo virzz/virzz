@@ -35,7 +35,6 @@ func GetFirstArg(args []string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	// Wait os.Stdin flush
 	if (fi.Mode() & os.ModeNamedPipe) == os.ModeNamedPipe {
 		data, err := io.ReadAll(os.Stdin)
 		if err != nil {
@@ -91,6 +90,14 @@ func TableOutput(data []map[int]string, header_footer ...[]string) string {
 	return table.String()
 }
 
+func getEnvDefault(key, value string) string {
+	v := os.Getenv(key)
+	if v == "" {
+		return value
+	}
+	return v
+}
+
 func CompletionCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:                   "completion [bash|zsh]",
@@ -110,10 +117,38 @@ func CompletionCommand() *cobra.Command {
 	}
 }
 
-func getEnvDefault(key, value string) string {
-	v := os.Getenv(key)
-	if v == "" {
-		return value
+func sliceContains[T comparable](inputSlice []T, element T) bool {
+	for _, inputValue := range inputSlice {
+		if inputValue == element {
+			return true
+		}
 	}
-	return v
+	return false
+}
+
+func getCommandAlias(prefix string, cmd *cobra.Command) []string {
+	var res = make([]string, 0)
+	for _, c := range cmd.Commands() {
+		if c.HasSubCommands() && sliceContains(allowAlias, c.Name()) {
+			res = append(res, getCommandAlias(fmt.Sprintf("%s %s", prefix, c.Name()), c)...)
+		} else if sliceContains([]string{"help", "completion", "alias", "version"}, c.Name()) {
+			continue
+		} else {
+			// alias cmd='prefix cmd'
+			res = append(res, fmt.Sprintf("alias %s='%s %s'", c.Name(), prefix, c.Name()))
+		}
+	}
+	return res
+}
+
+func AliasCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "alias",
+		Short: "Print the version",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd = cmd.Root()
+			res := getCommandAlias(cmd.CommandPath(), cmd)
+			return Output(strings.Join(res, "\n"))
+		},
+	}
 }

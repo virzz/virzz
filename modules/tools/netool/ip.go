@@ -1,4 +1,4 @@
-package network
+package netool
 
 import (
 	"fmt"
@@ -6,46 +6,25 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mozhu1024/virzz/modules/misc/basic"
+	"github.com/mozhu1024/virzz/modules/crypto/basic"
 )
 
 // https://github.com/projectdiscovery/ipranger
 
-var errParseIP = fmt.Errorf("parse ip faild")
-
-func inet4aton(ipnr net.IP) int64 {
-	var sum int64
-	bit := 24
-	for _, p := range strings.Split(ipnr.String(), ".") {
-		i, _ := strconv.Atoi(p)
-		sum += int64(i) << bit
-		bit -= 8
-	}
-	return sum
-}
-func inet4ntoa(ipnr int64) net.IP {
-	return net.IPv4(
-		byte((ipnr>>24)&0xFF),
-		byte((ipnr>>16)&0xFF),
-		byte((ipnr>>8)&0xFF),
-		byte(ipnr&0xFF),
-	)
-}
-
 // ipToDec 127.0.0.1 -> 2130706433
 func ipToDec(s string) (string, error) {
-	ip := net.ParseIP(s)
-	if ip == nil {
-		return "", errParseIP
+	ip, err := parseIP(s)
+	if err != nil {
+		return "", err
 	}
 	return strconv.FormatInt(inet4aton(ip), 10), nil
 }
 
 // ipToOct 127.0.0.1 -> 2130706433
 func ipToOct(s string) (string, error) {
-	ip := net.ParseIP(s)
-	if ip == nil {
-		return "", errParseIP
+	ip, err := parseIP(s)
+	if err != nil {
+		return "", err
 	}
 	return "0" + strconv.FormatInt(inet4aton(ip), 8), nil
 }
@@ -61,9 +40,9 @@ func ipToHex(s string) (string, error) {
 
 // ipToDotOct 127.0.0.1 -> 0x7f.0.0.0x1
 func ipToDotOct(s string) (string, error) {
-	ip := net.ParseIP(s)
-	if ip == nil {
-		return "", errParseIP
+	_, err := parseIP(s)
+	if err != nil {
+		return "", err
 	}
 	rs := make([]string, 0)
 	for _, p := range strings.Split(s, ".") {
@@ -83,9 +62,9 @@ func ipToDotOct(s string) (string, error) {
 
 // ipToDotHex 127.0.0.1 -> 0x7f.0.0.0x1
 func ipToDotHex(s string) (string, error) {
-	ip := net.ParseIP(s)
-	if ip == nil {
-		return "", errParseIP
+	_, err := parseIP(s)
+	if err != nil {
+		return "", err
 	}
 	rs := make([]string, 0)
 	for _, p := range strings.Split(s, ".") {
