@@ -10,10 +10,10 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/modules/downloader"
 	"github.com/skip2/go-qrcode"
 	decode "github.com/tuotoo/qrcode"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/modules/downloader"
 )
 
 // type qrcodeRecoveryLevel qrcode.RecoveryLevel

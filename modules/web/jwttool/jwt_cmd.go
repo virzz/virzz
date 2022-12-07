@@ -3,9 +3,9 @@ package jwttool
 import (
 	"os"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/logger"
 	"github.com/spf13/cobra"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/logger"
 )
 
 var jwtPrintCmd = &cobra.Command{

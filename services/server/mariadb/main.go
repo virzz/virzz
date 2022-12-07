@@ -6,9 +6,9 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/utils"
 )
 
 var (

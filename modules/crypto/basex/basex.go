@@ -8,12 +8,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/mozhu1024/virzz/modules/crypto/internal/base100"
-	"github.com/mozhu1024/virzz/modules/crypto/internal/base36"
-	"github.com/mozhu1024/virzz/modules/crypto/internal/base58"
-	"github.com/mozhu1024/virzz/modules/crypto/internal/base62"
-	"github.com/mozhu1024/virzz/modules/crypto/internal/base91"
-	"github.com/mozhu1024/virzz/modules/crypto/internal/base92"
+	"github.com/virzz/virzz/modules/crypto/internal/base100"
+	"github.com/virzz/virzz/modules/crypto/internal/base36"
+	"github.com/virzz/virzz/modules/crypto/internal/base58"
+	"github.com/virzz/virzz/modules/crypto/internal/base62"
+	"github.com/virzz/virzz/modules/crypto/internal/base91"
+	"github.com/virzz/virzz/modules/crypto/internal/base92"
 )
 
 // base16Encode hex.EncodeToString

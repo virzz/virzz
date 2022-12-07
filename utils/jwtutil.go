@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/mozhu1024/virzz/common"
+	"github.com/virzz/virzz/common"
 )
 
 // Claims -

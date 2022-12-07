@@ -8,13 +8,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/services/server/dns"
-	"github.com/mozhu1024/virzz/services/server/mariadb"
-	"github.com/mozhu1024/virzz/services/server/models"
-	"github.com/mozhu1024/virzz/services/server/web"
 	"github.com/spf13/cobra"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/services/server/dns"
+	"github.com/virzz/virzz/services/server/mariadb"
+	"github.com/virzz/virzz/services/server/models"
+	"github.com/virzz/virzz/services/server/web"
 )
 
 var configCmd = &cobra.Command{

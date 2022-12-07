@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/lizongshen/gocommand"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/modules/downloader"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/modules/downloader"
 )
 
 var baseFiles = []string{

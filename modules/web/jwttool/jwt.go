@@ -12,8 +12,8 @@ import (
 	"syscall"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/utils"
 )
 
 func printJWT(s string, secret ...string) (string, error) {

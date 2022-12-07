@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/modules/httpreq"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/modules/httpreq"
 )
 
 type CrtResp struct {

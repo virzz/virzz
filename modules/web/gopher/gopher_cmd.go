@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils"
 	"github.com/spf13/cobra"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/utils"
 )
 
 // fastCGICmd

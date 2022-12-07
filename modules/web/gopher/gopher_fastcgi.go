@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/mozhu1024/virzz/modules/clients/fastcgi"
+	"github.com/virzz/virzz/modules/clients/fastcgi"
 )
 
 // ExpFastCGI -

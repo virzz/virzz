@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/mozhu1024/virzz/services/server/mariadb"
+	"github.com/virzz/virzz/services/server/mariadb"
 	"gorm.io/gorm"
 )
 

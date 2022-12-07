@@ -1,8 +1,8 @@
 package basic
 
 import (
-	"github.com/mozhu1024/virzz/common"
 	"github.com/spf13/cobra"
+	"github.com/virzz/virzz/common"
 )
 
 // urlencodeCmd

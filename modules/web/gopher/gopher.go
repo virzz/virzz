@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/mozhu1024/virzz/logger"
+	"github.com/virzz/virzz/logger"
 )
 
 func expGopher(addr string, port, n int, quit bool) (string, error) {

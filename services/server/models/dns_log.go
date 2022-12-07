@@ -1,6 +1,6 @@
 package models
 
-import "github.com/mozhu1024/virzz/services/server/mariadb"
+import "github.com/virzz/virzz/services/server/mariadb"
 
 // Log - Database module
 type Log struct {

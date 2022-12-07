@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/services/server/mariadb"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/services/server/mariadb"
 )
 
 func TestConfig(t *testing.T) {

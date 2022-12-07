@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/utils"
 )
 
 func expRedisCmd(addr, path, name, data string) (string, error) {

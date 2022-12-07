@@ -11,7 +11,7 @@ PUBLICS := $(shell cd ./cli/public/ && ls)
 # BUILD_ID := $(shell head .buildid)
 VERSION := $(shell git tag | tail -1)
 LDFLAGS := -s -w \
-	-X github.com/mozhu1024/virzz/common.Mode=prod
+	-X github.com/virzz/virzz/common.Mode=prod
 
 %:
 	@function failx(){ \
@@ -68,13 +68,13 @@ LDFLAGS := -s -w \
 		done; \
 	fi
 
-virzz:
+vz:
 	@mkdir -p ${TARGET}/
-	@rm -f ./${TARGET}/$@
-	@echo "[*] Building [$@] ..." ;
-	@go build -o ${TARGET}/$@ ${SOURCE}/$@  && \
-			echo "[+] $@ Built." || \
-			echo "[-] Build [$@] Faild";
+	@rm -f ./${TARGET}/virzz
+	@echo "[*] Building [virzz] ..." ;
+	@go build -o ${TARGET}/virzz ${SOURCE}/virzz  && \
+			echo "[+] virzz Built." || \
+			echo "[-] Build [virzz] Faild";
 
 release: clean
 	@function fail(){ \
@@ -133,7 +133,7 @@ clean:
 
 readme:
 	@echo "# Virzz" > README.md ; \
-	echo '![Build](https://github.com/mozhu1024/virzz/workflows/Build/badge.svg)' >> README.md; \
+	echo '![Build](https://github.com/virzz/virzz/workflows/Build/badge.svg)' >> README.md; \
 	echo '' >> README.md;
 	@if test -f ./build/virzz ; then \
 		echo '## Virzz - CLI 命令行小工具' >> README.md; \

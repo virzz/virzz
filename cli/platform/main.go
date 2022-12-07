@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/logger"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/logger"
 )
 
 var (

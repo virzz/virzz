@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mozhu1024/virzz/modules/crypto/basic"
+	"github.com/virzz/virzz/modules/crypto/basic"
 )
 
 // https://github.com/projectdiscovery/ipranger

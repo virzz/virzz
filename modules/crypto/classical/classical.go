@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/mozhu1024/virzz/logger"
+	"github.com/virzz/virzz/logger"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )

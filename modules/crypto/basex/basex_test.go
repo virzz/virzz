@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mozhu1024/virzz/utils"
+	"github.com/virzz/virzz/utils"
 )
 
 type (

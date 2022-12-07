@@ -1,4 +1,4 @@
-module github.com/mozhu1024/virzz
+module github.com/virzz/virzz
 
 go 1.19
 

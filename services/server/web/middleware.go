@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/utils"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/utils"
 )
 
 var middlewares = []gin.HandlerFunc{}

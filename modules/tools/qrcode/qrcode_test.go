@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mozhu1024/virzz/common"
+	"github.com/virzz/virzz/common"
 )
 
 func TestZeroOneToQrcode(t *testing.T) {

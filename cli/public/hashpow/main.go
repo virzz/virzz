@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/crypto/hashpow"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/crypto/hashpow"
 )
 
 var (

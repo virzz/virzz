@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mozhu1024/virzz/common"
+	"github.com/virzz/virzz/common"
 )
 
 // type Config struct {

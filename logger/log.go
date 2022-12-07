@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/gookit/color"
-	"github.com/mozhu1024/virzz/common"
+	"github.com/virzz/virzz/common"
 )
 
 // const (

@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/services/server/models"
-	"github.com/mozhu1024/virzz/utils"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/services/server/models"
+	"github.com/virzz/virzz/utils"
 )
 
 // LoginRegister - Login or Register Data Struct

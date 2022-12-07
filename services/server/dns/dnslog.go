@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/miekg/dns"
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/services/server/models"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/services/server/models"
 )
 
 const (

@@ -3,7 +3,7 @@ package netlog
 import (
 	"net"
 
-	"github.com/mozhu1024/virzz/logger"
+	"github.com/virzz/virzz/logger"
 )
 
 func ICMP(ip string) {

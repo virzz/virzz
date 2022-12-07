@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/web/jwttool"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/web/jwttool"
 )
 
 var (

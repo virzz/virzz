@@ -1,8 +1,8 @@
 package hash
 
 import (
-	"github.com/mozhu1024/virzz/common"
 	"github.com/spf13/cobra"
+	"github.com/virzz/virzz/common"
 )
 
 var md5Cmd = &cobra.Command{

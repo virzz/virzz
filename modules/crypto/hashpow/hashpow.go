@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/mozhu1024/virzz/logger"
-	"github.com/mozhu1024/virzz/modules/crypto/hash"
+	"github.com/virzz/virzz/logger"
+	"github.com/virzz/virzz/modules/crypto/hash"
 )
 
 const (

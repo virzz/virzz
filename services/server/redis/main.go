@@ -5,8 +5,8 @@ import (
 	"time"
 
 	red "github.com/go-redis/redis/v8"
-	"github.com/mozhu1024/virzz/common"
-	"github.com/mozhu1024/virzz/utils"
+	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 // RedisPool Redis Pool
