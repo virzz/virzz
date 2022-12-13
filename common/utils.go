@@ -11,23 +11,33 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func GetFileBytes(path string) ([]byte, error) {
+	f, err := os.Stat(path)
+	if err == nil && !f.IsDir() {
+		if f.Size() < 104857600 { // 100M
+			data, err := os.ReadFile(path)
+			if err != nil {
+				return nil, err
+			}
+			return data, nil
+		}
+		return nil, fmt.Errorf("file is too bigger.(must <= 100M)")
+	}
+	return nil, fmt.Errorf("not found file")
+}
+
+func GetFileString(path string) (string, error) {
+	data, err := GetFileBytes(path)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
 // GetFirstArg -
 func GetFirstArg(args []string) (string, error) {
 	// Priority: Args > Stdin > nil
 	if len(args) > 0 {
-		// File
-		f, err := os.Stat(args[0])
-		if err == nil && !f.IsDir() {
-			if f.Size() < 104857600 { // 100M
-				data, err := os.ReadFile(args[0])
-				if err != nil {
-					return "", err
-				}
-				return strings.TrimSpace(string(data)), nil
-			}
-			return "", fmt.Errorf("file is too bigger.(must <= 100M)")
-		}
-		// string
 		return args[0], nil
 	}
 	// Stdin
@@ -52,6 +62,19 @@ func Output(s string) error {
 	outBuf.WriteString("\n")
 	outBuf.Flush()
 	return os.Stdout.Close()
+}
+
+func TableOutputV2(datas [][]*simpletable.Cell, header_footer ...[]*simpletable.Cell) string {
+	table := simpletable.New()
+	// Body
+	table.Body.Cells = append(table.Body.Cells, datas...)
+	if len(header_footer) > 0 {
+		table.Header = &simpletable.Header{Cells: header_footer[0]}
+	}
+	if len(header_footer) > 1 {
+		table.Footer = &simpletable.Footer{Cells: header_footer[1]}
+	}
+	return table.String()
 }
 
 // TableOutput func(data []map[int]string, header,footer []string)
@@ -79,10 +102,10 @@ func TableOutput(data []map[int]string, header_footer ...[]string) string {
 	// Footer
 	if len(header_footer) > 1 {
 		cell := []*simpletable.Cell{}
-		for _, title := range header_footer[1] {
+		for _, footer := range header_footer[1] {
 			cell = append(cell, &simpletable.Cell{
 				Align: simpletable.AlignCenter,
-				Text:  title,
+				Text:  footer,
 			})
 		}
 		table.Footer = &simpletable.Footer{Cells: cell}

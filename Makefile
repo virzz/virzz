@@ -108,6 +108,42 @@ archive: release
 	shasum -a 256 ./${TARGET}/* > ./${TARGET}/SHA256.txt; \
 	zip ./release/virzz.zip -9 ./${TARGET}/* ;
 
+republic: clean
+	@function fail(){ \
+		echo "[-] $$1 Fail."; \
+		export B=1; \
+	}; \
+	echo Build ${PUBLICS} Release ; \
+	for APP in ${PUBLICS}; do \
+		echo "[*] Building $${APP} ... "; \
+		BUILD_ID=`head .buildid/$${APP} 2>/dev/null || echo 0` ; \
+		LDFLAGS="${LDFLAGS} -X main.BuildID=$${BUILD_ID} -X main.Version=prod" ; \
+		for OS in ${OSS}; do \
+			for GOARCH in ${ARCHS}; do \
+				echo "[*] Building for $${APP} $${OS} $${GOARCH} ..." ; \
+				GOOS=$${OS} GOARCH=$${GOARCH} GO111MODULE=on CGO_ENABLED=0 \
+				go build -ldflags "$${LDFLAGS}" -gcflags=${GCFLAGS} -asmflags=${ASMFLAGS} \
+				-o ${TARGET}/$${APP}-$${OS}-$${GOARCH} ${SOURCE}/public/$${APP} && \
+				echo "[+] $${APP}-$${OS}-$${GOARCH} Built." || \
+				fail $${APP}-$${OS}-$${GOARCH} ; \
+			done; \
+		done; \
+		if [ -z "$${B}" ]; then \
+			echo "[+] BuildID = $${BUILD_ID}"; \
+			expr $${BUILD_ID} + 1 > .buildid/$${APP}; \
+		fi \
+	done; \
+	echo "[+] Finish.";
+
+arpublic: republic
+	@rm -rf release; \
+	mkdir release; \
+	echo "[+] Archive ..." ; \
+	for APP in ${PUBLICS}; do \
+		shasum -a 256 ./${TARGET}/$${APP}* > ./${TARGET}/$${APP}-SHA256.txt; \
+		zip ./release/$${APP}.zip -9 ./${TARGET}/$${APP}* ; \
+	done;
+
 install: virzz
 	@for APPNAME in ${APPNAMES}; do \
 		echo "[*] Install $${APPNAME} ..." ; \

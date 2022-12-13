@@ -14,6 +14,7 @@ import (
 	"github.com/virzz/virzz/modules/crypto/classical"
 	"github.com/virzz/virzz/modules/crypto/hash"
 	"github.com/virzz/virzz/modules/crypto/hashpow"
+	"github.com/virzz/virzz/modules/parser"
 	"github.com/virzz/virzz/modules/tools/domain"
 	"github.com/virzz/virzz/modules/tools/dsstore"
 	"github.com/virzz/virzz/modules/tools/netool"
@@ -84,6 +85,8 @@ func init() {
 	// Services
 	// -> server
 	rootCmd.AddCommand(netlog.ExportCommand()...)
+	// Parser
+	rootCmd.AddCommand(parser.ExportCommand()...)
 
 }
 
