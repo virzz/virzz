@@ -10,7 +10,7 @@ import (
 var (
 	AppName        = "Hashpow"
 	BinName        = "hashpow"
-	Version string = ""  // git tag | tail -1
+	Version string = ""
 	BuildID string = "0" // head .buildid
 )
 

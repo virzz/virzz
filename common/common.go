@@ -15,8 +15,13 @@ var (
 )
 
 func init() {
-	debugEnv := os.Getenv("MOZHU1024")
-	if debugEnv == "dev" || Mode == "dev" {
+	debugEnv := os.Getenv("VIRZZ_DEBUG")
+	if debugEnv == "true" || debugEnv == "1" || debugEnv == "on" ||
+		Mode == "dev" {
 		DebugMode = true
+	}
+	// Force off debug mode
+	if debugEnv == "off" {
+		DebugMode = false
 	}
 }

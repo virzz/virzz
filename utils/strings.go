@@ -2,6 +2,7 @@ package utils
 
 import (
 	"math/rand"
+	"regexp"
 )
 
 var defaultLetters = []rune("0123456789abcdefghijklmnopqrstuvwxyz")
@@ -24,4 +25,9 @@ func RandomStringByLength(n int, allowedChars ...[]rune) string {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
+}
+
+func AnsiStrip(str string) string {
+	const ansi = "[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))"
+	return regexp.MustCompile(ansi).ReplaceAllString(str, "")
 }

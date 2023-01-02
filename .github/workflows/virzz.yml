@@ -16,15 +16,17 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: go.mod
-          architecture: x64
           check-latest: true
           cache: true
 
-      - name: Mod Tidy
-        run: go mod tidy
+      - name: Mod Download
+        run: go mod download
 
       - name: Build virzz
-        run: go build -v ./cli/virzz
+        run: go run ./cli/_compile -F -M virzz
 
       - name: Build platform
-        run: go build -v ./cli/platform
+        run: go run ./cli/_compile -F -M platform
+
+      - name: Build public
+        run: go run ./cli/_compile -F -M public
