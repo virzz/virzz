@@ -25,6 +25,7 @@ Available Commands:
   md5         MD5 hash algorithm
   netlog      Netlog Server
   netool      Some net utils
+  parser      Parse some file
   qrcode      A qrcode tool for terminal
   sha1        SHA1 hash algorithm
   sha224      SHA224 hash algorithm
