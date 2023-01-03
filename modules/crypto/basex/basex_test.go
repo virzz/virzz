@@ -1,0 +1,152 @@
+package basex
+
+import (
+	"fmt"
+	"math/rand"
+	"os"
+	"testing"
+
+	"github.com/virzz/virzz/utils"
+)
+
+type (
+	pair struct {
+		decoded, encoded string
+	}
+	funx struct {
+		encode, decode func(string) (string, error)
+	}
+)
+
+var (
+	samples = []pair{}
+	funcs   = map[string]funx{
+		"base16":  funx{base16Encode, base16Decode},
+		"base36":  funx{base36Encode, base36Decode},
+		"base62":  funx{base62Encode, base62Decode},
+		"base85":  funx{base85Encode, base85Decode},
+		"base91":  funx{base91Encode, base91Decode},
+		"base92":  funx{base92Encode, base92Decode},
+		"base100": funx{base100Encode, base100Decode},
+	}
+)
+
+func TestBaseX(t *testing.T) {
+	for i := 0; i < 20; i++ {
+		samples = append(samples, pair{
+			utils.RandomStringByLength(rand.Intn(50) + 20), "",
+		})
+	}
+	for fn, fp := range funcs {
+		for i, sample := range samples {
+			encoded, err := fp.encode(sample.decoded)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+			}
+			sample.encoded = encoded
+			decoded, err := fp.decode(encoded)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+			}
+			if decoded != sample.decoded {
+				t.Fail()
+			}
+			fmt.Printf("%s - %d\nde: %s\nen: %s\n", fn, i, decoded, encoded)
+		}
+	}
+}
+
+func BenchmarkBaseX(b *testing.B) {
+	var data = utils.RandomStringByLength(rand.Intn(50) + 20)
+	var encode string
+	for fn, fp := range funcs {
+		b.Run(fmt.Sprintf("%sencode", fn), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				fp.encode(data)
+			}
+		})
+		encode, _ = fp.encode(data)
+		b.Run(fmt.Sprintf("%sdecode", fn), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				fp.decode(encode)
+			}
+		})
+	}
+
+}
+
+func TestBase64Encode(t *testing.T) {
+	r, err := base64Encode("abcdefg!@#$%^&*()_+<>?{}|:", true)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(r)
+	if r != "YWJjZGVmZyFAIyQlXiYqKClfKzw+P3t9fDo=" {
+		t.Fail()
+	}
+}
+
+func TestBase64Decode(t *testing.T) {
+	// YWJjZGVmZyFAIyQlXiYqKClfKzw+P3t9fDo=
+	// YWJjZGVmZyFAIyQlXiYqKClfKzw-P3t9fDo=
+	r, err := base64Decode("YWJjZGVmZyFAIyQlXiYqKClfKzw-P3t9fDo")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(r)
+	if r != "abcdefg!@#$%^&*()_+<>?{}|:" {
+		t.Fail()
+	}
+}
+
+func TestBase32Encode(t *testing.T) {
+	r, err := base32Encode("abcdefg!@#$%^&*()_+<>?{}|:")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(r)
+	if r != "MFRGGZDFMZTSCQBDEQSV4JRKFAUV6KZ4HY7XW7L4HI======" {
+		t.Fail()
+	}
+}
+
+func TestBase32Decode(t *testing.T) {
+	r, err := base32Decode("MFRGGZDFMZTSCQBDEQSV4JRKFAUV6KZ4HY7XW7L4HI")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(r)
+	if r != "abcdefg!@#$%^&*()_+<>?{}|:" {
+		t.Fail()
+	}
+}
+
+func TestBase58Encode(t *testing.T) {
+	r, err := base58Encode("test_base58_string")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(r)
+	r, err = base58Encode("test_base58_string", "flickr")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(r)
+	r, err = base58Encode("test_base58_string", "ripple")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(r)
+}
+
+func TestBase58Decode(t *testing.T) {
+	r, err := base58Decode("5q1dAkvfMPRxpkkujHtkssust")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println([]byte(r))
+	fmt.Println(r)
+	if r != "test_base58_string" {
+		t.Fail()
+	}
+}
