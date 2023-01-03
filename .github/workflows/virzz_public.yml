@@ -2,9 +2,8 @@ name: Build Public
 
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+    tags:
+      - v*
 
 jobs:
   build:
@@ -23,4 +22,4 @@ jobs:
         run: go mod download
 
       - name: Build public
-        run: go run ./cli/_compile -F -M public
+        run: go run ./cli/_compile public
