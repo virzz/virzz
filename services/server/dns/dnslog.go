@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/miekg/dns"
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/services/server/models"
 )
 

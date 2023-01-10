@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 )
 

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/logger"
 )
 
 var conf common.DNSConfig

@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/logger"
 	"github.com/virzz/virzz/services/server/dns"
 	"github.com/virzz/virzz/services/server/mariadb"
 	"github.com/virzz/virzz/services/server/models"

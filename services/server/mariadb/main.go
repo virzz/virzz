@@ -6,8 +6,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/logger"
 	"github.com/virzz/virzz/utils"
 )
 

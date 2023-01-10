@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/services/server/mariadb"
 	"github.com/virzz/virzz/utils"
 )

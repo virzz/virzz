@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/logger"
 )
 
 var jwtPrintCmd = &cobra.Command{

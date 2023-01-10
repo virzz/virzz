@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/logger"
 	"github.com/virzz/virzz/services/server/mariadb"
 )
 

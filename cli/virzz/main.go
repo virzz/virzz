@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/logger"
 	"github.com/virzz/virzz/modules/crypto/basex"
 	"github.com/virzz/virzz/modules/crypto/basic"
 	"github.com/virzz/virzz/modules/crypto/classical"

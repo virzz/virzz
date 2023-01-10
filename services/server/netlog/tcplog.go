@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 )
 
 type TCPLogServer struct {

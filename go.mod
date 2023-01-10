@@ -13,7 +13,6 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/goccy/go-json v0.10.0
-	github.com/gookit/color v1.5.2
 	github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491
 	github.com/miekg/dns v1.1.50
 	github.com/panjf2000/ants v1.3.0
@@ -24,6 +23,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d
 	github.com/txthinking/socks5 v0.0.0-20220615051428-39268faee3e6
+	github.com/virzz/logger v0.0.0-20230110160451-807b6c90aabc
 	go.uber.org/multierr v1.8.0
 	golang.org/x/crypto v0.3.0
 	golang.org/x/net v0.2.0
@@ -56,6 +56,7 @@ require (
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/gookit/color v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

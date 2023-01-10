@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/services/server/models"
 	"github.com/virzz/virzz/utils"
 )

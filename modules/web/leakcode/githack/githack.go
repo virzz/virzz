@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/lizongshen/gocommand"
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/modules/downloader"
 )
 
