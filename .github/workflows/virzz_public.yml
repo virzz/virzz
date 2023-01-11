@@ -23,3 +23,6 @@ jobs:
 
       - name: Build public
         run: go run ./cli/_compile public
+
+      - name: Build God
+        run: go run ./cli/_compile god

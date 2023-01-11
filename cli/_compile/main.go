@@ -9,6 +9,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	_ "github.com/virzz/virzz/common"
+
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 	"github.com/virzz/virzz/utils/execext"
@@ -43,11 +45,25 @@ func getPublicProjects() (names []string) {
 	return
 }
 
-func getVersion() string {
+func getSpecialProjects() (names []string) {
+	fs, err := os.ReadDir(SOURCE_DIR)
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+	names = make([]string, len(fs))
+	for i, f := range fs {
+		if f.IsDir() && f.Name() != "public" && f.Name() != "_compile" {
+			names[i] = f.Name()
+		}
+	}
+	return
+}
+
+func getVersion(prefix string) string {
 	var stdout bytes.Buffer
 	opts := &execext.RunCommandOptions{
-		// git tag | tail -n 1
-		Command: "ls .git/refs/tags/ | tail -n 1",
+		Command: fmt.Sprintf("git tag | grep %s | tail -n 1", prefix),
 		Dir:     ".",
 		Stdout:  &stdout,
 		Stderr:  execext.DevNull{},
@@ -74,11 +90,15 @@ func compile(name, source, target string, buildID int) error {
 	if release {
 		version := ""
 		if name == "virzz" || name == "platform" {
-			version = getVersion()
+			version = getVersion("p")
+		} else if name != "public" {
+			version = getVersion("v")
 		}
 		flags["-trimpath"] = ""
+		flags["-tags"] = "release"
 		flags["-ldflags"] = fmt.Sprintf("-s -w -X %s/common.Mode=prod -X main.BuildID=%d -X main.Version=%s", PACKAGE, buildID, version)
 	} else {
+		flags["-tags"] = "debug"
 		flags["-ldflags"] = fmt.Sprintf("-X %s/common.Mode=dev -X main.BuildID=%d", PACKAGE, buildID)
 	}
 
@@ -191,18 +211,19 @@ var rootCmd = &cobra.Command{
 		if len(args) > 0 {
 			sourceNames := make(map[string]string)
 			publicNames := getPublicProjects()
+			logger.Debug(publicNames)
 			// all public
 			if utils.SliceContains(args, "public") {
 				for _, name := range publicNames {
 					sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 				}
 			}
-			// specific public
+			// inner public
 			for _, name := range utils.Intersection(publicNames, args) {
 				sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 			}
-			// virzz platform
-			for _, name := range utils.Intersection([]string{"virzz", "platform"}, args) {
+			// specific
+			for _, name := range utils.Intersection(getSpecialProjects(), args) {
 				sourceNames[name] = fmt.Sprintf("%s/%s", SOURCE_DIR, name)
 			}
 
@@ -260,6 +281,7 @@ func init() {
 }
 
 func main() {
+	logger.SetDebug(true)
 	if err := rootCmd.Execute(); err != nil {
 		logger.Error(err)
 		os.Exit(1)

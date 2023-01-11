@@ -2,6 +2,8 @@ package common
 
 import (
 	"os"
+
+	"github.com/virzz/logger"
 )
 
 const (
@@ -16,8 +18,11 @@ var (
 
 func init() {
 	debugEnv := os.Getenv("VIRZZ_DEBUG")
-	if debugEnv == "true" || debugEnv == "1" || debugEnv == "on" ||
-		Mode == "dev" {
+	if debugEnv == "true" || debugEnv == "1" || debugEnv == "on" {
+		DebugMode = true
+		logger.SetDebug(true)
+	}
+	if Mode == "dev" {
 		DebugMode = true
 	}
 	// Force off debug mode

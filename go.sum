@@ -62,8 +62,8 @@ github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKs
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d h1:4x1FeGJRB00cvxnKXnRJDT89fvG/Lzm2ecm0vlr/qDs=
 github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d/go.mod h1:uSELzeIcTceNCgzbKdJuJa0ouCqqtkyzL+6bnA3rM+M=
-github.com/virzz/logger v0.0.0-20230110160451-807b6c90aabc h1:PXiE0ofSc8ztXoLh8UuQBf9JRbVVxVRLiICpQDii/xM=
-github.com/virzz/logger v0.0.0-20230110160451-807b6c90aabc/go.mod h1:JGUy31Ciry9cYomhZyBRco9oh5YvK0BmNWvtM/7Q7+k=
+github.com/virzz/logger v0.1.4 h1:qQnjvAlkeCmn9bxBImMBHV4htsRLHBjIGznXzqD7MG8=
+github.com/virzz/logger v0.1.4/go.mod h1:JGUy31Ciry9cYomhZyBRco9oh5YvK0BmNWvtM/7Q7+k=
 github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 h1:QldyIu/L63oPpyvQmHgvgickp1Yw510KJOqX7H24mg8=
 github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778/go.mod h1:2MuV+tbUrU1zIOPMxZ5EncGwgmMJsa+9ucAQZXxsObs=
 golang.org/x/crypto v0.3.0 h1:a06MkbcxBrEFc0w0QIZWXrH/9cCX6KJyWbBOIwAn+7A=

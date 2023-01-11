@@ -108,11 +108,25 @@ var sha512_256Cmd = &cobra.Command{
 	},
 }
 
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{
+var hashCmd = &cobra.Command{
+	Use:   "hash",
+	Short: "Some hash function",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmd.Help()
+	},
+}
+
+func init() {
+	hashCmd.AddCommand(
 		md5Cmd,
 		sha1Cmd, sha256Cmd, sha512Cmd,
 		sha224Cmd, sha384Cmd,
 		sha512_224Cmd, sha512_256Cmd,
+	)
+}
+
+func ExportCommand() []*cobra.Command {
+	return []*cobra.Command{
+		hashCmd,
 	}
 }
