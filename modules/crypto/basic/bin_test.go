@@ -14,10 +14,11 @@ func TestBintoHex(t *testing.T) {
 	fmt.Println(r)
 }
 
-func TestBinStrToHex(t *testing.T) {
-	r, err := BinStrToHex("100101000101011101")
+func TestHexToBin(t *testing.T) {
+	r, err := HexToBin("0x0cc175b9c0f1b6a831c399e269772661")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
-	fmt.Println(r)
+	os.Stdout.Write(r)
+	os.Stdout.WriteString("\n")
 }

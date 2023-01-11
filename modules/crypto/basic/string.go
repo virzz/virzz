@@ -54,8 +54,7 @@ func ASCIIToString(s string) (string, error) {
 
 // HexToString Hex -> String
 func HexToString(s string) (string, error) {
-	s = upPadHex(s)
-	bs, err := hex.DecodeString(s)
+	bs, err := HexToBin(s)
 	if err != nil {
 		return "", err
 	}
@@ -90,8 +89,7 @@ func HexToDec(s string) (string, error) {
 
 // HexToByteString Hex -> Bytes String
 func HexToByteString(s string) (string, error) {
-	s = upPadHex(s)
-	bs, err := hex.DecodeString(s)
+	bs, err := HexToBin(s)
 	if err != nil {
 		return "", err
 	}

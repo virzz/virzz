@@ -9,6 +9,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	_ "github.com/virzz/virzz/common"
+
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 	"github.com/virzz/virzz/utils/execext"
@@ -51,7 +53,7 @@ func getSpecialProjects() (names []string) {
 	}
 	names = make([]string, len(fs))
 	for i, f := range fs {
-		if f.IsDir() && (f.Name() != "public" || f.Name() != "_compile") {
+		if f.IsDir() && f.Name() != "public" && f.Name() != "_compile" {
 			names[i] = f.Name()
 		}
 	}
@@ -93,8 +95,10 @@ func compile(name, source, target string, buildID int) error {
 			version = getVersion("v")
 		}
 		flags["-trimpath"] = ""
+		flags["-tags"] = "release"
 		flags["-ldflags"] = fmt.Sprintf("-s -w -X %s/common.Mode=prod -X main.BuildID=%d -X main.Version=%s", PACKAGE, buildID, version)
 	} else {
+		flags["-tags"] = "debug"
 		flags["-ldflags"] = fmt.Sprintf("-X %s/common.Mode=dev -X main.BuildID=%d", PACKAGE, buildID)
 	}
 
@@ -207,13 +211,14 @@ var rootCmd = &cobra.Command{
 		if len(args) > 0 {
 			sourceNames := make(map[string]string)
 			publicNames := getPublicProjects()
+			logger.Debug(publicNames)
 			// all public
 			if utils.SliceContains(args, "public") {
 				for _, name := range publicNames {
 					sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 				}
 			}
-			// public
+			// inner public
 			for _, name := range utils.Intersection(publicNames, args) {
 				sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 			}
@@ -276,6 +281,7 @@ func init() {
 }
 
 func main() {
+	logger.SetDebug(true)
 	if err := rootCmd.Execute(); err != nil {
 		logger.Error(err)
 		os.Exit(1)

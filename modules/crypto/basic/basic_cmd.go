@@ -24,8 +24,7 @@ func init() {
 		urlencodeCmd, urldecodeCmd,
 
 		// bin
-		// bin2strCmd, str2binCmd,
-		// bin2hexCmd, hex2binCmd,
+		bin2hexCmd, hex2binCmd,
 	)
 }
 

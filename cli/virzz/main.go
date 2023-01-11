@@ -44,7 +44,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(common.CompletionCommand())
-	rootCmd.AddCommand(common.AliasCommand())
+	rootCmd.AddCommand(aliasCommand())
 
 	// CMD
 	// Crypto
