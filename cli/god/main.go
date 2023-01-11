@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/virzz/logger"
 
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/modules/crypto/basex"
 	"github.com/virzz/virzz/modules/crypto/basic"
@@ -20,12 +20,11 @@ import (
 	"github.com/virzz/virzz/modules/web/gopher"
 	"github.com/virzz/virzz/modules/web/jwttool"
 	"github.com/virzz/virzz/modules/web/leakcode/githack"
-	"github.com/virzz/virzz/services/server/netlog"
 )
 
 var (
-	AppName        = "Virzz"
-	BinName        = "virzz"
+	AppName        = "God"
+	BinName        = "god"
 	Version string = "dev" // git tag | tail -1
 	BuildID string = "0"   // head .buildid
 )
@@ -44,7 +43,6 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(common.CompletionCommand())
-	rootCmd.AddCommand(common.AliasCommand())
 
 	// CMD
 	// Crypto
@@ -64,10 +62,6 @@ func init() {
 	rootCmd.AddCommand(domain.ExportCommand()...)
 	// Parser
 	rootCmd.AddCommand(parser.ExportCommand()...)
-
-	// Services
-	// -> server
-	rootCmd.AddCommand(netlog.ExportCommand()...)
 
 }
 

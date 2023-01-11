@@ -43,11 +43,25 @@ func getPublicProjects() (names []string) {
 	return
 }
 
-func getVersion() string {
+func getSpecialProjects() (names []string) {
+	fs, err := os.ReadDir(SOURCE_DIR)
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+	names = make([]string, len(fs))
+	for i, f := range fs {
+		if f.IsDir() && (f.Name() != "public" || f.Name() != "_compile") {
+			names[i] = f.Name()
+		}
+	}
+	return
+}
+
+func getVersion(prefix string) string {
 	var stdout bytes.Buffer
 	opts := &execext.RunCommandOptions{
-		// git tag | tail -n 1
-		Command: "ls .git/refs/tags/ | tail -n 1",
+		Command: fmt.Sprintf("git tag | grep %s | tail -n 1", prefix),
 		Dir:     ".",
 		Stdout:  &stdout,
 		Stderr:  execext.DevNull{},
@@ -74,7 +88,9 @@ func compile(name, source, target string, buildID int) error {
 	if release {
 		version := ""
 		if name == "virzz" || name == "platform" {
-			version = getVersion()
+			version = getVersion("p")
+		} else if name != "public" {
+			version = getVersion("v")
 		}
 		flags["-trimpath"] = ""
 		flags["-ldflags"] = fmt.Sprintf("-s -w -X %s/common.Mode=prod -X main.BuildID=%d -X main.Version=%s", PACKAGE, buildID, version)
@@ -197,12 +213,12 @@ var rootCmd = &cobra.Command{
 					sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 				}
 			}
-			// specific public
+			// public
 			for _, name := range utils.Intersection(publicNames, args) {
 				sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 			}
-			// virzz platform
-			for _, name := range utils.Intersection([]string{"virzz", "platform"}, args) {
+			// specific
+			for _, name := range utils.Intersection(getSpecialProjects(), args) {
 				sourceNames[name] = fmt.Sprintf("%s/%s", SOURCE_DIR, name)
 			}
 
