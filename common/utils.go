@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
 	"github.com/alexeyco/simpletable"
 	"github.com/spf13/cobra"
@@ -34,6 +33,24 @@ func GetFileString(path string) (string, error) {
 	return string(data), nil
 }
 
+func GetFileOrPipe(args []string) ([]byte, error) {
+	if len(args) > 0 {
+		return GetFileBytes(args[0])
+	}
+	fi, err := os.Stdin.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if (fi.Mode() & os.ModeNamedPipe) == os.ModeNamedPipe {
+		data, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			return nil, err
+		}
+		return data, nil
+	}
+	return nil, fmt.Errorf("not found pipe")
+}
+
 // GetFirstArg -
 func GetFirstArg(args []string) (string, error) {
 	// Priority: Args > Stdin > nil
@@ -60,6 +77,14 @@ func Output(s string) error {
 	outBuf := bufio.NewWriter(os.Stdout)
 	outBuf.WriteString(s)
 	outBuf.WriteString("\n")
+	outBuf.Flush()
+	return os.Stdout.Close()
+}
+
+// OutputBytes -
+func OutputBytes(s []byte) error {
+	outBuf := bufio.NewWriter(os.Stdout)
+	outBuf.Write(s)
 	outBuf.Flush()
 	return os.Stdout.Close()
 }
@@ -123,12 +148,12 @@ func getEnvDefault(key, value string) string {
 
 func CompletionCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:                   "completion [bash|zsh]",
-		Short:                 "Generate completion script",
-		DisableFlagsInUseLine: true,
-		Hidden:                true,
-		ValidArgs:             []string{"bash", "zsh"},
-		Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+		Use:       "completion [bash|zsh]",
+		Short:     "Generate completion script",
+		Hidden:    true,
+		ValidArgs: []string{"bash", "zsh"},
+		Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+		// DisableFlagsInUseLine: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			switch args[0] {
 			case "bash":
@@ -136,42 +161,6 @@ func CompletionCommand() *cobra.Command {
 			case "zsh":
 				cmd.Root().GenZshCompletion(os.Stdout)
 			}
-		},
-	}
-}
-
-func sliceContains[T comparable](inputSlice []T, element T) bool {
-	for _, inputValue := range inputSlice {
-		if inputValue == element {
-			return true
-		}
-	}
-	return false
-}
-
-func getCommandAlias(prefix string, cmd *cobra.Command) []string {
-	var res = make([]string, 0)
-	for _, c := range cmd.Commands() {
-		if c.HasSubCommands() && sliceContains(allowAlias, c.Name()) {
-			res = append(res, getCommandAlias(fmt.Sprintf("%s %s", prefix, c.Name()), c)...)
-		} else if sliceContains([]string{"help", "completion", "alias", "version"}, c.Name()) {
-			continue
-		} else {
-			// alias cmd='prefix cmd'
-			res = append(res, fmt.Sprintf("alias %s='%s %s'", c.Name(), prefix, c.Name()))
-		}
-	}
-	return res
-}
-
-func AliasCommand() *cobra.Command {
-	return &cobra.Command{
-		Use:   "alias",
-		Short: "Print the version",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd = cmd.Root()
-			res := getCommandAlias(cmd.CommandPath(), cmd)
-			return Output(strings.Join(res, "\n"))
 		},
 	}
 }

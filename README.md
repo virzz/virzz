@@ -14,6 +14,7 @@ Usage:
 Available Commands:
   basex       Base 16/32/58/62/64/85/91/92/100 Encode/Decode
   basic       Some basic encodings
+  bcrypt      Bcrypt Generate/Compare
   classical   Some classical cryptography
   domain      Some tools for Domain/SubDomain
   dsstore     .DS_Store Parser
@@ -22,6 +23,7 @@ Available Commands:
   hash        Some hash function
   hashpow     A tool for ctfer which make hash collision faster
   help        Help about any command
+  hmac        Some Hmac function
   jwttool     A jwt tool with Print/Crack/Modify
   netool      Some net utils
   parser      Parse some file

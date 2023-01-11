@@ -5,12 +5,21 @@ import (
 	"github.com/virzz/virzz/common"
 )
 
-var md5Cmd = &cobra.Command{
-	Use:   "md5 [string]",
-	Short: "MD5 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
+var (
+	sha3Size   int
+	sha512Size int
+	isFile     bool
+)
+
+var md2Cmd = &cobra.Command{
+	Use:   "md2",
+	Short: "MD2 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := md5Hash(args[0])
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := md2Hash(s)
 		if err != nil {
 			return err
 		}
@@ -18,12 +27,69 @@ var md5Cmd = &cobra.Command{
 	},
 }
 
-var sha1Cmd = &cobra.Command{
-	Use:   "sha1 [string]",
-	Short: "SHA1 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
+var md4Cmd = &cobra.Command{
+	Use:   "md4",
+	Short: "MD4 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := sha1Hash(args[0])
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := md4Hash(s)
+		if err != nil {
+			return err
+		}
+		return common.Output(r)
+	},
+}
+
+var md5Cmd = &cobra.Command{
+	Use:   "md5",
+	Short: "MD5 hash algorithm",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		var r string
+		if isFile {
+			data, err := common.GetFileBytes(args[0])
+			if err != nil {
+				return err
+			}
+			r = EMd5Hash(data)
+		} else {
+			s, err := common.GetFirstArg(args)
+			if err != nil {
+				return err
+			}
+			r, _ = md5Hash(s)
+		}
+		return common.Output(r)
+	},
+}
+
+var sha1Cmd = &cobra.Command{
+	Use:   "sha1",
+	Short: "SHA1 hash algorithm",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := sha1Hash(s)
+		if err != nil {
+			return err
+		}
+		return common.Output(r)
+	},
+}
+
+var sha3Cmd = &cobra.Command{
+	Use:   "sha3",
+	Short: "SHA3 hash algorithm",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := sha3Hash(s, sha3Size)
 		if err != nil {
 			return err
 		}
@@ -32,11 +98,14 @@ var sha1Cmd = &cobra.Command{
 }
 
 var sha224Cmd = &cobra.Command{
-	Use:   "sha224 [string]",
+	Use:   "sha224",
 	Short: "SHA224 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := sha224Hash(args[0])
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := sha224Hash(s)
 		if err != nil {
 			return err
 		}
@@ -45,11 +114,14 @@ var sha224Cmd = &cobra.Command{
 }
 
 var sha256Cmd = &cobra.Command{
-	Use:   "sha256 [string]",
+	Use:   "sha256",
 	Short: "SHA256 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := sha256Hash(args[0])
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := sha256Hash(s)
 		if err != nil {
 			return err
 		}
@@ -58,11 +130,14 @@ var sha256Cmd = &cobra.Command{
 }
 
 var sha384Cmd = &cobra.Command{
-	Use:   "sha384 [string]",
+	Use:   "sha384",
 	Short: "SHA384 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := sha384Hash(args[0])
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := sha512Hash(s, 384)
 		if err != nil {
 			return err
 		}
@@ -70,11 +145,14 @@ var sha384Cmd = &cobra.Command{
 	},
 }
 var sha512Cmd = &cobra.Command{
-	Use:   "sha512 [string]",
+	Use:   "sha512",
 	Short: "SHA512 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := sha512Hash(args[0])
+		s, err := common.GetFirstArg(args)
+		if err != nil {
+			return err
+		}
+		r, err := sha512Hash(s, sha512Size)
 		if err != nil {
 			return err
 		}
@@ -82,25 +160,15 @@ var sha512Cmd = &cobra.Command{
 	},
 }
 
-var sha512_224Cmd = &cobra.Command{
-	Use:   "sha512_224 [string]",
-	Short: "SHA512/224 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
+var ripemd160Cmd = &cobra.Command{
+	Use:   "ripemd160",
+	Short: "RIPEMD160 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := sha512_224Hash(args[0])
+		s, err := common.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
-	},
-}
-
-var sha512_256Cmd = &cobra.Command{
-	Use:   "sha512_256 [string]",
-	Short: "SHA512/256 hash algorithm",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := sha512_256Hash(args[0])
+		r, err := ripemd160Hash(s)
 		if err != nil {
 			return err
 		}
@@ -117,16 +185,28 @@ var hashCmd = &cobra.Command{
 }
 
 func init() {
-	hashCmd.AddCommand(
-		md5Cmd,
-		sha1Cmd, sha256Cmd, sha512Cmd,
-		sha224Cmd, sha384Cmd,
-		sha512_224Cmd, sha512_256Cmd,
-	)
-}
+	hashCmd.PersistentFlags().BoolVarP(&isFile, "file", "f", false, "read args from file")
+	sha3Cmd.Flags().IntVarP(&sha3Size, "size", "s", 256, "size: 224/256/384/512")
+	sha512Cmd.Flags().IntVarP(&sha512Size, "size", "s", 512, "size: 224/256/512")
 
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{
-		hashCmd,
-	}
+	hashCmd.AddCommand(
+		// mdX
+		md2Cmd,
+		md4Cmd,
+		md5Cmd,
+
+		// shaX
+		sha1Cmd,
+		sha224Cmd,
+		sha384Cmd,
+		sha256Cmd,
+		sha3Cmd,
+		sha512Cmd,
+
+		// ripemd160
+		ripemd160Cmd,
+
+		// gmsm
+		sm3Cmd,
+	)
 }

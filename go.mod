@@ -5,9 +5,11 @@ go 1.19
 require (
 	github.com/alexeyco/simpletable v1.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/emmansun/gmsm v0.15.5
 	github.com/gehaxelt/ds_store v0.0.0-20210328175056-724e653cb546
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/goccy/go-json v0.10.0
+	github.com/htruong/go-md2 v0.0.0-20170914203617-c69905b63f6f
 	github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.6.1
@@ -15,7 +17,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d
 	github.com/virzz/logger v0.1.4
-	golang.org/x/crypto v0.3.0
+	golang.org/x/crypto v0.4.0
 	golang.org/x/text v0.5.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -35,7 +37,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.1.0 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
-	golang.org/x/net v0.2.0 // indirect
+	golang.org/x/net v0.3.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/term v0.3.0 // indirect
