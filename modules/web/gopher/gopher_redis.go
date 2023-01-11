@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 )
 

@@ -12,7 +12,7 @@ import (
 	"syscall"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 )
 

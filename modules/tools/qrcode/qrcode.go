@@ -12,7 +12,7 @@ import (
 
 	"github.com/skip2/go-qrcode"
 	decode "github.com/tuotoo/qrcode"
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/modules/downloader"
 )
 

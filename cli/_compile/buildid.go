@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/virzz/virzz/logger"
+	"github.com/virzz/logger"
 	"gopkg.in/yaml.v3"
 )
 
