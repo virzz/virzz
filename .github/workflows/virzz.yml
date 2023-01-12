@@ -1,9 +1,9 @@
-name: Build Public
+name: Build
 
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - master
 
 jobs:
   build:
@@ -18,11 +18,5 @@ jobs:
           check-latest: true
           cache: true
 
-      - name: Mod Download
-        run: go mod download
-
-      - name: Build public
-        run: go run ./cli/_compile public
-
-      - name: Build God
-        run: go run ./cli/_compile god
+      - name: Build God & Public
+        run: go run ./cli/_compile god public
