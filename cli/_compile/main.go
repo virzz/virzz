@@ -112,11 +112,19 @@ func compile(name, source, target string, buildID int) error {
 		}
 	}
 
-	// var stdout bytes.Buffer
+	var env = os.Environ()
+
+	// Multi-platform
+	if name != target {
+		ts := strings.Split(target, "-")
+		env = append(env, "GOOS="+ts[1], "GOARCH="+ts[2])
+	}
+
 	var stderr bytes.Buffer
 	opts := &execext.RunCommandOptions{
 		Command: fmt.Sprintf("go build -o %s/%s %s %s", TARGET_DIR, target, flagString.String(), source),
 		Dir:     ".",
+		Env:     env,
 		Stdout:  execext.DevNull{},
 		Stderr:  &stderr,
 	}
@@ -155,24 +163,34 @@ func multiCompile(name, source string, buildID int) []string {
 
 func archiveTargets(name string) error {
 	releaseTarget := fmt.Sprintf("%s/%s", RELEASE_DIR, name)
-	command := fmt.Sprintf(`
-		rm -rf %s* && mkdir -p %s && \
-		mv %s/%s-* %s/ && \
-		cd %s && \
-		shasum -a 256 %s* > checksum256 && \
-		cd .. && \
-		pwd && ls && \
-		tar -czf %s.tar.gz %s/* && \
-		rm -rf %s`,
-		releaseTarget, releaseTarget,
-		TARGET_DIR, name, releaseTarget,
-		releaseTarget,
-		name,
-		name, name,
-		name)
+	command := `
+		rm -rf ${RELEASE}* && mkdir -p ${RELEASE} && \
+		mv ${TARGET}/${NAME}-* ${RELEASE}/ && \
+		cd ${RELEASE} && \
+		shasum -a 256 ${NAME}* > checksum256 && \
+		if [ -n "$TOGETHER" ]; then \
+			tar -czf ../${NAME}.tar.gz ./* ; \
+			cd .. && rm -rf ${NAME} ; \
+		else \
+			for f in $(ls ${NAME}*); do \
+				tar -czf ${f}.tar.gz $f; \
+				rm ${f}; \
+			done; \
+			shasum -a 256 ${NAME}* >> checksum256
+		fi
+		`
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
+	var env = append(os.Environ(),
+		"RELEASE="+releaseTarget,
+		"TARGET="+TARGET_DIR,
+		"NAME="+name,
+	)
+	if archiveTogether {
+		env = append(env, "TOGETHER=1")
+	}
 	opts := &execext.RunCommandOptions{
+		Env:     env,
 		Command: command,
 		Dir:     ".",
 		Stdout:  &stdout,
@@ -238,7 +256,11 @@ var rootCmd = &cobra.Command{
 					if len(multiCompile(name, source, buildID)) == 6 {
 						logger.Success("All platforms compiled successfully")
 						if archive {
-							logger.Info("Start archiving")
+							if archiveTogether {
+								logger.Info("Start archiving togher")
+							} else {
+								logger.Info("Start archiving")
+							}
 							archiveTargets(name)
 						}
 					} else {
@@ -260,11 +282,12 @@ var rootCmd = &cobra.Command{
 }
 
 var (
-	release bool = false
-	archive bool = false
-	multi   bool = false
-	clean   bool = false
-	force   bool = false
+	release         bool = false
+	archive         bool = false
+	archiveTogether bool = false
+	multi           bool = false
+	clean           bool = false
+	force           bool = false
 
 	verbose int = 0
 )
@@ -272,6 +295,7 @@ var (
 func init() {
 	rootCmd.Flags().BoolVarP(&release, "release", "R", false, "Build release version")
 	rootCmd.Flags().BoolVarP(&archive, "archive", "A", false, "Archive release packages")
+	rootCmd.Flags().BoolVarP(&archiveTogether, "together", "t", false, "Archive binary files in one package")
 	rootCmd.Flags().BoolVarP(&multi, "multi", "M", false, "Compile multi-platform binaries")
 	rootCmd.Flags().BoolVarP(&clean, "clean", "C", false, "Clean build files")
 	rootCmd.Flags().BoolVarP(&force, "force", "F", false, "Force to Compile")
