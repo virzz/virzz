@@ -1,6 +1,6 @@
 # Virzz
 
-![Build](https://github.com/virzz/virzz/workflows/Build/badge.svg)
+[![Build](https://github.com/virzz/virzz/actions/workflows/virzz.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz.yml) [![Build Release](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml)
 
 ## God - CLI 命令行小工具
 

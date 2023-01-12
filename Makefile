@@ -30,7 +30,7 @@ readme:
 	echo "# Virzz" > README.md ; \
 	echo '' >> README.md; \
 	echo "Add Build Badge"; \
-	echo '![Build](https://github.com/virzz/virzz/workflows/Build/badge.svg)' >> README.md; \
+	echo '[![Build](https://github.com/virzz/virzz/actions/workflows/virzz.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz.yml) [![Build Release](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml)' >> README.md; \
 	echo '' >> README.md;
 
 	@go run ./cli/_compile god;
