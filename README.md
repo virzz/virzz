@@ -1,5 +1,4 @@
 # Virzz
-![Build](https://github.com/virzz/virzz/workflows/Build/badge.svg)
 
 ## Virzz - CLI 命令行小工具
 

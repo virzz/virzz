@@ -40,7 +40,6 @@ cleanr:
 
 readme:
 	@echo "# Virzz" > README.md ; \
-	echo '![Build](https://github.com/virzz/virzz/workflows/Build/badge.svg)' >> README.md; \
 	echo '' >> README.md;
 	@if test -f ${TARGET}/virzz ; then \
 		echo '## Virzz - CLI 命令行小工具' >> README.md; \
@@ -57,7 +56,6 @@ readme:
 		./build/platform >> README.md; \
 		echo '```' >> README.md; \
 	fi
-	cat README.md
 
 docker:
 	@test -f ./build/platform-linux-amd64 && \

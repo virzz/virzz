@@ -11,7 +11,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 )

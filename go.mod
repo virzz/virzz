@@ -4,13 +4,13 @@ go 1.19
 
 require (
 	github.com/alexeyco/simpletable v1.0.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/emmansun/gmsm v0.15.5
 	github.com/gehaxelt/ds_store v0.0.0-20210328175056-724e653cb546
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/goccy/go-json v0.10.0
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/htruong/go-md2 v0.0.0-20170914203617-c69905b63f6f
 	github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491
 	github.com/miekg/dns v1.1.50

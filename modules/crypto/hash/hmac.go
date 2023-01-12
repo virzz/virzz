@@ -11,7 +11,7 @@ import (
 	"hash"
 
 	"github.com/emmansun/gmsm/sm3"
-	"github.com/virzz/virzz/modules/crypto/internal/md2"
+	"github.com/htruong/go-md2"
 
 	//lint:ignore SA1019 Ignore deprecated md4 package
 	"golang.org/x/crypto/md4"
