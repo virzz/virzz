@@ -52,8 +52,7 @@ go.work*
 
 build*
 !buildid.go
-tmp/
 release/
 *.bak
 TODO*
-reference
+config.yaml

@@ -108,6 +108,19 @@ func ipToAll(s string) (string, error) {
 	return strings.Join(rs, "\r\n"), nil
 }
 
+func AnyToIP(s string) (string, error) {
+	if strings.HasPrefix(s, "0x") {
+		return hexToIP(s)
+	}
+	if strings.HasPrefix(s, "0") {
+		return octToIP(s)
+	}
+	if strings.Contains(s, ".") {
+		return s, nil
+	}
+	return decToIP(s)
+}
+
 // OctToIP -
 func octToIP(s string) (string, error) {
 	d, err := strconv.ParseInt(s, 8, 64)

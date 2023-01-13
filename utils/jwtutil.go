@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/virzz/virzz/common"
+	"github.com/spf13/viper"
 )
 
 // Claims -
@@ -37,13 +37,14 @@ func GenerateToken(token, username string) (string, error) {
 			Issuer:    "webkit",
 		},
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(common.GetConfig().Jwt.Secret))
+
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(viper.GetString("jwt.secret")))
 }
 
 // ParseToken parsing token
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(common.GetConfig().Jwt.Secret), nil
+		return []byte(viper.GetString("jwt.secret")), nil
 	})
 	if err == nil && tokenClaims != nil {
 		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
@@ -58,7 +59,7 @@ func RefreshToken(tokenString string) (string, error) {
 	if claims, err := ParseToken(tokenString); err == nil {
 		claims.ExpiresAt.Add(7 * 24 * time.Hour)
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		return token.SignedString([]byte(common.GetConfig().Jwt.Secret))
+		return token.SignedString([]byte(viper.GetString("jwt.secret")))
 	}
 	return "", fmt.Errorf("couldn't handle this token")
 }
