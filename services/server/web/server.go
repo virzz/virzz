@@ -6,14 +6,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/virzz/virzz/common"
+	"github.com/spf13/viper"
 )
-
-// type Config struct {
-// 	Host  string
-// 	Port  int
-// 	Debug bool
-// }
 
 type Resp struct {
 	Code int
@@ -21,12 +15,10 @@ type Resp struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-var conf common.ServerConfig
-
 // NewWebServer - New Web Server
-func NewWebServer() *http.Server {
-	conf = common.GetConfig().Server
-	if common.DebugMode {
+func NewWebServer(debug bool) *http.Server {
+
+	if debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -46,12 +38,11 @@ func NewWebServer() *http.Server {
 		route(engine)
 	}
 
-	s := &http.Server{
-		Addr:           fmt.Sprintf("%s:%d", conf.Host, conf.Port),
+	return &http.Server{
+		Addr:           fmt.Sprintf("%s:%d", viper.GetString("web.host"), viper.GetInt("web.port")),
 		Handler:        engine,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	return s
 }

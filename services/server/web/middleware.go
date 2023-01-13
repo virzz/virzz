@@ -50,7 +50,7 @@ func JWTAuthMiddleware(c *gin.Context) {
 	logger.Debug(claims)
 	c.Set("token", claims.Token)
 	c.Set("username", claims.Username)
-	c.Set("jti", claims.Id)
+	c.Set("jti", claims.ID)
 	c.Next()
 }
 

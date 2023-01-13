@@ -26,19 +26,19 @@ func init() {
 }
 
 func NewAuth(username, password, email string) (auth Auth, err error) {
-	if db.First(&auth, &Auth{Username: username}).RowsAffected > 0 {
+	if DB().First(&auth, &Auth{Username: username}).RowsAffected > 0 {
 		return auth, fmt.Errorf("username is exists")
 	}
 	token := ""
 	for {
 		token = utils.RandomStringByLength(8, tokenLetters)
-		if db.First(&auth, &Auth{Token: token}).RowsAffected == 0 {
+		if DB().First(&auth, &Auth{Token: token}).RowsAffected == 0 {
 			logger.DebugF("token: %s", token)
 			break
 		}
 	}
 	auth = Auth{Username: username, Password: password, Token: token}
-	if err = db.Create(&auth).Error; err != nil {
+	if err = DB().Create(&auth).Error; err != nil {
 		return auth, err
 	}
 	return auth, nil
@@ -46,14 +46,14 @@ func NewAuth(username, password, email string) (auth Auth, err error) {
 }
 
 func FindAuthByUsername(username string) (auth Auth, err error) {
-	if err = db.Where(&Auth{Username: username}).First(&auth).Error; err != nil {
+	if err = DB().Where(&Auth{Username: username}).First(&auth).Error; err != nil {
 		return auth, err
 	}
 	return auth, nil
 }
 
 func FindAuthByToken(token string) (auth Auth, err error) {
-	if err = db.Where(&Auth{Token: token}).First(&auth).Error; err != nil {
+	if err = DB().Where(&Auth{Token: token}).First(&auth).Error; err != nil {
 		return auth, err
 	}
 	return auth, nil

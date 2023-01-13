@@ -19,20 +19,20 @@ func init() {
 // A    test	127.0.0.1
 
 func FindRecordByToken(token, typ string) (r Record, err error) {
-	err = db.Where(&Record{Token: token, Type: typ}).First(&r).Error
+	err = DB().Where(&Record{Token: token, Type: typ}).First(&r).Error
 	return
 }
 
 // NewRecord -
 func NewRecord(token, name, typ, record string) (r Record, err error) {
-	err = db.Where(Record{Token: token, Name: name, Type: typ}).
+	err = DB().Where(Record{Token: token, Name: name, Type: typ}).
 		Attrs(Record{Record: record}).FirstOrCreate(&r).Error
 	return
 }
 
 // UpdateRecord -
 func UpdateRecord(token, name, typ, record string) (err error) {
-	err = db.Where(&Record{Token: token, Type: typ, Name: name}).
+	err = DB().Where(&Record{Token: token, Type: typ, Name: name}).
 		Updates(Record{Record: record}).Error
 	return
 }
@@ -40,19 +40,19 @@ func UpdateRecord(token, name, typ, record string) (err error) {
 // DeleteRecordByName -
 func DeleteRecordByName(token, name string) (err error) {
 	var out Record
-	if err = db.First(&out, Record{Token: token, Name: name}).Error; err != nil {
+	if err = DB().First(&out, Record{Token: token, Name: name}).Error; err != nil {
 		return err
 	}
-	err = db.Delete(out).Error
+	err = DB().Delete(out).Error
 	return
 }
 
 // DeleteRecordByID -
 func DeleteRecordByID(token string, id uint) (err error) {
 	var out Record
-	if err = db.First(&out, Record{Token: token, ID: id}).Error; err != nil {
+	if err = DB().First(&out, Record{Token: token, ID: id}).Error; err != nil {
 		return err
 	}
-	err = db.Delete(out).Error
+	err = DB().Delete(out).Error
 	return
 }

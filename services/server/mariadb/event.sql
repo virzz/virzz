@@ -38,15 +38,11 @@ delimiter ;
 
 -- 创建任务
 
-create event
-    if not exists auto_clear_record_event on schedule every 1 day on completion PRESERVE
-do
-call auto_clear_record();
-
--- 开启事件
-
-ALTER EVENT eventJob ON COMPLETION PRESERVE ENABLE;
-
--- 关闭事件
-
-ALTER EVENT eventJob ON COMPLETION PRESERVE DISABLE;
+CREATE EVENT IF 
+	not exists auto_clear_record_event on schedule every 1 day on completion PRESERVE
+	do
+	call auto_clear_record();
+	-- 开启事件
+	ALTER EVENT eventJob ON COMPLETION PRESERVE ENABLE;
+	-- 关闭事件
+	ALTER EVENT eventJob ON COMPLETION PRESERVE DISABLE;

@@ -7,13 +7,12 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
+	"github.com/patrickmn/go-cache"
+	"github.com/spf13/viper"
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/common"
 )
 
-var conf common.DNSConfig
-
-func do(w dns.ResponseWriter, req *dns.Msg) {
+func handle(w dns.ResponseWriter, req *dns.Msg) {
 	q := req.Question[0]
 	if q.Qclass != dns.ClassINET {
 		dns.HandleFailed(w, req)
@@ -27,7 +26,7 @@ func do(w dns.ResponseWriter, req *dns.Msg) {
 	logger.Debug("[D] q.Name = ", q.Name)
 	remoteAddr := w.RemoteAddr().(*net.UDPAddr)
 
-	ttl, ip, resp := TTT(q.Name, remoteAddr.IP.String())
+	ttl, ip, resp := dnslog(q.Name, remoteAddr.IP.String())
 	if ttl == -1 {
 		dns.HandleFailed(w, req)
 		return
@@ -58,18 +57,34 @@ func do(w dns.ResponseWriter, req *dns.Msg) {
 	w.WriteMsg(m)
 }
 
+var (
+	dotDomain string
+	confTTL   int
+	confIP    net.IP
+
+	cachePool *cache.Cache
+)
+
 // NewDNSServer New DNS Server
 func NewDNSServer() *dns.Server {
-	conf = common.GetConfig().DNS
-	handler := dns.NewServeMux()
+
+	cachePool = cache.New(2*time.Minute, 5*time.Minute)
+
+	dotDomain = fmt.Sprintf(".%s", viper.GetString("dns.domain"))
+	confTTL = viper.GetInt("dns.ttl")
+	confIP = net.ParseIP(viper.GetString("dns.host"))
+
+	port := viper.GetInt("dns.port")
 	if runtime.GOOS == "windows" {
-		conf.Port += 10000
+		port += 10000
 	}
-	timeout := time.Duration(conf.Timeout) * time.Second
-	handler.HandleFunc(".", do)
+	timeout := time.Duration(viper.GetInt("dns.timeout")) * time.Second
+
+	handler := dns.NewServeMux()
+	handler.HandleFunc(".", handle)
 
 	server := &dns.Server{
-		Addr:         fmt.Sprintf("0.0.0.0:%d", conf.Port),
+		Addr:         fmt.Sprintf("0.0.0.0:%d", port),
 		Net:          "udp",
 		Handler:      handler,
 		UDPSize:      65535,

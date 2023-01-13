@@ -22,34 +22,30 @@ func TestConfig(t *testing.T) {
 }
 
 func TestServer(t *testing.T) {
-	err := common.LoadConfig()
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = mariadb.Connect()
+	err := mariadb.Connect()
 	if err != nil {
 		t.Fatal(err)
 	}
 	// Run HTTP Server
-	httpServer := NewWebServer()
+	webServer := NewWebServer(false)
 	go func() {
-		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := webServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Error("HTTP server listen: ", err)
 		}
 	}()
-	logger.Debug("HTTP Server Running on ", httpServer.Addr)
+	logger.Debug("HTTP Server Running on ", webServer.Addr)
 
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		if err := httpServer.Shutdown(ctx); err != nil {
+		if err := webServer.Shutdown(ctx); err != nil {
 			logger.Error("Shutdown Error", err)
 		}
 	}()
 
 	time.Sleep(5 * time.Second)
 
-	resp, err := http.Get("http://127.0.0.1:9999/ping")
+	resp, err := http.Get("http://127.0.0.1:8088/ping")
 	if err != nil {
 		t.Fatal(err)
 	}

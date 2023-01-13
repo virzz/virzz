@@ -8,20 +8,25 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/miekg/dns"
 	"github.com/spf13/cobra"
 	"github.com/virzz/logger"
+
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/services/server/dns"
 	"github.com/virzz/virzz/services/server/mariadb"
-	"github.com/virzz/virzz/services/server/models"
-	"github.com/virzz/virzz/services/server/web"
 )
 
-var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "Print Example Config Template",
+var (
+	servers    []interface{}
+	dnsService bool
+	webService bool
+)
+
+var platformCmd = &cobra.Command{
+	Use:   "platform",
+	Short: "Run Service Platform",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := common.TemplateConfig()
+		r, err := ServicePlatform()
 		if err != nil {
 			return err
 		}
@@ -29,78 +34,59 @@ var configCmd = &cobra.Command{
 	},
 }
 
-var daemonCmd = &cobra.Command{
-	Use:   "daemon",
-	Short: "Run Service Daemon",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		r, err := ServiceDaemon()
-		if err != nil {
-			return err
-		}
-		return common.Output(string(r))
-	},
+func init() {
+	platformCmd.Flags().BoolVarP(&dnsService, "dns", "d", false, "Run DNS Service")
+	platformCmd.Flags().BoolVarP(&webService, "web", "w", false, "Run HTTP Service")
 }
 
-// ServiceDaemon -
-func ServiceDaemon() (string, error) {
-	// Load Config
-	logger.Debug("Load Config ...")
-	err := common.LoadConfig()
-	if err != nil {
-		return "", err
+func serverShutdown(ctx context.Context) {
+	for _, s := range servers {
+		switch _s := s.(type) {
+		case *http.Server:
+			if err := _s.Shutdown(ctx); err != nil {
+				logger.Error("Web Server Shutdown Error", err)
+			}
+			logger.Success("Web Server Shutdown ...")
+		case *dns.Server:
+			if err := _s.ShutdownContext(ctx); err != nil {
+				logger.Error("DNS Server Shutdown Error", err)
+			}
+			logger.Success("DNS Server Shutdown ...")
+		default:
+			continue
+		}
 	}
+}
 
-	// Connect Database
-	logger.Debug("Database mariadb Connect ...")
-	err = mariadb.Connect()
-	if err != nil {
-		return "", err
-	}
-
-	models.InitMariadb()
+// ServicePlatform -
+func ServicePlatform() (string, error) {
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	// Run DNS Server
-	logger.Debug("Run DNS Server ...")
-	dnsServer := dns.NewDNSServer()
-	go func() {
-		if err := dnsServer.ListenAndServe(); err != nil {
-			logger.Error("DNS Server Serve Error: ", err)
-		}
-	}()
-	logger.InfoF("Run DNS Server Listen on: %s", dnsServer.Addr)
+	err := mariadb.Connect(debugDatabase)
+	if err != nil {
+		return "", err
+	}
 
-	// Run HTTP Server
-	logger.Debug("Run HTTP Server ...")
-	httpServer := web.NewWebServer()
-	go func() {
-		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Error("HTTP Server Serve Error: ", err)
-		}
-	}()
-	logger.InfoF("Run HTTP Server Listen on: %s", httpServer.Addr)
+	if dnsService {
+		dnsServerStart()
+	}
+	if webService {
+		webServerStart()
+	}
 
 	sig := <-interrupt
-
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	// Shutdown DNS Server
-	if err := dnsServer.ShutdownContext(ctx); err != nil {
-		logger.Error("DNS Server Shutdown Error", err)
-	}
-	logger.Info("DNS Server Shutdown ...")
-
-	// Shutdown HTTP Server
-	if err := httpServer.Shutdown(ctx); err != nil {
-		logger.Error("HTTP Server Shutdown Error", err)
-	}
-	logger.Info("HTTP Server Shutdown ...")
+	serverShutdown(ctx)
 
 	if sig == os.Interrupt {
-		return "Daemon was interruped by system signal", nil
+		logger.Info("Platform was interruped by system signal")
+	} else {
+		logger.Info("Platform was killed")
 	}
-	return "Daemon was killed", nil
+
+	return "", nil
 }

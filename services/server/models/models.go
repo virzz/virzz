@@ -5,8 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
-
-func InitMariadb() {
-	db = mariadb.GetDB()
+func DB() *gorm.DB {
+	return mariadb.GetDB()
 }
