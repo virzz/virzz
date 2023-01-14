@@ -7,13 +7,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-)
 
-type Resp struct {
-	Code int
-	Msg  string
-	Data interface{} `json:"data,omitempty"`
-}
+	"github.com/virzz/virzz/services/server/web/mw"
+	"github.com/virzz/virzz/services/server/web/resp"
+)
 
 // NewWebServer - New Web Server
 func NewWebServer(debug bool) *http.Server {
@@ -27,11 +24,11 @@ func NewWebServer(debug bool) *http.Server {
 	engine := gin.Default()
 
 	engine.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, Resp{Code: 0, Msg: "pong"})
+		c.JSON(http.StatusOK, resp.S("pong"))
 	})
 
 	// Middleware
-	engine.Use(middlewares...)
+	engine.Use(mw.Middlewares...)
 
 	// Router
 	for _, route := range routers {

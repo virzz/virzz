@@ -6,9 +6,9 @@ import "github.com/virzz/virzz/services/server/mariadb"
 type Log struct {
 	ID      uint   `json:"id" gorm:"primaryKey"`
 	Created int64  `json:"created" gorm:"autoCreateTime"`
-	Token   string `json:"-"`
-	Data    string `json:"data" gorm:"varchar(255)"`
-	IP      string `json:"ip"` // remote ip
+	Token   string `json:"-" gorm:"varchar(255)"`
+	Data    string `json:"data" gorm:"text"`
+	IP      string `json:"ip" gorm:"varchar(16)"` // remote ip
 }
 
 func init() {

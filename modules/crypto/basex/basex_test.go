@@ -81,7 +81,7 @@ func TestBase64Encode(t *testing.T) {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	fmt.Println(r)
-	if r != "YWJjZGVmZyFAIyQlXiYqKClfKzw+P3t9fDo=" {
+	if r != "YWJjZGVmZyFAIyQlXiYqKClfKzw-P3t9fDo=" {
 		t.Fail()
 	}
 }

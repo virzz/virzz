@@ -5,7 +5,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/virzz/logger"
+
 	"github.com/virzz/virzz/services/server/models"
+	"github.com/virzz/virzz/services/server/web/mw"
+	"github.com/virzz/virzz/services/server/web/resp"
 	"github.com/virzz/virzz/utils"
 )
 
@@ -19,57 +22,57 @@ type LoginRegister struct {
 func AuthLoginHandle(c *gin.Context) {
 	var req LoginRegister
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, Resp{Code: -1, Msg: err.Error()})
+		c.JSON(400, resp.E(err.Error()))
 		return
 	}
 	user, err := models.FindAuthByUsername(req.Username)
 	if err != nil {
 		logger.Debug(err)
-		c.JSON(500, Resp{Code: -1, Msg: "Username is not exists!"})
+		c.JSON(500, resp.E("Username is not exists!"))
 		return
 	}
 	if utils.VerifyPassword(user.Password, req.Password) {
 		token, err := utils.GenerateToken(user.Token, user.Username)
 		if err != nil || token == "" {
 			logger.Debug(err)
-			c.JSON(500, Resp{Code: -1, Msg: "Could not generate token"})
+			c.JSON(500, resp.E("Could not generate token"))
 			return
 		}
-		c.JSON(200, Resp{Code: 0, Msg: "Success", Data: token})
+		c.JSON(200, resp.S("Success", token))
 		return
 	}
-	c.JSON(500, Resp{Code: -1, Msg: "Password error!"})
+	c.JSON(500, resp.E("Password error!"))
 }
 
 func AuthRegisterHandle(c *gin.Context) {
 	var req LoginRegister
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, Resp{Code: -1, Msg: err.Error()})
+		c.JSON(400, resp.E(err.Error()))
 		return
 	}
 	password := utils.GeneratePassword(req.Password)
 	_, err := models.NewAuth(req.Username, password, req.Email)
 	if err != nil {
 		logger.Debug(err)
-		c.JSON(500, Resp{Code: -1, Msg: "Register error"})
+		c.JSON(500, resp.E("Register error"))
 		return
 	}
-	c.JSON(200, Resp{Code: 0, Msg: "Register success"})
+	c.JSON(200, resp.S("Register success"))
 }
 
 func AuthRefreshHandle(c *gin.Context) {
 	token, err := utils.GetHeaderToken(c.GetHeader("Authorization"))
 	if err != nil {
-		c.AbortWithStatusJSON(400, Resp{Code: -1, Msg: err.Error()})
+		c.AbortWithStatusJSON(400, resp.E(err.Error()))
 		return
 	}
 	reToken, err := utils.RefreshToken(token)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, Resp{Code: -1, Msg: err.Error()})
+		c.JSON(http.StatusInternalServerError, resp.E(err.Error()))
 		return
 	}
 	c.Header("Token", reToken)
-	c.JSON(200, Resp{Code: 0, Msg: "success", Data: reToken})
+	c.JSON(200, resp.S("success", reToken))
 }
 
 func init() {
@@ -78,7 +81,7 @@ func init() {
 		{
 			authGroup.POST("/login", AuthLoginHandle)
 			authGroup.POST("/register", AuthRegisterHandle)
-			authGroup.GET("/refresh", AuthRefreshHandle, JWTAuthMiddleware)
+			authGroup.GET("/refresh", AuthRefreshHandle, mw.JWTAuthMiddleware)
 		}
 	})
 }

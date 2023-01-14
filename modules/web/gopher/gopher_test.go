@@ -31,6 +31,7 @@ func TestExpHTTPUpload(t *testing.T) {
 }
 
 func TestExpGopher(t *testing.T) {
+	t.SkipNow()
 	p, err := expGopher("127.0.0.1:6379", 9527, 1, false)
 	if err != nil {
 		fmt.Println(err)

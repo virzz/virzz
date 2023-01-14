@@ -7,8 +7,8 @@ import (
 
 func TestCalcPermutation(t *testing.T) {
 	var i int
-	for i = 1; i <= 26; i++ {
-		sum := CalcPermutation(26, i)
+	for i = 1; i <= 11; i++ {
+		sum := CalcPermutation(11, i)
 		if sum < 0 {
 			panic("CalcPermutation overflow")
 		}

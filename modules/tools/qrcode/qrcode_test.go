@@ -19,7 +19,7 @@ func TestZeroOneToQrcode(t *testing.T) {
 }
 
 func TestZeroOneToQrcodeFile(t *testing.T) {
-	var fn = "../../../tmp/test_qrcode.png"
+	var fn = "../../../tests/qrcode/test_qrcode.png"
 	res, err := zeroOneToQrcode("100110101001000101001", false, fn)
 	if err != nil {
 		t.Fatal(err)
@@ -32,7 +32,7 @@ func TestZeroOneToQrcodeFile(t *testing.T) {
 }
 
 func TestParseQrcode(t *testing.T) {
-	res, err := parseQrcode("../../../tmp/qrcode10.png")
+	res, err := parseQrcode("../../../tests/qrcode/qrcode10.png")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -43,7 +43,7 @@ func TestParseQrcode(t *testing.T) {
 }
 
 func TestParseQrcodeTermial(t *testing.T) {
-	res, err := parseQrcode("../../../tmp/qrcode10.png", true)
+	res, err := parseQrcode("../../../tests/qrcode/qrcode10.png", true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,8 +62,4 @@ func TestGenerateQrcode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-}
-
-func TestA(t *testing.T) {
-	t.Log(len("\033[48;5;0m  \033[0m"))
 }
