@@ -69,6 +69,11 @@ func ServicePlatform() (string, error) {
 		return "", err
 	}
 
+	// if cacheRedis {
+	// 	redis.Connect()
+	// 	redis.InitCache()
+	// }
+
 	if dnsService {
 		dnsServerStart()
 	}

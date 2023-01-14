@@ -34,6 +34,7 @@ var rootCmd = &cobra.Command{
 var (
 	debugMode     bool
 	debugDatabase bool
+	// cacheRedis    bool
 )
 
 func init() {
@@ -91,6 +92,7 @@ func init() {
 
 	rootCmd.PersistentFlags().BoolVarP(&debugMode, "debug", "D", false, "Set Debug Mode")
 	rootCmd.PersistentFlags().BoolVarP(&debugDatabase, "database", "X", false, "Set Database Debug Mode")
+	// rootCmd.PersistentFlags().BoolVarP(&cacheRedis, "cache-redis", "C", false, "Use Redis Cache")
 
 	rootCmd.AddCommand(
 		versionCmd,

@@ -94,11 +94,12 @@ func ExecSQL(sql string) (string, error) {
 }
 
 func Connect(debug ...bool) error {
-	if !viper.IsSet("mariadb") {
-		logger.Fatal("Not set mariadb config")
-	}
 	return once.Do(func() (err error) {
 		logger.Info("Database Mariadb Connecting ...")
+
+		if !viper.IsSet("mariadb") {
+			logger.Fatal("Not set mariadb config")
+		}
 
 		var config = viper.Get("mariadb").(map[string]interface{})
 

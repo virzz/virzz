@@ -51,6 +51,11 @@ func ServiceDNSServer() (string, error) {
 		return "", err
 	}
 
+	// if cacheRedis {
+	// 	redis.Connect()
+	// 	redis.InitCache()
+	// }
+
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
