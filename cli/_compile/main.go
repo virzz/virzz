@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -88,18 +89,24 @@ func compile(name, source, target string, buildID int) error {
 	}
 
 	if release {
-		version := ""
-		if name == "virzz" || name == "platform" {
-			version = getVersion("p")
+		ver := "unknown"
+		if version != "" {
+			ver = version
+		} else if name == "virzz" || name == "platform" {
+			ver = getVersion("p")
 		} else if name != "public" {
-			version = getVersion("v")
+			ver = getVersion("v")
 		}
 		flags["-trimpath"] = ""
 		flags["-tags"] = "release"
-		flags["-ldflags"] = fmt.Sprintf("-s -w -X %s/common.Mode=prod -X main.BuildID=%d -X main.Version=%s", PACKAGE, buildID, version)
+		flags["-ldflags"] = fmt.Sprintf("-s -w -X %s/common.Mode=prod -X main.BuildID=%d -X main.Version=%s", PACKAGE, buildID, ver)
 	} else {
 		flags["-tags"] = "debug"
 		flags["-ldflags"] = fmt.Sprintf("-X %s/common.Mode=dev -X main.BuildID=%d", PACKAGE, buildID)
+	}
+
+	if len(goTags) > 0 {
+		flags["-tags"] = strings.Join(append(goTags, flags["-tags"]), ",")
 	}
 
 	var flagString bytes.Buffer
@@ -114,15 +121,22 @@ func compile(name, source, target string, buildID int) error {
 
 	var env = os.Environ()
 
+	logger.Debug(name, target)
+
 	// Multi-platform
 	if name != target {
 		ts := strings.Split(target, "-")
-		env = append(env, "GOOS="+ts[1], "GOARCH="+ts[2])
+		env = append(env, "GOOS="+ts[1], "GOARCH="+ts[2], "CGO_ENABLED=0")
 	}
+
+	outputTarget := path.Join(output, target)
+
+	command := fmt.Sprintf("go build -o %s %s %s", outputTarget, flagString.String(), source)
+	logger.Debug("command = ", command)
 
 	var stderr bytes.Buffer
 	opts := &execext.RunCommandOptions{
-		Command: fmt.Sprintf("go build -o %s/%s %s %s", TARGET_DIR, target, flagString.String(), source),
+		Command: command,
 		Dir:     ".",
 		Env:     env,
 		Stdout:  execext.DevNull{},
@@ -137,28 +151,24 @@ func compile(name, source, target string, buildID int) error {
 		logger.Info(stderr.String())
 	}
 
-	if name == target {
-		logger.SuccessF("Compiled %s successfully", target)
-	} else {
-		logger.SuccessF("Compiled %s to %s successfully", name, target)
-	}
+	logger.SuccessF("Compiled %s to %s successfully", name, outputTarget)
 
 	return nil
 }
 
 func multiCompile(name, source string, buildID int) []string {
-	targes := make([]string, 0, MULTI_COUNT)
+	targets := make([]string, 0, MULTI_COUNT)
 	for _, goos := range OSS {
 		for _, goarch := range ARCHES {
 			target := fmt.Sprintf("%s-%s-%s", name, goos, goarch)
 			if err := compile(name, source, target, buildID); err != nil {
 				logger.Error(err)
 			} else {
-				targes = append(targes, target)
+				targets = append(targets, target)
 			}
 		}
 	}
-	return targes
+	return targets
 }
 
 func archiveTargets(name string) error {
@@ -181,10 +191,11 @@ func archiveTargets(name string) error {
 		`
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
+
 	var env = append(os.Environ(),
 		"RELEASE="+releaseTarget,
-		"TARGET="+TARGET_DIR,
 		"NAME="+name,
+		"TARGET="+output,
 	)
 	if archiveTogether {
 		env = append(env, "TOGETHER=1")
@@ -266,7 +277,6 @@ var rootCmd = &cobra.Command{
 					} else {
 						logger.Error("Lost some platform binaries, try compile again")
 					}
-
 				} else {
 					logger.InfoF("Start compiling %s", name)
 					if err := compile(name, source, name, buildID); err != nil {
@@ -282,12 +292,15 @@ var rootCmd = &cobra.Command{
 }
 
 var (
-	release         bool = false
-	archive         bool = false
-	archiveTogether bool = false
-	multi           bool = false
-	clean           bool = false
-	force           bool = false
+	release         bool
+	archive         bool
+	archiveTogether bool
+	multi           bool
+	clean           bool
+	force           bool
+	version         string
+	output          string
+	goTags          []string
 
 	verbose int = 0
 )
@@ -299,6 +312,9 @@ func init() {
 	rootCmd.Flags().BoolVarP(&multi, "multi", "M", false, "Compile multi-platform binaries")
 	rootCmd.Flags().BoolVarP(&clean, "clean", "C", false, "Clean build files")
 	rootCmd.Flags().BoolVarP(&force, "force", "F", false, "Force to Compile")
+	rootCmd.Flags().StringVarP(&version, "version", "V", "", "Custom version")
+	rootCmd.Flags().StringVarP(&output, "output", "o", TARGET_DIR, "Custom output path")
+	rootCmd.Flags().StringSliceVarP(&goTags, "tags", "T", []string{}, "Append go build tags")
 
 	rootCmd.Flags().CountVarP(&verbose, "verbose", "v", "Print verbose information")
 
