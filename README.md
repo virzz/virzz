@@ -2,6 +2,14 @@
 
 [![Build](https://github.com/virzz/virzz/actions/workflows/virzz.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz.yml) [![Build Release](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml)
 
+## Install
+
+`brew install virzz/virzz/<formula>` || `brew tap virzz/virzz; brew install <formula>`
+
+### Formulae
+
+- God `brew install virzz/virzz/god` || `brew tap virzz/virzz; brew install god`
+
 ## God - CLI 命令行小工具
 
 ```
