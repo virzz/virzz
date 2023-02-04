@@ -2,7 +2,7 @@ package downloader
 
 import (
 	"crypto/tls"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -14,21 +14,28 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/panjf2000/ants/v2"
 	"github.com/virzz/logger"
+)
+
+const (
+	DefaultLimit   = 10
+	DefaultDelay   = 0
+	DefaultTimeout = 5
 )
 
 // Downloader -
 type Downloader struct {
-	httpClient *http.Client
-	headers    map[string]string
 	timeout    int64 //  超时
 	limit      int64 // 并发数
 	delay      int64 // 请求延迟(limit = 1)
-	workers    chan downloadTask
-	cancelChan chan bool
+	httpClient *http.Client
+	headers    map[string]string
+	workers    chan *downloadTask
 	errFile    map[string]int
 	results    map[string]interface{}
 	result     bool
+	lock       sync.Mutex
 }
 
 type downloadTask struct {
@@ -38,8 +45,8 @@ type downloadTask struct {
 
 // SetTimeout -
 func (d *Downloader) SetTimeout(timeout int64) *Downloader {
-	if timeout > 30 {
-		timeout = 30
+	if timeout > 60 {
+		timeout = 60
 	}
 	d.timeout = timeout
 	return d
@@ -77,7 +84,7 @@ func (d *Downloader) SetResult() *Downloader {
 
 // AddTask -
 func (d *Downloader) AddTask(target, dest string) *Downloader {
-	d.workers <- downloadTask{
+	d.workers <- &downloadTask{
 		Target:   target,
 		DestPath: dest,
 	}
@@ -94,15 +101,25 @@ func (d *Downloader) AddTasks(tasks map[string]string) *Downloader {
 
 // Init -
 func (d *Downloader) Init() *Downloader {
-	d.workers = make(chan downloadTask, 102400)
+	d.workers = make(chan *downloadTask, 1024)
 	d.errFile = make(map[string]int)
 	d.results = make(map[string]interface{})
 	d.headers = make(map[string]string)
+	d.httpClient = &http.Client{
+		Timeout: time.Duration(d.timeout) * time.Second,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
+
 	return d
 }
 
 // Head -
-func (d *Downloader) Head(work downloadTask) (resp *http.Response, err error) {
+func (d *Downloader) Head(work *downloadTask) (resp *http.Response, err error) {
 	var (
 		req *http.Request
 	)
@@ -128,14 +145,14 @@ func (d *Downloader) Head(work downloadTask) (resp *http.Response, err error) {
 }
 
 // Fetch -
-func (d *Downloader) Fetch(work downloadTask) (err error) {
+func (d *Downloader) Fetch(work *downloadTask) (err error) {
 	var (
 		req  *http.Request
 		resp *http.Response
 	)
 	// Fix: Traversal
 	if strings.Contains(work.DestPath, "..") {
-		err = errors.New("it's exist '..' in the path")
+		err = fmt.Errorf("invalid path with '..': %s", work.DestPath)
 		logger.Error(err)
 		return
 	}
@@ -151,7 +168,6 @@ func (d *Downloader) Fetch(work downloadTask) (err error) {
 	}
 	// Already exists
 	if fi, _ := os.Stat(work.DestPath); fi != nil && fi.Size() == size {
-		logger.DebugF("%s is exists", work.DestPath)
 		d.results[work.DestPath] = true
 		return nil
 	}
@@ -223,82 +239,75 @@ func (d *Downloader) PrintResults() {
 	}
 }
 
+var (
+	ErrInterrupt = fmt.Errorf("finish by interrupt")
+)
+
 // Start -
 func (d *Downloader) Start() error {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	d.httpClient = &http.Client{
-		Timeout: time.Duration(d.timeout) * time.Second,
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-		Transport: tr,
-	}
-
-	wg := &sync.WaitGroup{}
-	d.cancelChan = make(chan bool)
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	wl := int64(len(d.workers))
-	for i := int64(0); i < d.limit && i < wl; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			for {
-				select {
-				case <-d.cancelChan:
-					return
-				case <-time.After(3 * time.Second):
-					defer func() {
-						if recover() != nil {
-							return
-						}
-					}()
-					close(d.cancelChan)
-				case work := <-d.workers:
-					logger.Debug("Downloder Fetch ", work.Target)
-					// Fetch
-					if err := d.Fetch(work); err != nil {
-						logger.Debug(err.Error())
-						num, ok := d.errFile[work.Target]
-						if ok {
-							if num > 2 {
-								logger.Error(err.Error())
-							} else {
-								d.workers <- work
-								d.errFile[work.Target]++
-							}
-						} else {
-							d.errFile[work.Target] = 0
-						}
-					}
-					// delay
-					if d.delay > 0 {
-						time.Sleep(time.Duration(d.delay) * time.Second)
-					}
+	p, _ := ants.NewPoolWithFunc(int(d.limit), func(_work interface{}) {
+		work := _work.(*downloadTask)
+		logger.Debug("Pool Fetching ", work.Target)
+
+		if d.delay > 0 {
+			time.Sleep(time.Duration(d.delay) * time.Second)
+		}
+
+		if err := d.Fetch(work); err != nil {
+			d.lock.Lock()
+			num, ok := d.errFile[work.Target]
+			if ok {
+				if num > 2 {
+					logger.Error(err.Error())
+				} else {
+					d.workers <- work
+					d.errFile[work.Target]++
 				}
+			} else {
+				d.errFile[work.Target] = 0
 			}
-		}()
+			d.lock.Unlock()
+		}
+	})
+	defer func() {
+		if !p.IsClosed() {
+			p.Release()
+		}
+	}()
+
+	for {
+		select {
+		case <-interrupt:
+			close(d.workers)
+			p.Release()
+			return ErrInterrupt
+		case work, ok := <-d.workers:
+			if !ok {
+				break
+			}
+			go p.Invoke(work)
+		case <-time.After(3 * time.Second):
+			if p.Running() == 0 {
+				return nil
+			}
+		}
 	}
-
-	wg.Wait()
-
-	return nil
 }
 
 // NewDownloader -
 func NewDownloader() *Downloader {
 	d := &Downloader{}
-	d.Init().SetLimit(10).SetDelay(0).SetTimeout(3)
+	d.Init().SetLimit(DefaultLimit).SetDelay(DefaultDelay).SetTimeout(DefaultTimeout)
 	return d
 }
 
 func SigleFetch(target, dest string) error {
 	d := NewDownloader()
-	err := d.Fetch(downloadTask{Target: target, DestPath: dest})
+	err := d.Fetch(&downloadTask{Target: target, DestPath: dest})
 	if err != nil {
 		return err
 	}

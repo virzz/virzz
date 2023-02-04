@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	limit int64
-	delay int64
+	limit   int64
+	delay   int64
+	timeout int64
 )
 
 var GithackCmd = &cobra.Command{
@@ -30,9 +31,6 @@ var GithackCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if delay > 0 {
-			limit = 1
-		}
 		return gitHack(args[0], limit, delay)
 	},
 }
@@ -40,7 +38,7 @@ var GithackCmd = &cobra.Command{
 func init() {
 	GithackCmd.Flags().Int64VarP(&limit, "limit", "l", 10, "Request limit (N times one second)")
 	GithackCmd.Flags().Int64VarP(&delay, "delay", "d", 0, "Request delay (N times one second)")
-	GithackCmd.SuggestionsMinimumDistance = 1
+	GithackCmd.Flags().Int64VarP(&timeout, "timeout", "t", 10, "Request timeout (second)")
 }
 
 func ExportCommand() []*cobra.Command {
