@@ -25,8 +25,8 @@ import (
 var (
 	AppName        = "God"
 	BinName        = "god"
-	Version string = "dev" // git tag | tail -1
-	BuildID string = "0"   // head .buildid
+	Version string = "latest"
+	BuildID string = "0"
 )
 
 var versionCmd = common.VersionCommand(AppName, Version, BuildID)
