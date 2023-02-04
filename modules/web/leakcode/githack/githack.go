@@ -2,6 +2,9 @@ package githack
 
 import (
 	"bufio"
+	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/url"
@@ -10,9 +13,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/lizongshen/gocommand"
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/modules/downloader"
+	"github.com/virzz/virzz/utils/execext"
 )
 
 var baseFiles = []string{
@@ -59,7 +62,7 @@ func parserURL(targetURL string) (resURL, tempDir string, err error) {
 	return resURL, tempDir, nil
 }
 
-func fetchCommitObjects(downClient *downloader.Downloader, baseURL, tempDir string, stash bool) (err error) {
+func fetchObjects(downClient *downloader.Downloader, baseURL, tempDir string, stash bool) (err error) {
 	var file *os.File
 	if stash {
 		if file, err = os.Open(filepath.Join(tempDir, ".git", "logs", "refs", "stash")); err != nil {
@@ -87,32 +90,39 @@ func fetchCommitObjects(downClient *downloader.Downloader, baseURL, tempDir stri
 		if len(hashArr) < 3 {
 			break
 		}
-		logger.Debug(hashArr)
 		curHash = hashArr[1]
 		target := filepath.Join(".git", "objects", curHash[:2], curHash[2:40])
 		downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), filepath.Join(tempDir, target))
 	}
 	return downClient.Start()
 }
-
+func fetchStashObjects(downClient *downloader.Downloader, baseURL, tempDir string) (err error) {
+	return fetchObjects(downClient, baseURL, tempDir, true)
+}
+func fetchCommitObjects(downClient *downloader.Downloader, baseURL, tempDir string) (err error) {
+	return fetchObjects(downClient, baseURL, tempDir, false)
+}
 func fixMissingObjects(downClient *downloader.Downloader, baseURL, tempDir string) (err error) {
-	logger.Debug("fixMissingObjects")
 	var (
-		cmd, out string
-		matches  [][]string
+		matches [][]string
+		stdout  bytes.Buffer
 	)
-	cmd = fmt.Sprintf("cd ./%s && git fsck 2>&1", tempDir)
-	if _, out, err = gocommand.NewCommand().Exec(cmd); err != nil {
-		return
+	opts := &execext.RunCommandOptions{
+		Command: "git fsck 2>&1",
+		Dir:     tempDir,
+		Stdout:  &stdout,
 	}
-	logger.Debug(out)
-	matches = regexp.MustCompile(`(?m)([a-fA-F0-9]{40})`).FindAllStringSubmatch(out, -1)
+	if err = execext.RunCommand(context.Background(), opts); err != nil && !strings.Contains(err.Error(), "exit status") {
+		return fmt.Errorf(`RunCommand "%s" failed: %s`, opts.Command, err)
+	}
+	logger.Debug("git fsck:", stdout.String())
+	matches = regexp.MustCompile(`(?m)([a-fA-F0-9]{40})`).FindAllStringSubmatch(stdout.String(), -1)
 	// matchMap := make(map[string]int)
 	if len(matches) > 0 {
 		for _, match := range matches {
 			curHash := match[0]
-			logger.Debug("Fetch Object", curHash)
 			target := filepath.Join(".git", "objects", curHash[:2], curHash[2:40])
+			logger.Info("Fetch Object", target)
 			downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), filepath.Join(tempDir, target))
 		}
 		downClient.Start()
@@ -125,39 +135,72 @@ func fixMissingObjects(downClient *downloader.Downloader, baseURL, tempDir strin
 
 func gitHack(targetURL string, limit, delay int64) (err error) {
 	var baseURL, tempDir string
-	logger.Info("Attack [%s]\n", targetURL)
+	logger.InfoF("Attack [%s]", targetURL)
 
 	if baseURL, tempDir, err = parserURL(targetURL); err != nil {
 		return
 	}
-	logger.Debug("baseURL:", baseURL)
-	logger.Debug("tempDir:", tempDir)
-	// NewDownloader
-	download := downloader.NewDownloader().SetLimit(limit).SetDelay(delay)
-	// Download Base Files
+	logger.Info("BaseURL:", baseURL)
+	logger.Info("TempDir:", tempDir)
+
+	download := downloader.NewDownloader().SetLimit(limit).SetDelay(delay).SetTimeout(timeout)
+
+	logger.Info("Fetch Base Files...")
 	for _, uri := range baseFiles {
 		download.AddTask(fmt.Sprintf("%s/%s", baseURL, uri), filepath.Join(tempDir, uri))
 	}
-	logger.Info("Fetch Base Files...")
-	download.Start()
+	if err = download.Start(); err != nil {
+		if errors.Is(err, downloader.ErrInterrupt) {
+			logger.Warn(err)
+			return nil
+		}
+		return err
+	}
 
 	// Fetch Commit Objects
 	logger.Info("Fetch Commit Objects...")
-	fetchCommitObjects(download, baseURL, tempDir, false)
+	err = fetchCommitObjects(download, baseURL, tempDir)
+	if err != nil {
+		if errors.Is(err, downloader.ErrInterrupt) {
+			logger.Warn(err)
+			return nil
+		}
+		return err
+	}
 
 	// Fetch Stash Objects
 	logger.Info("Fetch Stash Objects...")
-	fetchCommitObjects(download, baseURL, tempDir, true)
+	err = fetchStashObjects(download, baseURL, tempDir)
+	if errors.Is(err, downloader.ErrInterrupt) {
+		logger.Warn(err)
+		return nil
+	}
 
 	// Fix Missing Objects
 	logger.Info("Fetch Missing Objects...")
-	fixMissingObjects(download, baseURL, tempDir)
+	err = fixMissingObjects(download, baseURL, tempDir)
+	if err != nil {
 
-	// Reset to the last commit
-	cmd := fmt.Sprintf("cd ./%s && git reset --hard > /dev/null", tempDir)
-	if _, _, err := gocommand.NewCommand().Exec(cmd); err != nil {
+		if errors.Is(err, downloader.ErrInterrupt) {
+			logger.Warn(err)
+			return nil
+		}
 		return err
 	}
+
+	// Reset to the last commit
+	logger.Info("Git Reset...")
+	var stdout bytes.Buffer
+	opts := &execext.RunCommandOptions{
+		Command: "git reset --hard > /dev/null",
+		Dir:     tempDir,
+		Stdout:  &stdout,
+	}
+	if err = execext.RunCommand(context.Background(), opts); err != nil {
+		return fmt.Errorf(`RunCommand "%s" failed: %s`, opts.Command, err)
+	}
+	logger.Debug(stdout.String())
+
 	logger.Info("Fetched Info")
 	return nil
 }
