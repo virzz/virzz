@@ -1,4 +1,7 @@
-package utils 
+//go:build !go1.20
+// +build !go1.20
+
+package utils
 
 import (
 	"math/rand"
