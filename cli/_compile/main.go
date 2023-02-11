@@ -9,16 +9,14 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/virzz/logger"
 
 	_ "github.com/virzz/virzz/common"
-
-	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 	"github.com/virzz/virzz/utils/execext"
 )
 
 const (
-	PACKAGE     = "github.com/virzz/virzz"
 	TARGET_DIR  = "./build"
 	SOURCE_DIR  = "./cli"
 	PUBLIC_DIR  = "./cli/public"
@@ -89,20 +87,21 @@ func compile(name, source, target string, buildID int) error {
 	}
 
 	if release {
-		ver := "unknown"
-		if version != "" {
-			ver = version
-		} else if name == "virzz" || name == "platform" {
-			ver = getVersion("p")
-		} else if name != "public" {
-			ver = getVersion("v")
+		if version == "" {
+			if name == "virzz" || name == "platform" {
+				version = getVersion("p")
+			} else if name != "public" {
+				version = getVersion("v")
+			} else {
+				version = "unknown"
+			}
 		}
 		flags["-trimpath"] = ""
 		flags["-tags"] = "release"
-		flags["-ldflags"] = fmt.Sprintf("-s -w -X %s/common.Mode=prod -X main.BuildID=%d -X main.Version=%s", PACKAGE, buildID, ver)
+		flags["-ldflags"] = fmt.Sprintf("-s -w -X main.BuildID=%d -X main.Version=%s", buildID, version)
 	} else {
 		flags["-tags"] = "debug"
-		flags["-ldflags"] = fmt.Sprintf("-X %s/common.Mode=dev -X main.BuildID=%d", PACKAGE, buildID)
+		flags["-ldflags"] = fmt.Sprintf("-X main.BuildID=%d", buildID)
 	}
 
 	if len(goTags) > 0 {
@@ -130,25 +129,23 @@ func compile(name, source, target string, buildID int) error {
 	}
 
 	outputTarget := path.Join(output, target)
-
-	command := fmt.Sprintf("go build -o %s %s %s", outputTarget, flagString.String(), source)
-	logger.Debug("command = ", command)
-
+	buildCmd := fmt.Sprintf("%s build -o %s %s %s", builder, outputTarget, flagString.String(), source)
 	var stderr bytes.Buffer
+	logger.Warn("Build CMD: ", buildCmd)
 	opts := &execext.RunCommandOptions{
-		Command: command,
+		Command: buildCmd,
 		Dir:     ".",
 		Env:     env,
 		Stdout:  execext.DevNull{},
 		Stderr:  &stderr,
 	}
-	if err := execext.RunCommand(context.Background(), opts); err != nil {
-		return err
-	}
-
-	if verbose > 0 || stderr.Len() > 5 {
+	err := execext.RunCommand(context.Background(), opts)
+	if verbose > 0 && stderr.Len() > 5 {
 		// go build -x output to stderr
-		logger.Info(stderr.String())
+		logger.Error(stderr.String())
+	}
+	if err != nil {
+		return err
 	}
 
 	logger.SuccessF("Compiled %s to %s successfully", name, outputTarget)
@@ -233,7 +230,6 @@ var rootCmd = &cobra.Command{
 				return err
 			}
 			logger.Success("Cleaned build directory")
-			return nil
 		}
 
 		// Compile Virzz Projects
@@ -298,11 +294,11 @@ var (
 	multi           bool
 	clean           bool
 	force           bool
-	version         string
 	output          string
 	goTags          []string
-
-	verbose int = 0
+	verbose         int = 0
+	version         string
+	builder         string
 )
 
 func init() {
@@ -312,16 +308,15 @@ func init() {
 	rootCmd.Flags().BoolVarP(&multi, "multi", "M", false, "Compile multi-platform binaries")
 	rootCmd.Flags().BoolVarP(&clean, "clean", "C", false, "Clean build files")
 	rootCmd.Flags().BoolVarP(&force, "force", "F", false, "Force to Compile")
-	rootCmd.Flags().StringVarP(&version, "version", "V", "", "Custom version")
+	rootCmd.Flags().StringVarP(&version, "version", "V", "", "Custom Build version")
 	rootCmd.Flags().StringVarP(&output, "output", "o", TARGET_DIR, "Custom output path")
 	rootCmd.Flags().StringSliceVarP(&goTags, "tags", "T", []string{}, "Append go build tags")
-
+	rootCmd.Flags().StringVarP(&builder, "builder", "B", "go", "Replace `go`")
 	rootCmd.Flags().CountVarP(&verbose, "verbose", "v", "Print verbose information")
 
 }
 
 func main() {
-	logger.SetDebug(true)
 	if err := rootCmd.Execute(); err != nil {
 		logger.Error(err)
 		os.Exit(1)

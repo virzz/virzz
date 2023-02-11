@@ -2,20 +2,31 @@
 
 TARGET=./build
 
+default:
+	go run ./cli/_compile god
+
+public:
+	go run ./cli/_compile public
+
 %:
-	@rm -f ${TARGET}/$@ ; \
-	if [[ -d ./cli/public/$@ || -d ./cli/$@ ]];then \
-		if [[ -z $DEBUG ]]; then \
+	@rm -f ${TARGET}/$@ ; 
+	@if [[ -d ./cli/public/$@ ]] || [[ -d ./cli/$@ ]]; then \
+		if [[ -z "${DEBUG}" ]]; then \
 			go run -tags debug ./cli/_compile $@ ; \
 		else \
 			go run ./cli/_compile $@ ; \
 		fi; \
-	else \
-		echo "Not found target project: $@"; \
-	fi
+	fi;
 
-public:
-	go run ./cli/_compile public
+rc-%:
+	@echo "[*] Compiling Release $(subst rc-,,$@) ..." ; \
+	go run ./cli/_compile -R $(subst rc-,,$@)
+
+i-%: rc-%
+	@export NAME='$(subst i-,,$@)'; \
+	echo "[*] Install Release $${NAME} ..." ; \
+	cp -f ${TARGET}/$${NAME} ${GOPATH}/bin/$${NAME}; \
+	test -f ${GOPATH}/bin/$${NAME} && echo "[+] $${NAME} Installed";
 
 clean:
 	@go run ./cli/_compile -C
@@ -24,6 +35,9 @@ cleanr:
 	@rm -rf release; \
 	go clean ./... ; \
 	echo "[+] Cleaned."
+
+swagger:
+	@swag i -g services/web/swagger.go -o services/docs
 
 readme:
 	@echo "Add Title"; \
