@@ -3,32 +3,30 @@
 TARGET=./build
 
 default:
-	go run ./cli/_compile virzz
+	go run ./cli/_compile god
 
+public:
+	go run ./cli/_compile public
 
 %:
-	@rm -f ${TARGET}/$@ ; \
-	if [[ -d ./cli/public/$@ ]];then \
-		go run ./cli/_compile $@ ; \
-	elif [[ -d ./cli/$@ ]]; then \
-		go run ./cli/_compile $@ ; \
-	else \
-		echo "Not found target project: $@"; \
-	fi
+	@rm -f ${TARGET}/$@ ; 
+	@if [[ -d ./cli/public/$@ ]] || [[ -d ./cli/$@ ]]; then \
+		if [[ -z "${DEBUG}" ]]; then \
+			go run -tags debug ./cli/_compile $@ ; \
+		else \
+			go run ./cli/_compile $@ ; \
+		fi; \
+	fi;
 
+rc-%:
+	@echo "[*] Compiling Release $(subst rc-,,$@) ..." ; \
+	go run ./cli/_compile -R $(subst rc-,,$@)
 
-install: virzz
-	@echo "[*] Install virzz ..." ; \
-	cp -f ${TARGET}/virzz ${GOPATH}/bin/virzz; \
-	test -f ${GOPATH}/bin/virzz && echo "[+] virzz Installed";
-
-uninstall: remove
-
-remove:
-	@echo "[*] Remove virzz ..." ; \
-	rm -f ${GOPATH}/bin/virzz; \
-	test -f ${GOPATH}/bin/virzz || \
-	echo "[+] virzz Removed";
+i-%: rc-%
+	@export NAME='$(subst i-,,$@)'; \
+	echo "[*] Install Release $${NAME} ..." ; \
+	cp -f ${TARGET}/$${NAME} ${GOPATH}/bin/$${NAME}; \
+	test -f ${GOPATH}/bin/$${NAME} && echo "[+] $${NAME} Installed";
 
 clean:
 	@go run ./cli/_compile -C
@@ -37,6 +35,9 @@ cleanr:
 	@rm -rf release; \
 	go clean ./... ; \
 	echo "[+] Cleaned."
+
+swagger:
+	@swag i -g services/web/swagger.go -o services/docs
 
 readme:
 	@echo "# Virzz" > README.md ; \
@@ -56,11 +57,3 @@ readme:
 		./build/platform >> README.md; \
 		echo '```' >> README.md; \
 	fi
-
-docker:
-	@test -f ./build/platform-linux-amd64 && \
-	cp ./build/platform-linux-amd64 ./deploy/platform-linux-amd64 && \
-	cd ./deploy && \
-	command -v docker-compose && \
-	docker-compose build platform && \
-	echo "[+] Success" && rm -f platform-linux-amd64 || echo "[-] Fail"

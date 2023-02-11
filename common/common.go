@@ -12,8 +12,7 @@ const (
 )
 
 var (
-	DebugMode bool   = false
-	Mode      string = "dev"
+	DebugMode bool = false
 )
 
 func init() {
@@ -21,9 +20,6 @@ func init() {
 	if debugEnv == "true" || debugEnv == "1" || debugEnv == "on" {
 		DebugMode = true
 		logger.SetDebug(true)
-	}
-	if Mode == "dev" {
-		DebugMode = true
 	}
 	// Force off debug mode
 	if debugEnv == "off" {

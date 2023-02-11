@@ -13,8 +13,8 @@ require (
 	github.com/goccy/go-json v0.10.0
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/htruong/go-md2 v0.0.0-20170914203617-c69905b63f6f
-	github.com/lizongshen/gocommand v0.0.0-20180727133302-41f166788491
 	github.com/miekg/dns v1.1.50
+	github.com/panjf2000/ants/v2 v2.7.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.6.1
