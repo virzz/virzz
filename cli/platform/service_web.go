@@ -12,9 +12,9 @@ import (
 	"github.com/spf13/viper"
 	"github.com/virzz/logger"
 
-	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/services/server/mariadb"
 	"github.com/virzz/virzz/services/server/web"
+	"github.com/virzz/virzz/utils"
 )
 
 var webCmd = &cobra.Command{
@@ -25,7 +25,7 @@ var webCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(string(r))
+		return utils.Output(string(r))
 	},
 }
 

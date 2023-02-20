@@ -2,7 +2,7 @@ package hash
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var (
@@ -14,7 +14,7 @@ var hMd2Cmd = &cobra.Command{
 	Short: "Hmac-MD2 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -22,7 +22,7 @@ var hMd2Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 var hMd4Cmd = &cobra.Command{
@@ -30,7 +30,7 @@ var hMd4Cmd = &cobra.Command{
 	Short: "Hmac-MD4 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -38,7 +38,7 @@ var hMd4Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 var hMd5Cmd = &cobra.Command{
@@ -46,7 +46,7 @@ var hMd5Cmd = &cobra.Command{
 	Short: "Hmac-MD5 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ var hMd5Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -63,7 +63,7 @@ var hSha1Cmd = &cobra.Command{
 	Short: "Hmac-SHA1 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -71,7 +71,7 @@ var hSha1Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -80,7 +80,7 @@ var hSha224Cmd = &cobra.Command{
 	Short: "Hmac-SHA224 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -88,7 +88,7 @@ var hSha224Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 var hSha256Cmd = &cobra.Command{
@@ -96,7 +96,7 @@ var hSha256Cmd = &cobra.Command{
 	Short: "Hmac-SHA256 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -104,7 +104,7 @@ var hSha256Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 var hSha384Cmd = &cobra.Command{
@@ -112,7 +112,7 @@ var hSha384Cmd = &cobra.Command{
 	Short: "Hmac-SHA384 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -120,7 +120,7 @@ var hSha384Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -129,7 +129,7 @@ var hSha3Cmd = &cobra.Command{
 	Short: "Hmac-SHA3 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -137,7 +137,7 @@ var hSha3Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 var hSha512Cmd = &cobra.Command{
@@ -145,7 +145,7 @@ var hSha512Cmd = &cobra.Command{
 	Short: "Hmac-SHA3 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -153,7 +153,7 @@ var hSha512Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -162,7 +162,7 @@ var hRipemd160Cmd = &cobra.Command{
 	Short: "Hmac-Ripemd160 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -170,7 +170,7 @@ var hRipemd160Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -179,7 +179,7 @@ var hSm3Cmd = &cobra.Command{
 	Short: "Hmac-SM3 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -187,7 +187,7 @@ var hSm3Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

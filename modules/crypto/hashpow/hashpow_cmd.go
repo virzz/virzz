@@ -1,43 +1,67 @@
 package hashpow
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"fmt"
+
+	"github.com/urfave/cli/v3"
+	"github.com/virzz/virzz/utils"
 )
 
-var (
-	pos                          int
-	code, prefix, suffix, method string
-)
+var methodLength = map[string]int{"md5": 32, "sha1": 40}
 
-var hashPowCmd = &cobra.Command{
-	Use:   "hashpow",
-	Short: "A tool for ctfer which make hash collision faster",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		if err := cmd.ValidateRequiredFlags(); err != nil {
-			return err
-		}
-		return nil
+var Cmd = &cli.Command{
+	Category: "Crypto",
+	Name:     "hashpow",
+	Usage:    "Brute Hash Power of Work with md5/sha1",
+
+	Flags: []cli.Flag{
+		&cli.StringFlag{
+			Name:     "code",
+			Aliases:  []string{"c"},
+			Value:    "",
+			Usage:    "Request code",
+			Required: true,
+		},
+		&cli.IntFlag{
+			Name:    "pos",
+			Aliases: []string{"i"},
+			Value:   0,
+			Usage:   "Starting position of hash",
+			Action: func(c *cli.Context, p int) error {
+				if p < 0 || methodLength[c.String("method")] < p {
+					return fmt.Errorf("invalid position")
+				}
+				return nil
+			},
+		},
+		&cli.StringFlag{
+			Name:    "prefix",
+			Aliases: []string{"p"},
+			Value:   "",
+			Usage:   "Hash prefix",
+		},
+		&cli.StringFlag{
+			Name:    "suffix",
+			Aliases: []string{"s"},
+			Value:   "",
+			Usage:   "Hash suffix",
+		},
+		&cli.StringFlag{
+			Name:    "method",
+			Aliases: []string{"m"},
+			Value:   "md5",
+			Usage:   "Hash method: <sha1|md5>",
+			Action: func(c *cli.Context, m string) error {
+				if utils.SliceContains([]string{"md5", "sha1"}, m) {
+					return nil
+				}
+				return fmt.Errorf("invalid method")
+			},
+		},
 	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return common.Output(doBrute(code, prefix, suffix, method, pos))
+	Action: func(c *cli.Context) error {
+		r := HashPoW(c.String("code"), c.String("prefix"), c.String("suffix"), c.String("method"), c.Int("pos"))
+		_, err := fmt.Println(r)
+		return err
 	},
-}
-
-func init() {
-	hashPowCmd.Flags().IntVarP(&pos, "pos", "i", 0, "starting position of hash")
-	hashPowCmd.Flags().StringVarP(&prefix, "prefix", "p", "", "text prefix")
-	hashPowCmd.Flags().StringVarP(&suffix, "suffix", "s", "", "text suffix")
-	hashPowCmd.Flags().StringVarP(&code, "code", "c", "", "part of hash code")
-	hashPowCmd.Flags().StringVarP(&method, "hash", "t", "md5", "hash type : md5 sha1")
-
-	hashPowCmd.MarkFlagRequired("code")
-
-	hashPowCmd.SuggestionsMinimumDistance = 1
-}
-
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{
-		hashPowCmd,
-	}
 }

@@ -2,14 +2,14 @@ package netool
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var ip2octCmd = &cobra.Command{
 	Use:   "ip2oct",
 	Short: "IPv4 -> Oct",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -17,7 +17,7 @@ var ip2octCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -26,7 +26,7 @@ var ip2decCmd = &cobra.Command{
 	Use:   "ip2dec",
 	Short: "IPv4 -> Dec",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -34,7 +34,7 @@ var ip2decCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -43,7 +43,7 @@ var ip2hexCmd = &cobra.Command{
 	Use:   "ip2hex",
 	Short: "IPv4 -> Hex",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ var ip2hexCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -60,7 +60,7 @@ var ip2dotoctCmd = &cobra.Command{
 	Use:   "ip2dotoct",
 	Short: "IPv4 -> DotOct",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -68,7 +68,7 @@ var ip2dotoctCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -77,7 +77,7 @@ var ip2dothexCmd = &cobra.Command{
 	Use:   "ip2dothex",
 	Short: "IPv4 -> DotHex",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -85,7 +85,7 @@ var ip2dothexCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -94,7 +94,7 @@ var ip2allCmd = &cobra.Command{
 	Use:   "ip2all",
 	Short: "IPv4 -> Oct,Dec,Hex",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -102,7 +102,7 @@ var ip2allCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -111,7 +111,7 @@ var oct2ipCmd = &cobra.Command{
 	Use:   "oct2ip",
 	Short: "Oct -> IPv4",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -119,7 +119,7 @@ var oct2ipCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -128,7 +128,7 @@ var dec2ipCmd = &cobra.Command{
 	Use:   "dec2ip",
 	Short: "Dec -> IPv4",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -136,7 +136,7 @@ var dec2ipCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -145,7 +145,7 @@ var hex2ipCmd = &cobra.Command{
 	Use:   "hex2ip",
 	Short: "Hex -> IPv4",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -153,7 +153,7 @@ var hex2ipCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -162,7 +162,7 @@ var mac2decCmd = &cobra.Command{
 	Use:   "mac2dec",
 	Short: "MAC -> Dec",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -170,7 +170,7 @@ var mac2decCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -179,7 +179,7 @@ var dec2macCmd = &cobra.Command{
 	Use:   "dec2mac",
 	Short: "Dec -> MAC",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -187,7 +187,7 @@ var dec2macCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

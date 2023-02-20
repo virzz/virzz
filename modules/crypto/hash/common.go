@@ -7,6 +7,6 @@ func ExportCommand() []*cobra.Command {
 		hashCmd,
 		hmacCmd,
 		// gmsmCmd,
-		bcryptCmd,
+		// bcryptCmd,
 	}
 }

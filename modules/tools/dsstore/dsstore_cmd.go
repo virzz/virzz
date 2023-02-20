@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var (
@@ -24,7 +24,7 @@ var dsstoreCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

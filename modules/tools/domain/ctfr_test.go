@@ -6,7 +6,7 @@ import (
 )
 
 func TestCtfr(t *testing.T) {
-	s, err := ctfr("virzz.com")
+	s, err := Ctfr("ctfhub.com")
 	if err != nil {
 		t.Fatal(err)
 	}

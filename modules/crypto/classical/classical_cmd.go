@@ -2,7 +2,7 @@ package classical
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var (
@@ -14,12 +14,12 @@ var caesarCmd = &cobra.Command{
 	Use:   "caesar",
 	Short: "Caesar Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
 		r, _ := Caesar(s)
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -27,12 +27,12 @@ var rot13Cmd = &cobra.Command{
 	Use:   "rot13",
 	Short: "Rot13 By Caesar Encode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
 		r, _ := Rot13(s)
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -40,7 +40,7 @@ var morseCmd = &cobra.Command{
 	Use:   "morse",
 	Short: "Morse Code 摩尔斯电码",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -48,7 +48,7 @@ var morseCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -56,7 +56,7 @@ var atbashCmd = &cobra.Command{
 	Use:   "atbash",
 	Short: "Atbash 埃特巴什码",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -64,7 +64,7 @@ var atbashCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -72,7 +72,7 @@ var peigenCmd = &cobra.Command{
 	Use:   "peigen",
 	Short: "Peigen 培根密码",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ var peigenCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -88,7 +88,7 @@ var vigenereCmd = &cobra.Command{
 	Use:   "vigenere",
 	Short: "Vigenere 维吉利亚密码",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -96,7 +96,7 @@ var vigenereCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

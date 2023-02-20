@@ -3,7 +3,7 @@ package qrcode
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var (
@@ -23,7 +23,7 @@ var zeroOneCmd = &cobra.Command{
 	Use:   "bs",
 	Short: "Bin String (0,1) to Qrcode Image",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -31,7 +31,7 @@ var zeroOneCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -39,7 +39,7 @@ var parseQrcodeCmd = &cobra.Command{
 	Use:   "parse",
 	Short: "Parse qrcode image",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ var parseQrcodeCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -55,7 +55,7 @@ var generateQrcodeCmd = &cobra.Command{
 	Use:   "gen",
 	Short: "Generate qrcode image",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -63,7 +63,7 @@ var generateQrcodeCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

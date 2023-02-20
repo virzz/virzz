@@ -9,12 +9,12 @@ import (
 	"io"
 	"net/url"
 	"os"
-	"path/filepath"
+	"path"
 	"regexp"
 	"strings"
 
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/modules/downloader"
+	"github.com/virzz/virzz/utils/downloader"
 	"github.com/virzz/virzz/utils/execext"
 )
 
@@ -65,11 +65,11 @@ func parserURL(targetURL string) (resURL, tempDir string, err error) {
 func fetchObjects(downClient *downloader.Downloader, baseURL, tempDir string, stash bool) (err error) {
 	var file *os.File
 	if stash {
-		if file, err = os.Open(filepath.Join(tempDir, ".git", "logs", "refs", "stash")); err != nil {
+		if file, err = os.Open(path.Join(tempDir, ".git", "logs", "refs", "stash")); err != nil {
 			return
 		}
 	} else {
-		if file, err = os.Open(filepath.Join(tempDir, ".git", "logs", "refs", "heads", "master")); err != nil {
+		if file, err = os.Open(path.Join(tempDir, ".git", "logs", "refs", "heads", "master")); err != nil {
 			return
 		}
 	}
@@ -91,8 +91,8 @@ func fetchObjects(downClient *downloader.Downloader, baseURL, tempDir string, st
 			break
 		}
 		curHash = hashArr[1]
-		target := filepath.Join(".git", "objects", curHash[:2], curHash[2:40])
-		downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), filepath.Join(tempDir, target))
+		target := path.Join(".git", "objects", curHash[:2], curHash[2:40])
+		downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), path.Join(tempDir, target))
 	}
 	return downClient.Start()
 }
@@ -121,9 +121,9 @@ func fixMissingObjects(downClient *downloader.Downloader, baseURL, tempDir strin
 	if len(matches) > 0 {
 		for _, match := range matches {
 			curHash := match[0]
-			target := filepath.Join(".git", "objects", curHash[:2], curHash[2:40])
+			target := path.Join(".git", "objects", curHash[:2], curHash[2:40])
 			logger.Info("Fetch Object", target)
-			downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), filepath.Join(tempDir, target))
+			downClient.AddTask(fmt.Sprintf("%s/%s", baseURL, target), path.Join(tempDir, target))
 		}
 		downClient.Start()
 	}
@@ -133,9 +133,9 @@ func fixMissingObjects(downClient *downloader.Downloader, baseURL, tempDir strin
 	return nil
 }
 
-func gitHack(targetURL string, limit, delay int64) (err error) {
+func gitHack(targetURL string, limit, delay, timeout int64) (err error) {
 	var baseURL, tempDir string
-	logger.InfoF("Attack [%s]", targetURL)
+	logger.InfoF("Attack Target: %s", targetURL)
 
 	if baseURL, tempDir, err = parserURL(targetURL); err != nil {
 		return
@@ -147,7 +147,7 @@ func gitHack(targetURL string, limit, delay int64) (err error) {
 
 	logger.Info("Fetch Base Files...")
 	for _, uri := range baseFiles {
-		download.AddTask(fmt.Sprintf("%s/%s", baseURL, uri), filepath.Join(tempDir, uri))
+		download.AddTask(fmt.Sprintf("%s/%s", baseURL, uri), path.Join(tempDir, uri))
 	}
 	if err = download.Start(); err != nil {
 		if errors.Is(err, downloader.ErrInterrupt) {

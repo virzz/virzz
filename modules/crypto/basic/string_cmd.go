@@ -1,161 +1,135 @@
 package basic
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"fmt"
+
+	"github.com/urfave/cli/v3"
 )
 
-// str2asciiCmd
-var str2asciiCmd = &cobra.Command{
-	Use:     "chr2ord",
-	Aliases: []string{"ords"},
-	Short:   "String -> ASCII",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var str2asciiCmd = &cli.Command{
+	Category: "String",
+	Name:     "chr2ord",
+	Aliases:  []string{"ords"},
+	Usage:    "String -> ASCII",
+	Action: func(c *cli.Context) (err error) {
+		r, err := StringToASCII(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := StringToASCII(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// ascii2strCmd
-var ascii2strCmd = &cobra.Command{
-	Use:     "ord2str",
-	Aliases: []string{"chrs"},
-	Short:   "ASCII -> String",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var ascii2strCmd = &cli.Command{
+	Category: "String",
+	Name:     "ord2str",
+	Aliases:  []string{"chrs"},
+	Usage:    "ASCII -> String",
+	Action: func(c *cli.Context) (err error) {
+		r, err := ASCIIToString(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := ASCIIToString(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// hex2strCmd
-var hex2strCmd = &cobra.Command{
-	Use:   "hex2str",
-	Short: "Hex -> String",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var hex2strCmd = &cli.Command{
+	Category: "String",
+	Name:     "hex2str",
+	Usage:    "Hex -> String",
+	Aliases:  []string{"chrs"},
+	Action: func(c *cli.Context) (err error) {
+		r, err := HexToString(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := HexToString(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// str2hexCmd
-var str2hexCmd = &cobra.Command{
-	Use:   "str2hex",
-	Short: "String -> Hex",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var str2hexCmd = &cli.Command{
+	Category: "String",
+	Name:     "str2hex",
+	Usage:    "String -> Hex",
+	Action: func(c *cli.Context) (err error) {
+		r, err := StringToHex(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := StringToHex(s)
+		_, err = fmt.Println(r)
+		return
+	},
+}
+var hex2decCmd = &cli.Command{
+	Category: "String",
+	Name:     "hex2dec",
+	Usage:    "Hex -> Dec",
+	Action: func(c *cli.Context) (err error) {
+		r, err := HexToDec(c.Args().First())
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// hex2decCmd
-var hex2decCmd = &cobra.Command{
-	Use:   "hex2dec",
-	Short: "Hex -> Dec",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var dec2hexCmd = &cli.Command{
+	Category: "String",
+	Name:     "dec2hex",
+	Usage:    "Dec -> Hex",
+	Action: func(c *cli.Context) (err error) {
+		r, err := DecToHex(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := HexToDec(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// dec2hexCmd
-var dec2hexCmd = &cobra.Command{
-	Use:   "dec2hex",
-	Short: "Dec -> Hex",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var hex2bytesCmd = &cli.Command{
+	Category: "String",
+	Name:     "hex2bytes",
+	Usage:    "Hex -> Bytes String",
+	Action: func(c *cli.Context) (err error) {
+		r, err := HexToByteString(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := DecToHex(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// hex2bytesCmd
-var hex2bytesCmd = &cobra.Command{
-	Use:   "hex2bytes",
-	Short: "Hex -> Bytes String",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var bytes2hexCmd = &cli.Command{
+	Category: "String",
+	Name:     "bytes2hex",
+	Usage:    "ByteString -> Hex",
+	Action: func(c *cli.Context) (err error) {
+		r, err := ByteStringToHex(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := HexToByteString(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// bytes2hexCmd
-var bytes2hexCmd = &cobra.Command{
-	Use:   "bytes2hex",
-	Short: "ByteString -> Hex",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var bytes2strCmd = &cli.Command{
+	Category: "String",
+	Name:     "bytes2str",
+	Usage:    "ByteString -> String",
+	Action: func(c *cli.Context) (err error) {
+		r, err := ByteStringToString(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := ByteStringToHex(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
-	},
-}
-
-// bytes2strCmd
-var bytes2strCmd = &cobra.Command{
-	Use:   "bytes2str",
-	Short: "ByteString -> String",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
-		if err != nil {
-			return err
-		}
-		r, err := ByteStringToString(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }

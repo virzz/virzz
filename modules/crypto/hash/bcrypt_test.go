@@ -11,7 +11,7 @@ var (
 )
 
 func TestBcryptGenerate(t *testing.T) {
-	r, err := bcryptGenerate(_passwd, 10)
+	r, err := BcryptGenerate(_passwd, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func TestBcryptGenerate(t *testing.T) {
 }
 
 func TestBcryptCompare(t *testing.T) {
-	err := bcryptCompare(_hashed, _passwd)
+	err := BcryptCompare(_hashed, _passwd)
 	if err != nil {
 		t.Fatal(err)
 	}

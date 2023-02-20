@@ -1,33 +1,22 @@
 package basic
 
 import (
-	"github.com/spf13/cobra"
+	"github.com/urfave/cli/v3"
 )
 
-var basicCmd = &cobra.Command{
-	Use:   "basic",
-	Short: "Some basic encodings",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
-}
-
-func init() {
-	basicCmd.AddCommand(
+var Cmd = &cli.Command{
+	Category: "Crypto",
+	Name:     "basic",
+	Usage:    "Some basic encodings",
+	Commands: []*cli.Command{
+		// bin
+		bin2hexCmd, hex2binCmd,
+		// url
+		urlencodeCmd, urldecodeCmd,
 		// string
 		str2asciiCmd, ascii2strCmd,
 		hex2strCmd, str2hexCmd,
 		hex2decCmd, dec2hexCmd, hex2bytesCmd,
 		bytes2hexCmd, bytes2strCmd,
-
-		// url
-		urlencodeCmd, urldecodeCmd,
-
-		// bin
-		bin2hexCmd, hex2binCmd,
-	)
-}
-
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{basicCmd}
+	},
 }

@@ -6,7 +6,14 @@ import (
 )
 
 func TestParseProcNetTcp(t *testing.T) {
-	r, err := parseProcNetTcp("../../tests/proc_net_tcp")
+	r, err := ParseProcNet("../../tests/proc_net_tcp")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(r)
+}
+func TestParseProcNetUdp(t *testing.T) {
+	r, err := ParseProcNet("../../tests/proc_net_udp")
 	if err != nil {
 		t.Fatal(err)
 	}

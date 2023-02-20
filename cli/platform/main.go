@@ -13,13 +13,8 @@ import (
 
 var (
 	AppName        = "VirzzPlatform"
-<<<<<<< HEAD:cli/platform/platform.go
-	BinName        = "platform"
-	Version string = "dev"
-=======
 	BinName        = "virzz-platform"
 	Version string = "latest"
->>>>>>> fbd56be (🐞 fix(CLI): main):cli/platform/main.go
 	BuildID string = "0"
 )
 

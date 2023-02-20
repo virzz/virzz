@@ -1,40 +1,44 @@
 package basic
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"fmt"
+
+	"github.com/urfave/cli/v3"
 )
 
-// urlencodeCmd
-var urlencodeCmd = &cobra.Command{
-	Use:   "urle",
-	Short: "URL Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var urlencodeCmd = &cli.Command{
+	Category: "URL",
+	Name:     "urlencode",
+	Aliases:  []string{"urle"},
+	Usage:    "URL Encode",
+	Flags: []cli.Flag{
+		&cli.BoolFlag{
+			Name:    "raw",
+			Aliases: []string{"s", "safe"},
+			Usage:   "Raw encode. + -> %20",
+		},
+	},
+	Action: func(c *cli.Context) (err error) {
+		r, err := URLEncode(c.Args().First(), c.Bool("raw"))
 		if err != nil {
 			return err
 		}
-		r, err := URLEncode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// urldecodeCmd
-var urldecodeCmd = &cobra.Command{
-	Use:   "urld",
-	Short: "URL Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var urldecodeCmd = &cli.Command{
+	Category: "URL",
+	Name:     "urldecode",
+	Aliases:  []string{"urld"},
+	Usage:    "URL Decode",
+	Action: func(c *cli.Context) (err error) {
+		r, err := URLDecode(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := URLDecode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }

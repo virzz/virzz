@@ -3,7 +3,7 @@ package netlog
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var netlogCmd = &cobra.Command{
@@ -30,7 +30,7 @@ var tcpLogCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

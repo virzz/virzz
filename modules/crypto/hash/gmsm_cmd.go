@@ -2,7 +2,7 @@ package hash
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var sm3Cmd = &cobra.Command{
@@ -10,7 +10,7 @@ var sm3Cmd = &cobra.Command{
 	Short: "SM3 hash algorithm",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -18,7 +18,7 @@ var sm3Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

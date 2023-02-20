@@ -6,20 +6,14 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/modules/crypto/basex"
 	"github.com/virzz/virzz/modules/crypto/basic"
 	"github.com/virzz/virzz/modules/crypto/classical"
 	"github.com/virzz/virzz/modules/crypto/hash"
-	"github.com/virzz/virzz/modules/crypto/hashpow"
-	"github.com/virzz/virzz/modules/parser"
 	"github.com/virzz/virzz/modules/tools/domain"
 	"github.com/virzz/virzz/modules/tools/dsstore"
 	"github.com/virzz/virzz/modules/tools/netool"
 	"github.com/virzz/virzz/modules/tools/qrcode"
-	"github.com/virzz/virzz/modules/web/gopher"
-	"github.com/virzz/virzz/modules/web/jwttool"
-	"github.com/virzz/virzz/modules/web/leakcode/githack"
 )
 
 var (
@@ -28,8 +22,6 @@ var (
 	Version string = "latest"
 	BuildID string = "0"
 )
-
-var versionCmd = common.VersionCommand(AppName, Version, BuildID)
 
 var rootCmd = &cobra.Command{
 	Use:           BinName,
@@ -41,27 +33,24 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(common.CompletionCommand())
-
 	// CMD
 	// Crypto
 	rootCmd.AddCommand(basex.ExportCommand()...)
 	rootCmd.AddCommand(basic.ExportCommand()...)
 	rootCmd.AddCommand(classical.ExportCommand()...)
 	rootCmd.AddCommand(hash.ExportCommand()...)
-	rootCmd.AddCommand(hashpow.ExportCommand()...)
+	// rootCmd.AddCommand(hashpow.ExportCommand()...)
 	// Web
-	rootCmd.AddCommand(githack.ExportCommand()...)
-	rootCmd.AddCommand(gopher.ExportCommand()...)
-	rootCmd.AddCommand(jwttool.ExportCommand()...)
+	// rootCmd.AddCommand(githack.ExportCommand()...)
+	// rootCmd.AddCommand(gopher.ExportCommand()...)
+	// rootCmd.AddCommand(jwttool.ExportCommand()...)
 	// Tools
 	rootCmd.AddCommand(qrcode.ExportCommand()...)
 	rootCmd.AddCommand(netool.ExportCommand()...)
 	rootCmd.AddCommand(dsstore.ExportCommand()...)
 	rootCmd.AddCommand(domain.ExportCommand()...)
 	// Parser
-	rootCmd.AddCommand(parser.ExportCommand()...)
+	// rootCmd.AddCommand(parser.ExportCommand()...)
 
 }
 

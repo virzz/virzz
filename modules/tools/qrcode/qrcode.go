@@ -13,7 +13,7 @@ import (
 	"github.com/skip2/go-qrcode"
 	decode "github.com/tuotoo/qrcode"
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/modules/downloader"
+	"github.com/virzz/virzz/utils/downloader"
 )
 
 // type qrcodeRecoveryLevel qrcode.RecoveryLevel

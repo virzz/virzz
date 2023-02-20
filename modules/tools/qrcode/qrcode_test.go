@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 func TestZeroOneToQrcode(t *testing.T) {
@@ -12,7 +12,7 @@ func TestZeroOneToQrcode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = common.Output(res)
+	err = utils.Output(res)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +36,7 @@ func TestParseQrcode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = common.Output(res)
+	err = utils.Output(res)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -47,7 +47,7 @@ func TestParseQrcodeTermial(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = common.Output(res)
+	err = utils.Output(res)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,7 +58,7 @@ func TestGenerateQrcode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = common.Output(res)
+	err = utils.Output(res)
 	if err != nil {
 		t.Fatal(err)
 	}

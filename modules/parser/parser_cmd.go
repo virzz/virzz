@@ -1,41 +1,62 @@
 package parser
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"fmt"
+
+	"github.com/urfave/cli/v3"
+	"github.com/virzz/virzz/utils"
 )
 
-var parserCmd = &cobra.Command{
-	Use:   "parser",
-	Short: "Parse some file",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+var Cmd = &cli.Command{
+	Category: "Misc",
+	Name:     "parser",
+	Usage:    "Parse some file",
+	Commands: []*cli.Command{
+		&cli.Command{
+			Category: "Parser",
+			Name:     "procnet",
+			Aliases:  []string{"net"},
+			Usage:    "Parse /proc/net/tcp|udp",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "filepath",
+					Aliases: []string{"f"},
+					Usage:   "Which file for parse",
+				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				filepath := c.String("filepath")
+				if filepath == "" {
+					if c.NArg() > 0 {
+						filepath = c.Args().First()
+					} else if data, err := utils.GetFromPipe(); err == nil {
+						filepath = string(data)
+					} else {
+						return fmt.Errorf("invalid filepath")
+					}
+				}
+				r, err := ParseProcNet(filepath)
+				if err != nil {
+					return err
+				}
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+		&cli.Command{
+			Category: "Parser",
+			Name:     "todo",
+			Usage:    "Parse todo",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "filepath",
+					Aliases: []string{"f"},
+					Usage:   "Which file for parse",
+				},
+			},
+			Action: func(c *cli.Context) (err error) {
+				return fmt.Errorf("TODO")
+			},
+		},
 	},
-}
-
-var parserProcNetTcpCmd = &cobra.Command{
-	Use:   "tcp",
-	Short: "Parse /proc/net/tcp",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
-		if err != nil {
-			return err
-		}
-		r, err := parseProcNetTcp(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
-	},
-}
-
-func init() {
-	parserCmd.AddCommand(
-		// /proc/net/tcp
-		parserProcNetTcpCmd,
-	)
-}
-
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{parserCmd}
 }

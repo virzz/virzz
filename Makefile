@@ -3,24 +3,24 @@
 TARGET=./build
 
 default:
-	go run ./cli/_compile god
+	go run ./internal/_compile virzz
 
 public:
-	go run ./cli/_compile public
+	go run ./internal/_compile public
 
 %:
 	@rm -f ${TARGET}/$@ ; 
 	@if [[ -d ./cli/public/$@ ]] || [[ -d ./cli/$@ ]]; then \
 		if [[ -z "${DEBUG}" ]]; then \
-			go run -tags debug ./cli/_compile $@ ; \
+			go run -tags debug ./internal/_compile $@ ; \
 		else \
-			go run ./cli/_compile $@ ; \
+			go run ./internal/_compile $@ ; \
 		fi; \
 	fi;
 
 rc-%:
 	@echo "[*] Compiling Release $(subst rc-,,$@) ..." ; \
-	go run ./cli/_compile -R $(subst rc-,,$@)
+	go run ./internal/_compile -R $(subst rc-,,$@)
 
 i-%: rc-%
 	@export NAME='$(subst i-,,$@)'; \
@@ -29,7 +29,7 @@ i-%: rc-%
 	test -f ${GOPATH}/bin/$${NAME} && echo "[+] $${NAME} Installed";
 
 clean:
-	@go run ./cli/_compile -C
+	@go run ./internal/_compile -C
 
 cleanr:
 	@rm -rf release; \

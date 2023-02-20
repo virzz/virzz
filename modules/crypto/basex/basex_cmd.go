@@ -4,418 +4,423 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/urfave/cli/v3"
+	"github.com/virzz/virzz/utils"
 )
 
-// b16eCmd -
-var b16eCmd = &cobra.Command{
-	Use:   "b16e",
-	Short: "Base16 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b16eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b16e",
+	Usage:    "Base16 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base16Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base16Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b16dCmd -
-var b16dCmd = &cobra.Command{
-	Use:   "b16d",
-	Short: "Base16 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b16dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b16d",
+	Usage:    "Base16 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base16Decode(s)
+		r, err := Base16Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b32eCmd -
-var b32eCmd = &cobra.Command{
-	Use:   "b32e",
-	Short: "Base32 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b32eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b32e",
+	Usage:    "Base32 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base32Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base32Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b32dCmd -
-var b32dCmd = &cobra.Command{
-	Use:   "b32d",
-	Short: "Base32 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b32dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b32d",
+	Usage:    "Base32 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base32Decode(s)
+		r, err := Base32Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b36eCmd -
-var b36eCmd = &cobra.Command{
-	Use:   "b36e",
-	Short: "Base36 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b36eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b36e",
+	Usage:    "Base36 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base36Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base36Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b36dCmd -
-var b36dCmd = &cobra.Command{
-	Use:   "b36d",
-	Short: "Base36 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b36dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b36d",
+	Usage:    "Base36 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base36Decode(s)
+		r, err := Base36Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b58eCmd -
-var b58eCmd = &cobra.Command{
-	Use:   "b58e",
-	Short: "Base58 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var base58EncFlag = &cli.StringFlag{
+	Name:    "enc",
+	Aliases: []string{"e"},
+	Usage:   "Base58 encoder <|flickr|ripple|bitcoin>",
+	// Action: func(c *cli.Context, enc string) error {
+	// 	if enc == "" || enc == "flickr" || enc == "ripple" || enc == "bitcoin" {
+	// 		return nil
+	// 	}
+	// 	return fmt.Errorf("unknown encoder : %s", enc)
+	// },
+}
+
+var b58eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b58e",
+	Usage:    "Base58 Encode",
+	Flags: []cli.Flag{
+		base58EncFlag,
+	},
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base58Encode(s, strings.ToLower(enc))
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base58Encode(code, strings.ToLower(c.String("enc")))
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b58dCmd -
-var b58dCmd = &cobra.Command{
-	Use:   "b58d",
-	Short: "Base58 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b58dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b58d",
+	Usage:    "Base58 Decode",
+	Flags:    []cli.Flag{base58EncFlag},
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base58Decode(s, strings.ToLower(enc))
+		r, err := Base58Decode(code, strings.ToLower(c.String("enc")))
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b62eCmd -
-var b62eCmd = &cobra.Command{
-	Use:   "b62e",
-	Short: "Base62 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b62eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b62e",
+	Usage:    "Base62 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base62Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base62Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b62dCmd -
-var b62dCmd = &cobra.Command{
-	Use:   "b62d",
-	Short: "Base62 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b62dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b62d",
+	Usage:    "Base62 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base62Decode(s)
+		r, err := Base62Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b64eCmd -
-var b64eCmd = &cobra.Command{
-	Use:   "b64e",
-	Short: "Base64 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b64eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b64e",
+	Usage:    "Base64 Encode",
+	Flags: []cli.Flag{
+		&cli.BoolFlag{
+			Name:    "safe",
+			Aliases: []string{"url", "s"},
+			Usage:   "Base64 URLEncoding (defined in RFC 4648)",
+		},
+	},
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base64Encode(s, safe)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base64Encode(code, c.Bool("safe"))
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b64dCmd -
-var b64dCmd = &cobra.Command{
-	Use:   "b64d",
-	Short: "Base64 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b64dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b64d",
+	Usage:    "Base64 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base64Decode(s)
+		r, err := Base64Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b85eCmd -
-var b85eCmd = &cobra.Command{
-	Use:   "b85e",
-	Short: "Base85 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b85eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b85e",
+	Usage:    "Base85 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base85Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base85Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b85dCmd -
-var b85dCmd = &cobra.Command{
-	Use:   "b85d",
-	Short: "Base85 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b85dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b85d",
+	Usage:    "Base85 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base85Decode(s)
+		r, err := Base85Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b91eCmd -
-var b91eCmd = &cobra.Command{
-	Use:   "b91e",
-	Short: "Base91 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b91eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b91e",
+	Usage:    "Base91 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base91Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base91Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b91dCmd -
-var b91dCmd = &cobra.Command{
-	Use:   "b91d",
-	Short: "Base91 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b91dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b91d",
+	Usage:    "Base91 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base91Decode(s)
+		r, err := Base91Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b92eCmd -
-var b92eCmd = &cobra.Command{
-	Use:   "b92e",
-	Short: "Base92 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b92eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b92e",
+	Usage:    "Base92 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base92Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base92Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b92dCmd -
-var b92dCmd = &cobra.Command{
-	Use:   "b92d",
-	Short: "Base92 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b92dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b92d",
+	Usage:    "Base92 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base92Decode(s)
+		r, err := Base92Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b100eCmd -
-var b100eCmd = &cobra.Command{
-	Use:   "b100e",
-	Short: "Base100 Encode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b100eCmd = &cli.Command{
+	Category: "String",
+	Name:     "b100e",
+	Usage:    "Base100 Encode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base100Encode(s)
-		if err != nil {
-			return err
-		}
-		return common.Output(r)
+		r, _ := Base100Encode(code)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// b100dCmd -
-var b100dCmd = &cobra.Command{
-	Use:   "b100d",
-	Short: "Base100 Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var b100dCmd = &cli.Command{
+	Category: "String",
+	Name:     "b100d",
+	Usage:    "Base100 Decode",
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := base100Decode(s)
+		r, err := Base100Decode(code)
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-var baseNCmd = &cobra.Command{
-	Use:   "bnd",
-	Short: "Auto Base-N Decode",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var baseNCmd = &cli.Command{
+	Category: "String",
+	Name:     "autodecode",
+	Usage:    "Auto Base-N Decode",
+	Aliases:  []string{"auto"},
+	Action: func(c *cli.Context) (err error) {
+		code, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
 		var r string
 		var res []string
-		if r, err = base16Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base16 : %s", r))
+		if r, err = Base16Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base16          : %s", r))
 		}
-		if r, err = base32Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base32 : %s", r))
+		if r, err = Base32Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base32          : %s", r))
 		}
-		if r, err = base36Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base36 : %s", r))
+		if r, err = Base36Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base36          : %s", r))
 		}
-		if r, err = base58Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base58 : %s", r))
+		for _, enc := range []string{"flickr", "ripple", "bitcoin"} {
+			if r, err = Base58Decode(code, enc); err == nil {
+				res = append(res, fmt.Sprintf("base58(%7s) : %s", enc, r))
+			}
 		}
-		if r, err = base62Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base62 : %s", r))
+		if r, err = Base62Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base62          : %s", r))
 		}
-		if r, err = base64Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base64 : %s", r))
+		if r, err = Base64Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base64          : %s", r))
 		}
-		if r, err = base85Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base85 : %s", r))
+		if r, err = Base85Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base85          : %s", r))
 		}
-		if r, err = base91Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base91 : %s", r))
+		if r, err = Base91Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base91          : %s", r))
 		}
-		if r, err = base92Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base92 : %s", r))
+		if r, err = Base92Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base92          : %s", r))
 		}
-		if r, err = base100Decode(s); err == nil {
-			res = append(res, fmt.Sprintf("base100: %s", r))
+		if r, err = Base100Decode(code); err == nil {
+			res = append(res, fmt.Sprintf("base100         : %s", r))
 		}
-		return common.Output(strings.Join(res, "\n"))
+		// for i, c := range res {
+		// 	res[i] = strings.ReplaceAll(res[i], "\r", `\\r`)
+		// 	res[i] = strings.ReplaceAll(res[i], "\n", `\\n`)
+		// 	r, _ := basic.StringToASCII(c)
+		// 	res[i] += r
+		// }
+		_, err = fmt.Println(strings.Join(res, "\n"))
+		return
 	},
 }
 
-var (
-	safe bool
-	enc  string
-)
-
-var basexCmd = &cobra.Command{
-	Use:   "basex",
-	Short: "Base 16/32/58/62/64/85/91/92/100 Encode/Decode",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		if err := cmd.ValidateRequiredFlags(); err != nil {
-			return err
-		}
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return cmd.Help()
-	},
-}
-
-func init() {
-	b64eCmd.Flags().BoolVarP(&safe, "safe", "s", false, "Use Safe Encode")
-	b58eCmd.Flags().StringVarP(&enc, "enc", "e", "", "Use sepcial EncodeTable: [flickr|ripple]")
-
-	basexCmd.AddCommand(
+var Cmd = &cli.Command{
+	Category: "Crypto",
+	Name:     "basex",
+	Usage:    "Base 16/32/58/62/64/85/91/92/100 Encode/Decode",
+	Commands: []*cli.Command{
 		b16eCmd, b16dCmd,
 		b32eCmd, b32dCmd,
 		b36eCmd, b36dCmd,
@@ -427,9 +432,5 @@ func init() {
 		b92eCmd, b92dCmd,
 		b100eCmd, b100dCmd,
 		baseNCmd,
-	)
-}
-
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{basexCmd}
+	},
 }

@@ -2,7 +2,7 @@ package hash
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/virzz/virzz/utils"
 )
 
 var (
@@ -15,7 +15,7 @@ var md2Cmd = &cobra.Command{
 	Use:   "md2",
 	Short: "MD2 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -23,7 +23,7 @@ var md2Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -31,7 +31,7 @@ var md4Cmd = &cobra.Command{
 	Use:   "md4",
 	Short: "MD4 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -39,7 +39,7 @@ var md4Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -49,19 +49,19 @@ var md5Cmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var r string
 		if isFile {
-			data, err := common.GetFileBytes(args[0])
+			data, err := utils.GetFileBytes(args[0])
 			if err != nil {
 				return err
 			}
 			r = EMd5Hash(data)
 		} else {
-			s, err := common.GetFirstArg(args)
+			s, err := utils.GetFirstArg(args)
 			if err != nil {
 				return err
 			}
 			r, _ = md5Hash(s)
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -69,7 +69,7 @@ var sha1Cmd = &cobra.Command{
 	Use:   "sha1",
 	Short: "SHA1 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ var sha1Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -85,7 +85,7 @@ var sha3Cmd = &cobra.Command{
 	Use:   "sha3",
 	Short: "SHA3 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -93,7 +93,7 @@ var sha3Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -101,7 +101,7 @@ var sha224Cmd = &cobra.Command{
 	Use:   "sha224",
 	Short: "SHA224 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -109,7 +109,7 @@ var sha224Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -117,7 +117,7 @@ var sha256Cmd = &cobra.Command{
 	Use:   "sha256",
 	Short: "SHA256 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -125,7 +125,7 @@ var sha256Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -133,7 +133,7 @@ var sha384Cmd = &cobra.Command{
 	Use:   "sha384",
 	Short: "SHA384 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -141,14 +141,14 @@ var sha384Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 var sha512Cmd = &cobra.Command{
 	Use:   "sha512",
 	Short: "SHA512 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -156,7 +156,7 @@ var sha512Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 
@@ -164,7 +164,7 @@ var ripemd160Cmd = &cobra.Command{
 	Use:   "ripemd160",
 	Short: "RIPEMD160 hash algorithm",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+		s, err := utils.GetFirstArg(args)
 		if err != nil {
 			return err
 		}
@@ -172,7 +172,7 @@ var ripemd160Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		return utils.Output(r)
 	},
 }
 

@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/modules/httpreq"
+	"github.com/alexeyco/simpletable"
+	"github.com/virzz/virzz/utils"
+	"github.com/virzz/virzz/utils/httpreq"
 )
 
-type CrtResp struct {
+type crtResp struct {
 	IssuerCaID     int    `json:"issuer_ca_id"`
 	IssuerName     string `json:"issuer_name"`
 	CommonName     string `json:"common_name"`
@@ -20,8 +21,9 @@ type CrtResp struct {
 	SerialNumber   string `json:"serial_number"`
 }
 
-func ctfr(domain string) (string, error) {
-	var result []CrtResp
+// Ctfr 滥用证书透明记录 Certificate Search By https://crt.sh
+func Ctfr(domain string) (string, error) {
+	var result []crtResp
 	_, err := httpreq.New().SetTimeout(60*time.Second).
 		R().
 		SetResult(&result).
@@ -33,15 +35,26 @@ func ctfr(domain string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	// uniq
 	domainMap := make(map[string]bool, 0)
 	for _, ret := range result {
 		domainMap[ret.NameValue] = true
 	}
-	data := make([]map[int]string, 0, len(domainMap))
-	for key := range domainMap {
-		data = append(data, map[int]string{2: key})
+	tableCells := make([][]*simpletable.Cell, 0)
+	for name := range domainMap {
+		tableCells = append(tableCells, []*simpletable.Cell{
+			{Align: simpletable.AlignRight, Text: name},
+		})
 	}
-	return common.TableOutput(
-		data,
-		[]string{fmt.Sprintf("Domains - total: %d", len(domainMap))}), nil
+	return utils.TableOutput(
+		tableCells,
+		// Header
+		[]*simpletable.Cell{
+			{Align: simpletable.AlignCenter, Text: "crt.sh | Certificate Search"},
+		},
+		// Footer
+		[]*simpletable.Cell{
+			{Align: simpletable.AlignCenter, Text: fmt.Sprintf("Domains - total: %d", len(domainMap))},
+		},
+	), nil
 }

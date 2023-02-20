@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/services/server/mariadb"
+	"github.com/virzz/virzz/utils"
 )
 
 var mariadbCmd = &cobra.Command{
@@ -19,7 +19,7 @@ var mariadbCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(string(r))
+		return utils.Output(string(r))
 	},
 }
 

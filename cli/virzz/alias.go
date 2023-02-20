@@ -4,21 +4,21 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"github.com/urfave/cli/v3"
 )
 
 var allowAlias = []string{
-	"virzz",
+	"jwttool",
+	"domain",
 
 	"basex",
 	"basic",
 	"classical",
 	"hash",
-	// "hmac",
-
 	"netool",
 }
+
+var denyAlias = []string{"help", "completion", "alias", "version", "print"}
 
 func sliceContains[T comparable](inputSlice []T, element T) bool {
 	for _, inputValue := range inputSlice {
@@ -29,29 +29,27 @@ func sliceContains[T comparable](inputSlice []T, element T) bool {
 	return false
 }
 
-func getCommandAlias(prefix string, cmd *cobra.Command) []string {
+func getCommandAlias(prefix string, cmds []*cli.Command) []string {
 	var res = make([]string, 0)
-	for _, c := range cmd.Commands() {
-		if c.HasSubCommands() && sliceContains(allowAlias, c.Name()) {
-			res = append(res, getCommandAlias(fmt.Sprintf("%s %s", prefix, c.Name()), c)...)
-		} else if sliceContains([]string{"help", "completion", "alias", "version"}, c.Name()) {
+	for _, c := range cmds {
+		if len(c.Commands) > 0 && sliceContains(allowAlias, c.Name) {
+			res = append(res, getCommandAlias(fmt.Sprintf("%s %s", prefix, c.Name), c.Commands)...)
+		} else if sliceContains(denyAlias, c.Name) {
 			continue
 		} else {
 			// alias cmd='prefix cmd'
-			res = append(res, fmt.Sprintf("alias %s='%s %s'", c.Name(), prefix, c.Name()))
+			res = append(res, fmt.Sprintf("alias %s='%s %s'", c.Name, prefix, c.Name))
 		}
 	}
 	return res
 }
 
-func aliasCommand() *cobra.Command {
-	return &cobra.Command{
-		Use:   "alias",
-		Short: "Print the version",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd = cmd.Root()
-			res := getCommandAlias(cmd.CommandPath(), cmd)
-			return common.Output(strings.Join(res, "\n"))
-		},
-	}
+var aliasCmd = &cli.Command{
+	Name:   "alias",
+	Usage:  "alias prefix cmd",
+	Hidden: true,
+	Action: func(c *cli.Context) error {
+		fmt.Println(strings.Join(getCommandAlias(c.App.Name, c.App.Commands), "\n"))
+		return nil
+	},
 }

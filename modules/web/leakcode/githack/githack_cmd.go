@@ -1,48 +1,47 @@
 package githack
 
 import (
-	"errors"
-	"strings"
+	"fmt"
 
-	"github.com/spf13/cobra"
-	"gopkg.in/go-playground/validator.v9"
+	"github.com/go-playground/validator/v10"
+	"github.com/urfave/cli/v3"
+	"github.com/virzz/logger"
 )
 
-var (
-	limit   int64
-	delay   int64
-	timeout int64
-)
-
-var GithackCmd = &cobra.Command{
-	Use:   "githack",
-	Short: "A `.git` folder disclosure exploit",
-	Long:  `A Git source leak exploit tool that restores the entire Git repository, including data from stash, for white-box auditing and analysis of developers' mind`,
-	Args: func(cmd *cobra.Command, args []string) (err error) {
-		if len(args) < 1 {
-			return errors.New("requires a url argument")
-		}
-		if err = validator.New().Var(args[0], "url"); err != nil {
-			return
-		}
-		if !strings.HasPrefix(args[0], "http") {
-			return errors.New("must be http(s)")
-		}
-		return nil
+var Cmd = &cli.Command{
+	Category: "Web",
+	Name:     "githack",
+	Usage:    "A `.git` folder disclosure exploit",
+	Flags: []cli.Flag{
+		&cli.Int64Flag{
+			Name:    "limit",
+			Aliases: []string{"l"},
+			Value:   10,
+			Usage:   "Request limit",
+		},
+		&cli.Int64Flag{
+			Name:    "delay",
+			Aliases: []string{"d"},
+			Value:   0,
+			Usage:   "Request delay",
+		},
+		&cli.Int64Flag{
+			Name:    "timeout",
+			Aliases: []string{"t"},
+			Value:   10,
+			Usage:   "Request timeout",
+		},
 	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return gitHack(args[0], limit, delay)
+	Action: func(c *cli.Context) error {
+		if c.NArg() < 1 {
+			cli.ShowSubcommandHelp(c)
+			return fmt.Errorf("require a target url arg")
+		}
+		targetURL := c.Args().First()
+		if err := validator.New().Var(targetURL, "url"); err != nil {
+			return err
+		}
+		logger.DebugF("Target url: %s", targetURL)
+		return gitHack(targetURL, c.Int64("limit"), c.Int64("delay"), c.Int64("timeout"))
 	},
-}
-
-func init() {
-	GithackCmd.Flags().Int64VarP(&limit, "limit", "l", 10, "Request limit (N times one second)")
-	GithackCmd.Flags().Int64VarP(&delay, "delay", "d", 0, "Request delay (N times one second)")
-	GithackCmd.Flags().Int64VarP(&timeout, "timeout", "t", 10, "Request timeout (second)")
-}
-
-func ExportCommand() []*cobra.Command {
-	return []*cobra.Command{
-		GithackCmd,
-	}
 }

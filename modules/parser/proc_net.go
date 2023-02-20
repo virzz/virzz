@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/alexeyco/simpletable"
-	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/modules/crypto/basic"
-	"github.com/virzz/virzz/modules/downloader"
+	"github.com/virzz/virzz/utils"
+	"github.com/virzz/virzz/utils/downloader"
 )
 
 var TcpState = map[string]string{
@@ -29,7 +29,7 @@ var TcpState = map[string]string{
 	"0C": "NEW-SYN-RECEIVED",
 }
 
-type ProcNetTcp struct {
+type procNetTcp struct {
 	LocalIP    string
 	LocalPort  string
 	RemoteIP   string
@@ -53,23 +53,23 @@ func hexToPort(hex string) string {
 	return port
 }
 
-// parseProcNetTcp Parse /proc/net/tcp
-func parseProcNetTcp(src string) (string, error) {
-	var data []byte
-	var err error
+// ParseProcNet Parse /proc/net/tcp|udp
+func ParseProcNet(src string) (string, error) {
 	var dataStr string
-	filename := path.Join(os.TempDir(), "tcp")
-	if strings.HasPrefix(src, "http") {
-		if err = downloader.SigleFetch(src, filename); err != nil {
+	if strings.Contains(src, "local_address") {
+		dataStr = src
+	} else if strings.HasPrefix(src, "http") {
+		filename := path.Join(os.TempDir(), "_net_tmp")
+		if err := downloader.SigleFetch(src, filename); err != nil {
 			return "", err
 		}
-		data, err = os.ReadFile(filename)
+		data, err := os.ReadFile(filename)
 		if err != nil {
 			return "", err
 		}
 		dataStr = string(data)
 	} else if fs, err := os.Stat(src); err == nil && !fs.IsDir() {
-		data, err = os.ReadFile(src)
+		data, err := os.ReadFile(src)
 		if err != nil {
 			return "", err
 		}
@@ -78,7 +78,7 @@ func parseProcNetTcp(src string) (string, error) {
 		dataStr = src
 	}
 	// parse
-	result := make([]ProcNetTcp, 0)
+	result := make([]procNetTcp, 0)
 	re := regexp.MustCompile(`(?m)(\d:) ([0-9a-fA-F]+):([0-9a-fA-F]+) ([0-9a-fA-F]+):([0-9a-fA-F]+) ([0-9a-fA-F]+)`)
 	for _, match := range re.FindAllStringSubmatch(dataStr, -1) {
 		if len(match) > 6 {
@@ -86,7 +86,7 @@ func parseProcNetTcp(src string) (string, error) {
 			if v, ok := TcpState[match[6]]; ok {
 				state = v
 			}
-			result = append(result, ProcNetTcp{
+			result = append(result, procNetTcp{
 				LocalIP:    hexToIP(match[2]),
 				LocalPort:  hexToPort(match[3]),
 				RemoteIP:   hexToIP(match[4]),
@@ -103,7 +103,7 @@ func parseProcNetTcp(src string) (string, error) {
 			{Align: simpletable.AlignCenter, Text: v.State},
 		})
 	}
-	return common.TableOutputV2(
+	return utils.TableOutput(
 		tableCells,
 		// Header
 		[]*simpletable.Cell{
