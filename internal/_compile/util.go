@@ -17,10 +17,10 @@ func getPublicProjects() (names []string) {
 		logger.Error(err)
 		return
 	}
-	names = make([]string, len(fs))
-	for i, f := range fs {
+	names = make([]string, 0)
+	for _, f := range fs {
 		if f.IsDir() {
-			names[i] = f.Name()
+			names = append(names, f.Name())
 		}
 	}
 	return
@@ -34,7 +34,7 @@ func getSpecialProjects() (names []string) {
 	}
 	names = make([]string, len(fs))
 	for i, f := range fs {
-		if f.IsDir() && f.Name() != "public" && f.Name() != "_compile" {
+		if f.IsDir() && f.Name() != "public" {
 			names[i] = f.Name()
 		}
 	}

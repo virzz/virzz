@@ -3,10 +3,11 @@
 TARGET=./build
 
 default:
-	go run ./internal/_compile virzz
-
-public:
-	go run ./internal/_compile public
+	@if [[ -z "${DEBUG}" ]]; then \
+		go run -tags debug ./internal/_compile $@ ; \
+	else \
+		go run ./internal/_compile $@ ; \
+	fi;
 
 %:
 	@rm -f ${TARGET}/$@ ; 

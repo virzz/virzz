@@ -1,21 +1,14 @@
 package main
 
 import (
-	"bytes"
-	"context"
 	"fmt"
 	"os"
-	"path"
-	"strings"
 
-	"github.com/spf13/cobra"
 	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
 
 	"github.com/virzz/virzz/common"
-	_ "github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/utils"
-	"github.com/virzz/virzz/utils/execext"
 )
 
 const (
@@ -31,178 +24,74 @@ var (
 	ARCHES = []string{"amd64", "arm64"}
 )
 
-func compile(name, source, target string, buildID int) error {
+func main() {
+	app := &cli.App{
+		Name:      "compile",
+		Authors:   []any{fmt.Sprintf("%s <%s>", common.Author, common.Email)},
+		Usage:     "Helper for building Virzz",
+		UsageText: `go run ./internal/_compile [flags] name...`,
+		Flags: []cli.Flag{
+			&cli.BoolFlag{Name: "clean", Aliases: []string{"C"}, Usage: "Clean build files"},
+			&cli.BoolFlag{Name: "release", Aliases: []string{"R"}, Usage: "Build release version"},
+			&cli.BoolFlag{Name: "archive", Aliases: []string{"A"}, Usage: "Archive release packages"},
+			&cli.BoolFlag{Name: "together", Aliases: []string{"t"}, Usage: "Archive all in one"},
+			&cli.BoolFlag{Name: "multi", Aliases: []string{"M"}, Usage: "Compile multi-platform binaries"},
+			&cli.BoolFlag{Name: "force", Aliases: []string{"F"}, Usage: "Force to Compile"},
+			&cli.StringFlag{Name: "version", Aliases: []string{"V"}, Usage: "Custom Build version"},
+			&cli.StringFlag{Name: "output", Aliases: []string{"O"}, Usage: "Custom output path", Value: TARGET_DIR},
+			&cli.StringFlag{Name: "builder", Aliases: []string{"B"}, Usage: "Replace `go` builder", Value: "go"},
+			&cli.StringSliceFlag{Name: "go-tags", Aliases: []string{"T"}, Usage: "Append go build tags"},
+			&cli.BoolFlag{Name: "verbose", Aliases: []string{"v"}, Usage: "Print verbose information"},
+			&cli.BoolFlag{Name: "verbosex", Aliases: []string{"vv"}, Usage: "Print verbose information"},
+		},
+		Action: func(c *cli.Context) error {
 
-	flags := make(map[string]string)
-	if force {
-		flags["-a"] = ""
-	}
-	// -vv print the go build -x commands
-	if verbose == 1 {
-		flags["-v"] = ""
-	} else if verbose == 2 {
-		flags["-x"] = ""
-	}
+			// Clean Build Directory
+			if c.Bool("clean") {
+				if err := os.RemoveAll(TARGET_DIR); err != nil {
+					return err
+				}
+				if err := os.Mkdir(TARGET_DIR, 0775); err != nil {
+					return err
+				}
+				logger.Success("Cleaned build directory")
+			}
 
-	if release {
-		if version == "" {
-			if name == "virzz" || name == "platform" {
-				version = getVersion("p")
-			} else if name != "public" {
-				version = getVersion("v")
+			if c.NArg() == 0 {
+				return fmt.Errorf("plz input args:{project...}")
+			}
+
+			if c.Bool("verbosex") {
+				verbose = VerboseX
+			} else if c.Bool("verbose") {
+				verbose = VerboseV
 			} else {
-				version = "unknown"
+				verbose = 0
 			}
-		}
-		flags["-trimpath"] = ""
-		flags["-tags"] = "release"
-		flags["-ldflags"] = fmt.Sprintf("-s -w -X main.BuildID=%d -X main.Version=%s", buildID, version)
-	} else {
-		flags["-tags"] = "debug"
-		flags["-ldflags"] = fmt.Sprintf("-X main.BuildID=%d", buildID)
-	}
 
-	var flagString bytes.Buffer
-	for k, v := range flags {
-		flagString.WriteByte(' ')
-		if v == "" {
-			flagString.WriteString(k)
-		} else {
-			flagString.WriteString(fmt.Sprintf("%s '%s'", k, v))
-		}
-	}
+			force = c.Bool("force")
+			release = c.Bool("release")
+			goVersion = c.String("version")
+			goOutput = c.String("output")
+			goBuilder = c.String("builder")
+			goTags = append(goTags, c.StringSlice("go-tags")...)
 
-	var env = os.Environ()
-
-	// Multi-platform
-	if name != target {
-		ts := strings.Split(target, "-")
-		env = append(env, "GOOS="+ts[1], "GOARCH="+ts[2])
-	}
-
-	outputTarget := path.Join(output, target)
-	buildCmd := fmt.Sprintf("%s build -o %s %s %s", builder, outputTarget, flagString.String(), source)
-	var stderr bytes.Buffer
-	logger.Warn("Build CMD: ", buildCmd)
-	opts := &execext.RunCommandOptions{
-		Command: buildCmd,
-		Dir:     ".",
-		Env:     env,
-		Stdout:  execext.DevNull{},
-		Stderr:  &stderr,
-	}
-	err := execext.RunCommand(context.Background(), opts)
-	if verbose > 0 && stderr.Len() > 5 {
-		// go build -x output to stderr
-		logger.Error(stderr.String())
-	}
-	if err != nil {
-		return err
-	}
-
-	if name == target {
-		logger.SuccessF("Compiled %s successfully", target)
-	} else {
-		logger.SuccessF("Compiled %s to %s successfully", name, target)
-	}
-
-	return nil
-}
-
-func multiCompile(name, source string, buildID int) []string {
-	targes := make([]string, 0, MULTI_COUNT)
-	for _, goos := range OSS {
-		for _, goarch := range ARCHES {
-			target := fmt.Sprintf("%s-%s-%s", name, goos, goarch)
-			if err := compile(name, source, target, buildID); err != nil {
-				logger.Error(err)
-			} else {
-				targes = append(targes, target)
-			}
-		}
-	}
-	return targes
-}
-
-func archiveTargets(name string) error {
-	releaseTarget := fmt.Sprintf("%s/%s", RELEASE_DIR, name)
-	command := `
-		rm -rf ${RELEASE}* && mkdir -p ${RELEASE} && \
-		mv ${TARGET}/${NAME}-* ${RELEASE}/ && \
-		cd ${RELEASE} && \
-		shasum -a 256 ${NAME}* > checksum256 && \
-		if [ -n "$TOGETHER" ]; then \
-			tar -czf ../${NAME}.tar.gz ./* ; \
-			cd .. && rm -rf ${NAME} ; \
-		else \
-			for f in $(ls ${NAME}*); do \
-				tar -czf ${f}.tar.gz $f; \
-				rm ${f}; \
-			done; \
-			shasum -a 256 ${NAME}* >> checksum256
-		fi
-		`
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	var env = append(os.Environ(),
-		"RELEASE="+releaseTarget,
-		"TARGET="+TARGET_DIR,
-		"NAME="+name,
-	)
-	if archiveTogether {
-		env = append(env, "TOGETHER=1")
-	}
-	opts := &execext.RunCommandOptions{
-		Env:     env,
-		Command: command,
-		Dir:     ".",
-		Stdout:  &stdout,
-		Stderr:  &stderr,
-	}
-	if err := execext.RunCommand(context.Background(), opts); err != nil {
-		logger.Debug(command)
-		logger.Error(err)
-		logger.Debug(stdout.String())
-		logger.Error(stderr.String())
-		return err
-	}
-	logger.SuccessF("Archived %s successfully", name)
-	return nil
-}
-
-var rootCmd = &cobra.Command{
-	Use:     "go run ./cli/_compile [flags] name...",
-	Example: "  go run ./cli/_compile virzz\n  go run ./cli/_compile -R virzz jwttool",
-	Short:   "Helper for building Virzz",
-	RunE: func(cmd *cobra.Command, args []string) error {
-
-		// Clean Build Directory
-		if clean {
-			if err := os.RemoveAll(TARGET_DIR); err != nil {
-				return err
-			}
-			if err := os.Mkdir(TARGET_DIR, 0775); err != nil {
-				return err
-			}
-			logger.Success("Cleaned build directory")
-		}
-
-		// Compile Virzz Projects
-		if len(args) > 0 {
+			projs := c.Args().Slice()
+			// Compile Virzz Projects
 			sourceNames := make(map[string]string)
 			publicNames := getPublicProjects()
 			// all public
-			if utils.SliceContains(args, "public") {
+			if utils.SliceContains(projs, "public") {
 				for _, name := range publicNames {
 					sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 				}
 			}
 			// inner public
-			for _, name := range utils.Intersection(publicNames, args) {
+			for _, name := range utils.Intersection(publicNames, projs) {
 				sourceNames[name] = fmt.Sprintf("%s/%s", PUBLIC_DIR, name)
 			}
 			// specific
-			for _, name := range utils.Intersection(getSpecialProjects(), args) {
+			for _, name := range utils.Intersection(getSpecialProjects(), projs) {
 				sourceNames[name] = fmt.Sprintf("%s/%s", SOURCE_DIR, name)
 			}
 
@@ -212,17 +101,18 @@ var rootCmd = &cobra.Command{
 				if err != nil {
 					logger.Error(err)
 				}
-				if multi {
+
+				if c.Bool("multi") {
 					logger.InfoF("Start compiling %s for all platforms", name)
 					if len(multiCompile(name, source, buildID)) == 6 {
 						logger.Success("All platforms compiled successfully")
-						if archive {
-							if archiveTogether {
+						if c.Bool("archive") {
+							if c.Bool("together") {
 								logger.Info("Start archiving togher")
 							} else {
 								logger.Info("Start archiving")
 							}
-							archiveTargets(name)
+							archiveTargets(name, c.Bool("together"))
 						}
 					} else {
 						logger.Error("Lost some platform binaries, try compile again")
@@ -232,58 +122,14 @@ var rootCmd = &cobra.Command{
 					logger.InfoF("Start compiling %s", name)
 					if err := compile(name, source, name, buildID); err != nil {
 						logger.ErrorF("Compile %s fail: %v", name, err)
+						continue
 					}
+					logger.SuccessF("Compiled [%s] successfully", name)
 				}
 			}
+
 			return nil
-		}
-
-		return cmd.Help()
-	},
-}
-
-var (
-	release         bool
-	archive         bool
-	archiveTogether bool
-	multi           bool
-	clean           bool
-	force           bool
-	output          string
-	goTags          []string
-	verbose         int = 0
-	version         string
-	builder         string
-)
-
-func init() {
-	rootCmd.Flags().BoolVarP(&release, "release", "R", false, "Build release version")
-	rootCmd.Flags().BoolVarP(&archive, "archive", "A", false, "Archive release packages")
-	rootCmd.Flags().BoolVarP(&archiveTogether, "together", "t", false, "Archive binary files in one package")
-	rootCmd.Flags().BoolVarP(&multi, "multi", "M", false, "Compile multi-platform binaries")
-	rootCmd.Flags().BoolVarP(&clean, "clean", "C", false, "Clean build files")
-	rootCmd.Flags().BoolVarP(&force, "force", "F", false, "Force to Compile")
-	rootCmd.Flags().StringVarP(&version, "version", "V", "", "Custom Build version")
-	rootCmd.Flags().StringVarP(&output, "output", "o", TARGET_DIR, "Custom output path")
-	rootCmd.Flags().StringSliceVarP(&goTags, "tags", "T", []string{}, "Append go build tags")
-	rootCmd.Flags().StringVarP(&builder, "builder", "B", "go", "Replace `go`")
-	rootCmd.Flags().CountVarP(&verbose, "verbose", "v", "Print verbose information")
-
-}
-
-func main() {
-	cli.VersionPrinter = func(c *cli.Context) {
-		fmt.Printf("Ver: %s (build-%s) revision=%s\n", c.App.Version, BuildID, Revision)
-	}
-	app := &cli.App{
-		Name:                       BinName,
-		Authors:                    []any{fmt.Sprintf("%s <%s>", common.Author, common.Email)},
-		Usage:                      "The Cyber Swiss Army Knife for platform",
-		Version:                    Version,
-		Suggest:                    true,
-		EnableShellCompletion:      true,
-		HideHelpCommand:            true,
-		ShellCompletionCommandName: "completion",
+		},
 	}
 
 	// HideHelpCommand
