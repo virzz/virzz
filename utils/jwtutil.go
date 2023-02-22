@@ -5,15 +5,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-	"github.com/virzz/virzz/common"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/spf13/viper"
 )
 
 // Claims -
 type Claims struct {
 	Token    string `json:"token"`
 	Username string `json:"username"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func GetHeaderToken(authorization string) (token string, err error) {
@@ -29,23 +29,22 @@ func GetHeaderToken(authorization string) (token string, err error) {
 
 // GenerateToken generate tokens used for auth
 func GenerateToken(token, username string) (string, error) {
-	nowTime := time.Now()
-	expireTime := nowTime.Add(7 * 24 * time.Hour)
 	claims := Claims{
 		token,
 		username,
-		jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(),
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
 			Issuer:    "webkit",
 		},
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(common.GetConfig().Jwt.Secret))
+
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(viper.GetString("jwt.secret")))
 }
 
 // ParseToken parsing token
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(common.GetConfig().Jwt.Secret), nil
+		return []byte(viper.GetString("jwt.secret")), nil
 	})
 	if err == nil && tokenClaims != nil {
 		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
@@ -58,10 +57,9 @@ func ParseToken(token string) (*Claims, error) {
 // RefreshToken -
 func RefreshToken(tokenString string) (string, error) {
 	if claims, err := ParseToken(tokenString); err == nil {
-		jwt.TimeFunc = time.Now
-		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
+		claims.ExpiresAt = jwt.NewNumericDate(claims.ExpiresAt.Add(7 * 24 * time.Hour))
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		return token.SignedString([]byte(common.GetConfig().Jwt.Secret))
+		return token.SignedString([]byte(viper.GetString("jwt.secret")))
 	}
 	return "", fmt.Errorf("couldn't handle this token")
 }

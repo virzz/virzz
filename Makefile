@@ -3,24 +3,25 @@
 TARGET=./build
 
 default:
-	go run ./cli/_compile god
-
-public:
-	go run ./cli/_compile public
+	@if [[ -z "${DEBUG}" ]]; then \
+		go run -tags debug ./internal/_compile god ; \
+	else \
+		go run ./internal/_compile god ; \
+	fi;
 
 %:
 	@rm -f ${TARGET}/$@ ; 
-	@if [[ -d ./cli/public/$@ ]] || [[ -d ./cli/$@ ]]; then \
+	@if [[ -d ./cmd/public/$@ ]] || [[ -d ./cmd/$@ ]]; then \
 		if [[ -z "${DEBUG}" ]]; then \
-			go run -tags debug ./cli/_compile $@ ; \
+			go run -tags debug ./internal/_compile $@ ; \
 		else \
-			go run ./cli/_compile $@ ; \
+			go run ./internal/_compile $@ ; \
 		fi; \
 	fi;
 
 rc-%:
 	@echo "[*] Compiling Release $(subst rc-,,$@) ..." ; \
-	go run ./cli/_compile -R $(subst rc-,,$@)
+	go run ./internal/_compile -R $(subst rc-,,$@)
 
 i-%: rc-%
 	@export NAME='$(subst i-,,$@)'; \
@@ -29,7 +30,7 @@ i-%: rc-%
 	test -f ${GOPATH}/bin/$${NAME} && echo "[+] $${NAME} Installed";
 
 clean:
-	@go run ./cli/_compile -C
+	@go run ./internal/_compile -C
 
 cleanr:
 	@rm -rf release; \
@@ -47,7 +48,7 @@ readme:
 	echo '[![Build](https://github.com/virzz/virzz/actions/workflows/virzz.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz.yml) [![Build Release](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml)' >> README.md; \
 	echo '' >> README.md;
 
-	@go run ./cli/_compile god;
+	@go run ./cmd/_compile god;
 	@echo "Add God"; \
 	echo '## God - CLI 命令行小工具' >> README.md; \
 	echo '' >> README.md; \
@@ -57,18 +58,18 @@ readme:
 	echo '' >> README.md; \
 
 	@echo "Compile Public Projects"
-	@go run ./cli/_compile public;
+	@go run ./cmd/_compile public;
 
 	@echo "Add Public Project List"; \
 	echo "## Public Projects" >> README.md; \
 	echo '' >> README.md; \
-	for i in `ls ./cli/public/`; do \
+	for i in `ls ./cmd/public/`; do \
 		echo "- $$(basename $$i)" >> README.md; \
 	done; \
 	echo '' >> README.md;
 
 	@echo "Add Public Projects"; \
-	for i in `ls ./cli/public/`; do \
+	for i in `ls ./cmd/public/`; do \
 		echo "## $$(basename $$i)" >> README.md; \
 		echo '' >> README.md; \
 		echo '```' >> README.md; \

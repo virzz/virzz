@@ -2,99 +2,75 @@ package hashpow
 
 import (
 	"bytes"
-	"io"
-	"math/rand"
-	"time"
 
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/modules/crypto/hash"
-)
-
-const (
-	letter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	"github.com/virzz/virzz/utils"
+	"github.com/virzz/virzz/utils/pool"
 )
 
 var (
-	done   = make(chan struct{})
-	result = make(chan string, 1)
+	done   chan struct{}
+	result chan string
 )
 
-type randbo struct {
-	rand.Source
+type bruteArg struct {
+	code, prefix, suffix, method string
+	start, end                   int
+	hash                         *func([]byte) (string, error)
 }
 
-func (r *randbo) Read(p []byte) (n int, err error) {
-	todo := len(p)
-	for {
-		val := r.Int63()
-		for todo > 0 {
-			p[todo-1] = letter[int(val&(1<<6-1))%52]
-			todo--
-			if todo == 0 {
-				return len(p), nil
-			}
-			val >>= 6
-		}
-	}
-}
-
-func newFrom(src rand.Source) io.Reader {
-	return &randbo{src}
-}
-
-func newRandbo() io.Reader {
-	return newFrom(rand.NewSource(time.Now().UnixNano()))
-}
-
-// brute -
-// wg *sync.WaitGroup,
-func brute(code, prefix, suffix, method string, pos, posend int) {
-	// defer wg.Done()
-	var _hash func(str []byte) string
-	if method == "sha1" {
-		_hash = hash.ESha1Hash
-	} else if method == "md5" {
-		_hash = hash.EMd5Hash
-	} else {
-		result <- "Error hash type!"
-		return
-	}
+func hashBrute(arg bruteArg) bool {
 	var buffer bytes.Buffer
-	r := newRandbo()
 	for {
 		select {
 		case <-done:
-			return
+			return true
 		default:
 			buffer.Reset()
-			tmp := make([]byte, 8)
-			if _, err := r.Read(tmp); err != nil {
-				close(done)
-				return
-			}
-			if len(prefix) > 0 {
-				buffer.WriteString(prefix)
+			tmp := utils.RandomBytesByLength(8)
+			if len(arg.prefix) > 0 {
+				buffer.WriteString(arg.prefix)
 			}
 			buffer.Write(tmp)
-			if len(suffix) > 0 {
-				buffer.WriteString(suffix)
+			if len(arg.suffix) > 0 {
+				buffer.WriteString(arg.suffix)
 			}
-			if m := _hash(buffer.Bytes()); m[pos:posend] == code {
-				logger.Debug(string(tmp))
-				result <- string(tmp)
-				logger.InfoF("hash = %s result = %s", m, string(tmp))
+			// logger.Debug(arg.hash)
+			// logger.Debug(*arg.hash)
+			// logger.Debug(&arg.hash)
+			if m, _ := (*arg.hash)(buffer.Bytes()); m[arg.start:arg.end] == arg.code {
+				res := buffer.String()
+				result <- res
+				done <- struct{}{}
+				logger.SuccessF("method: %s hash = %s result = %s", arg.method, m, res)
 				close(result)
 				close(done)
-				return
+				return true
 			}
 		}
 	}
+	return true
 }
 
-func doBrute(code, prefix, suffix, method string, pos int) string {
-	posend := len(code) + pos
-	for i := 0; i < 16; i++ {
-		go brute(code, prefix, suffix, method, pos, posend)
+// HashPoW Brute Hash Power of Work with md5/sha1
+func HashPoW(code, prefix, suffix, method string, start int) string {
+	done = make(chan struct{}, 1)
+	result = make(chan string, 1)
+	var _hash func([]byte) (string, error)
+	switch method {
+	case "sha1":
+		_hash = hash.Sha1Hash
+	case "md5":
+		_hash = func(s []byte) (string, error) {
+			return hash.MDHash(s, 5)
+		}
+	default:
+		return "Error hash type!"
 	}
+	pool.Start(
+		hashBrute,
+		bruteArg{code, prefix, suffix, method, start, len(code) + start, &_hash},
+	)
 	return <-result
 }

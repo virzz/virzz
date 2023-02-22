@@ -10,7 +10,8 @@ import (
 	"strings"
 )
 
-func expHTTPPost(addr string, uri string, datas map[string]string) (string, error) {
+// GopherHTTPPostExp Genrate the Http Post Exp For Gopher.
+func GopherHTTPPostExp(addr string, uri string, datas map[string]string) (string, error) {
 	p := url.Values{}
 	for key, value := range datas {
 		p.Add(key, value)
@@ -30,7 +31,8 @@ func expHTTPPost(addr string, uri string, datas map[string]string) (string, erro
 	return exp, nil
 }
 
-func expHTTPUpload(addr string, uri string, datas map[string]string) (string, error) {
+// GopherHTTPUploadExp Genrate the Http Upload Exp For Gopher.
+func GopherHTTPUploadExp(addr string, uri string, datas map[string]string) (string, error) {
 	bodyBuffer := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuffer)
 	// Field

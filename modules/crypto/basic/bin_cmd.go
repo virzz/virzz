@@ -1,16 +1,18 @@
 package basic
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/virzz/virzz/common"
+	"fmt"
+
+	"github.com/urfave/cli/v3"
+	"github.com/virzz/virzz/utils"
 )
 
-// bin2hexCmd
-var bin2hexCmd = &cobra.Command{
-	Use:   "bin2hex",
-	Short: "Bin -> Hex",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		data, err := common.GetFileOrPipe(args)
+var bin2hexCmd = &cli.Command{
+	Category: "Bin",
+	Name:     "bin2hex",
+	Usage:    "Bin -> Hex",
+	Action: func(c *cli.Context) (err error) {
+		data, err := utils.GetFileOrPipe(c.Args().Slice())
 		if err != nil {
 			return err
 		}
@@ -18,23 +20,25 @@ var bin2hexCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return common.Output(r)
+		_, err = fmt.Println(r)
+		return
 	},
 }
 
-// hex2binCmd
-var hex2binCmd = &cobra.Command{
-	Use:   "hex2bin",
-	Short: "Hex -> Bin",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		s, err := common.GetFirstArg(args)
+var hex2binCmd = &cli.Command{
+	Category: "Bin",
+	Name:     "hex2bin",
+	Usage:    "Hex -> Bin",
+	Action: func(c *cli.Context) (err error) {
+		data, err := utils.ArgOrPipe(c.Args().First())
 		if err != nil {
 			return err
 		}
-		r, err := HexToBin(s)
+		r, err := HexToBin(data)
 		if err != nil {
 			return err
 		}
-		return common.OutputBytes(r)
+		_, err = fmt.Println(string(r))
+		return
 	},
 }

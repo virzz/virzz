@@ -22,7 +22,7 @@ jobs:
           cache: true
 
       - name: Build God
-        run: go run ./cli/_compile -R -M -A god
+        run: go run ./internal/_compile -R -M -A god
 
       - name: Create Release and Upload Release Asset
         uses: softprops/action-gh-release@v1

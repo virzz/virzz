@@ -19,4 +19,4 @@ jobs:
           cache: true
 
       - name: Build God & Public
-        run: go run ./cli/_compile god public
+        run: go run ./internal/_compile god public

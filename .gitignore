@@ -54,6 +54,8 @@ build*
 !buildid.go
 tmp/
 release/
+reference
 *.bak
 TODO*
-reference
+config.yaml
+*_feat.go

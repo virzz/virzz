@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Author = "陌竹"
+	Author = "陌竹(@mozhu1024)"
 	Email  = "mozhu233@outlook.com"
 )
 
@@ -19,10 +19,10 @@ func init() {
 	debugEnv := os.Getenv("VIRZZ_DEBUG")
 	if debugEnv == "true" || debugEnv == "1" || debugEnv == "on" {
 		DebugMode = true
-		logger.SetDebug(true)
 	}
 	// Force off debug mode
 	if debugEnv == "off" {
 		DebugMode = false
 	}
+	logger.SetDebug(DebugMode)
 }

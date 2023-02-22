@@ -5,7 +5,7 @@ import (
 )
 
 func TestURLEncode(t *testing.T) {
-	r, err := URLEncode("argver\x09\t\\=!@#$%^&*")
+	r, err := URLEncode("argver\x09\t\\=!@#$%^&* abc def", true)
 	if err != nil {
 		t.Fatal(err)
 	}

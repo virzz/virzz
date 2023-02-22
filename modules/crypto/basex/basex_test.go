@@ -21,13 +21,13 @@ type (
 var (
 	samples = []pair{}
 	funcs   = map[string]funx{
-		"base16":  funx{base16Encode, base16Decode},
-		"base36":  funx{base36Encode, base36Decode},
-		"base62":  funx{base62Encode, base62Decode},
-		"base85":  funx{base85Encode, base85Decode},
-		"base91":  funx{base91Encode, base91Decode},
-		"base92":  funx{base92Encode, base92Decode},
-		"base100": funx{base100Encode, base100Decode},
+		"base16":  funx{Base16Encode, Base16Decode},
+		"base36":  funx{Base36Encode, Base36Decode},
+		"base62":  funx{Base62Encode, Base62Decode},
+		"base85":  funx{Base85Encode, Base85Decode},
+		"base91":  funx{Base91Encode, Base91Decode},
+		"base92":  funx{Base92Encode, Base92Decode},
+		"base100": funx{Base100Encode, Base100Decode},
 	}
 )
 
@@ -76,12 +76,12 @@ func BenchmarkBaseX(b *testing.B) {
 }
 
 func TestBase64Encode(t *testing.T) {
-	r, err := base64Encode("abcdefg!@#$%^&*()_+<>?{}|:", true)
+	r, err := Base64Encode("abcdefg!@#$%^&*()_+<>?{}|:", true)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	fmt.Println(r)
-	if r != "YWJjZGVmZyFAIyQlXiYqKClfKzw+P3t9fDo=" {
+	if r != "YWJjZGVmZyFAIyQlXiYqKClfKzw-P3t9fDo=" {
 		t.Fail()
 	}
 }
@@ -89,7 +89,7 @@ func TestBase64Encode(t *testing.T) {
 func TestBase64Decode(t *testing.T) {
 	// YWJjZGVmZyFAIyQlXiYqKClfKzw+P3t9fDo=
 	// YWJjZGVmZyFAIyQlXiYqKClfKzw-P3t9fDo=
-	r, err := base64Decode("YWJjZGVmZyFAIyQlXiYqKClfKzw-P3t9fDo")
+	r, err := Base64Decode("YWJjZGVmZyFAIyQlXiYqKClfKzw-P3t9fDo")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -100,7 +100,7 @@ func TestBase64Decode(t *testing.T) {
 }
 
 func TestBase32Encode(t *testing.T) {
-	r, err := base32Encode("abcdefg!@#$%^&*()_+<>?{}|:")
+	r, err := Base32Encode("abcdefg!@#$%^&*()_+<>?{}|:")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -111,7 +111,7 @@ func TestBase32Encode(t *testing.T) {
 }
 
 func TestBase32Decode(t *testing.T) {
-	r, err := base32Decode("MFRGGZDFMZTSCQBDEQSV4JRKFAUV6KZ4HY7XW7L4HI")
+	r, err := Base32Decode("MFRGGZDFMZTSCQBDEQSV4JRKFAUV6KZ4HY7XW7L4HI")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -122,17 +122,17 @@ func TestBase32Decode(t *testing.T) {
 }
 
 func TestBase58Encode(t *testing.T) {
-	r, err := base58Encode("test_base58_string")
+	r, err := Base58Encode("test_base58_string", "")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	fmt.Println(r)
-	r, err = base58Encode("test_base58_string", "flickr")
+	r, err = Base58Encode("test_base58_string", "flickr")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	fmt.Println(r)
-	r, err = base58Encode("test_base58_string", "ripple")
+	r, err = Base58Encode("test_base58_string", "ripple")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -140,7 +140,7 @@ func TestBase58Encode(t *testing.T) {
 }
 
 func TestBase58Decode(t *testing.T) {
-	r, err := base58Decode("5q1dAkvfMPRxpkkujHtkssust")
+	r, err := Base58Decode("5q1dAkvfMPRxpkkujHtkssust", "")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

@@ -5,26 +5,32 @@ import (
 	"regexp"
 )
 
-var defaultLetters = []rune("0123456789abcdefghijklmnopqrstuvwxyz")
+var defaultLetters = []byte("0123456789abcdefghijklmnopqrstuvwxyz")
 
 // RandomString 随机字符串
 func RandomString() string {
 	return RandomStringByLength(8)
 }
 
-// RandomStringByLength 随机字符串
-func RandomStringByLength(n int, allowedChars ...[]rune) string {
-	var letters []rune
+// RandomBytesByLength 随机字符串
+func RandomBytesByLength(n int, allowedChars ...[]byte) []byte {
+	var letters []byte
 	if len(allowedChars) == 0 {
 		letters = defaultLetters
 	} else {
 		letters = allowedChars[0]
 	}
-	b := make([]rune, n)
+	l := len(letters)
+	b := make([]byte, n)
 	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+		b[i] = letters[rand.Intn(l)]
 	}
-	return string(b)
+	return b
+}
+
+// RandomStringByLength 随机字符串
+func RandomStringByLength(n int, allowedChars ...[]byte) string {
+	return string(RandomBytesByLength(n, allowedChars...))
 }
 
 func AnsiStrip(str string) string {
