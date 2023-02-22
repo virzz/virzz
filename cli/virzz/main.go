@@ -9,15 +9,6 @@ import (
 	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/modules/crypto/basex"
-	"github.com/virzz/virzz/modules/crypto/basic"
-	"github.com/virzz/virzz/modules/crypto/hash"
-	"github.com/virzz/virzz/modules/crypto/hashpow"
-	"github.com/virzz/virzz/modules/parser"
-	"github.com/virzz/virzz/modules/tools/domain"
-	"github.com/virzz/virzz/modules/web/gopher"
-	"github.com/virzz/virzz/modules/web/jwttool"
-	"github.com/virzz/virzz/modules/web/leakcode/githack"
 	"github.com/virzz/virzz/utils"
 )
 
@@ -33,6 +24,7 @@ var (
 )
 
 func init() {
+
 	// rootCmd.AddCommand(versionCmd, common.CompletionCommand(), aliasCommand())
 
 	// CMD
@@ -83,23 +75,11 @@ func main() {
 			return cli.ShowAppHelp(c)
 		},
 	}
-	// Add SubCommands
-	app.Commands = append(app.Commands, aliasCmd,
-		githack.Cmd,
-		gopher.Cmd,
-		hashpow.Cmd,
-		jwttool.Cmd,
-		parser.Cmd,
-		domain.Cmd,
-		basic.Cmd,
-		basex.Cmd,
 
-		hash.BcryptCmd,
-	)
+	// Load Commands
+	app.Commands = append(app.Commands, commands...)
 	// HideHelpCommand
 	utils.HideHelpCommand(app.Commands)
-
-	// TODO(app.Name, app.Commands)
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
