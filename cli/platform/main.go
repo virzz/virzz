@@ -1,40 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
 
 	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/modules/crypto/hash"
+	"github.com/virzz/virzz/services/server/dns"
+	"github.com/virzz/virzz/services/server/mariadb"
+	"github.com/virzz/virzz/services/server/web"
+	"github.com/virzz/virzz/utils"
 )
 
-var (
-	AppName        = "VirzzPlatform"
-	BinName        = "virzz-platform"
-	Version string = "latest"
-	BuildID string = "0"
-)
+const BinName = "virzz-platform"
 
-var versionCmd = common.VersionCommand(AppName, Version, BuildID)
-
-var rootCmd = &cobra.Command{
-	Use:           BinName,
-	Short:         "The Cyber Swiss Army Knife for platform",
-	SilenceErrors: true,
-	CompletionOptions: cobra.CompletionOptions{
-		DisableDefaultCmd: true,
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
-}
 var (
-	debugMode     bool
-	debugDatabase bool
-	// cacheRedis    bool
+	Version  string = "latest"
+	BuildID  string = "0"
+	Revision string = ""
 )
 
 func init() {
@@ -49,8 +36,8 @@ func init() {
 		logger.Warn(err)
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			viper.Set("modify", true)
-
-			viper.Set("jwt.secret", hash.EMd5Hash([]byte("virzz_jwt_secret")))
+			_secret, _ := hash.Sha1Hash([]byte("virzz_jwt_secret"))
+			viper.Set("jwt.secret", _secret)
 			viper.Set("jwt.expires", 3600)
 
 			viper.Set("mariadb.host", "127.0.0.1")
@@ -90,26 +77,36 @@ func init() {
 		logger.Fatal("You must remove the key 'modify'")
 	}
 
-	rootCmd.PersistentFlags().BoolVarP(&debugMode, "debug", "D", false, "Set Debug Mode")
-	rootCmd.PersistentFlags().BoolVarP(&debugDatabase, "database", "X", false, "Set Database Debug Mode")
-	// rootCmd.PersistentFlags().BoolVarP(&cacheRedis, "cache-redis", "C", false, "Use Redis Cache")
+	if common.DebugMode {
+		logger.SetDebug(true)
+	}
 
-	rootCmd.AddCommand(
-		versionCmd,
-		platformCmd,
-
-		mariadbCmd,
-		dnsCmd,
-		webCmd,
-	)
 }
 
 func main() {
-	if common.DebugMode || debugMode {
-		logger.SetDebug(true)
+	cli.VersionPrinter = func(c *cli.Context) {
+		fmt.Printf("Ver: %s (build-%s) revision=%s\n", c.App.Version, BuildID, Revision)
 	}
-	if err := rootCmd.Execute(); err != nil {
+	app := &cli.App{
+		Name:                       BinName,
+		Authors:                    []any{fmt.Sprintf("%s <%s>", common.Author, common.Email)},
+		Usage:                      "The Cyber Swiss Army Knife for platform",
+		Version:                    Version,
+		Suggest:                    true,
+		EnableShellCompletion:      true,
+		HideHelpCommand:            true,
+		ShellCompletionCommandName: "completion",
+		Commands: []*cli.Command{
+			mariadb.Cmd,
+			dns.Cmd,
+			web.Cmd,
+		},
+	}
+
+	// HideHelpCommand
+	utils.HideHelpCommand(app.Commands)
+
+	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
-		os.Exit(1)
 	}
 }

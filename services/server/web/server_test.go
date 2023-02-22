@@ -32,8 +32,8 @@ func TestServer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Run HTTP Server
-	webServer := NewWebServer(true)
+
+	webServer := NewServer(true)
 	go func() {
 		if err := webServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			t.Error("HTTP server listen: ", err)

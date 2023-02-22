@@ -16,6 +16,19 @@ import (
 	"github.com/virzz/virzz/internal/crypto/base92"
 )
 
+// basePadding RFC 4648
+func basePadding(s string, bit int) string {
+	n := bit - len(s)%bit
+	if n == bit {
+		return s
+	}
+	for n > 0 {
+		n--
+		s += "="
+	}
+	return s
+}
+
 // base16Encode hex.EncodeToString
 func Base16Encode(s string) (string, error) {
 	return hex.EncodeToString([]byte(strings.TrimSuffix(s, "\n"))), nil

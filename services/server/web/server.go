@@ -12,8 +12,8 @@ import (
 	"github.com/virzz/virzz/services/server/web/resp"
 )
 
-// NewWebServer - New Web Server
-func NewWebServer(debug bool) *http.Server {
+// NewServer - New Web Server
+func NewServer(debug bool) *http.Server {
 
 	if debug {
 		gin.SetMode(gin.DebugMode)

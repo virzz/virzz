@@ -8,7 +8,7 @@ import (
 	"github.com/miekg/dns"
 	"github.com/virzz/logger"
 
-	"github.com/virzz/virzz/modules/tools/netool"
+	"github.com/virzz/virzz/modules/misc/nettool"
 	"github.com/virzz/virzz/services/server/models"
 )
 
@@ -102,7 +102,7 @@ func dnslog(name, remoteIP string) (ttl int, ip net.IP, resp string) {
 		// [data=token].ip.domain
 		// 017700000001,2130706433,0x7f000001,127.0.0.1
 		// TODO: auto convert ip
-		r, err := netool.AnyToIP(data)
+		r, err := nettool.AnyToIP(data)
 		if err != nil {
 			logger.Error(err)
 			break

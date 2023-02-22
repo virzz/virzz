@@ -57,7 +57,7 @@ func ParseToken(token string) (*Claims, error) {
 // RefreshToken -
 func RefreshToken(tokenString string) (string, error) {
 	if claims, err := ParseToken(tokenString); err == nil {
-		claims.ExpiresAt.Add(7 * 24 * time.Hour)
+		claims.ExpiresAt = jwt.NewNumericDate(claims.ExpiresAt.Add(7 * 24 * time.Hour))
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		return token.SignedString([]byte(viper.GetString("jwt.secret")))
 	}

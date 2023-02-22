@@ -20,16 +20,16 @@ var commands = []*cli.Command{}
 
 func init() {
 	// Add SubCommands
-	commands = append(commands, aliasCmd,
+	commands = append(commands,
 		// Crypto
 		basex.Cmd,
 		basic.Cmd,
 		classical.Cmd,
 		hash.Cmd,
 		hash.BcryptCmd,
+		// Parser
 		parser.Cmd,
 		// Misc
-		// Parser
 		domain.Cmd,
 		nettool.Cmd,
 		hashpow.Cmd,

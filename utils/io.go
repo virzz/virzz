@@ -25,6 +25,18 @@ func GetFileBytes(path string) ([]byte, error) {
 	return nil, fmt.Errorf("not found file")
 }
 
+// GetArgFilePipe Get arg from c.Arg > File > Pipe
+func GetArgFilePipe(arg string) ([]byte, error) {
+	if arg == "" {
+		return GetFromPipe()
+	}
+	data, err := GetFileBytes(arg)
+	if err != nil {
+		return []byte(arg), nil
+	}
+	return data, nil
+}
+
 func GetFileString(path string) (string, error) {
 	data, err := GetFileBytes(path)
 	if err != nil {

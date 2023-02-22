@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	tokenLetters = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
+	tokenLetters = []byte("abcdefghijklmnopqrstuvwxyz0123456789")
 )
 
 type Auth struct {

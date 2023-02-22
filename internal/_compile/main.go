@@ -9,8 +9,10 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
 
+	"github.com/virzz/virzz/common"
 	_ "github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/utils"
 	"github.com/virzz/virzz/utils/execext"
@@ -28,50 +30,6 @@ var (
 	OSS    = []string{"linux", "windows", "darwin"}
 	ARCHES = []string{"amd64", "arm64"}
 )
-
-func getPublicProjects() (names []string) {
-	fs, err := os.ReadDir(PUBLIC_DIR)
-	if err != nil {
-		logger.Error(err)
-		return
-	}
-	names = make([]string, len(fs))
-	for i, f := range fs {
-		if f.IsDir() {
-			names[i] = f.Name()
-		}
-	}
-	return
-}
-
-func getSpecialProjects() (names []string) {
-	fs, err := os.ReadDir(SOURCE_DIR)
-	if err != nil {
-		logger.Error(err)
-		return
-	}
-	names = make([]string, len(fs))
-	for i, f := range fs {
-		if f.IsDir() && f.Name() != "public" && f.Name() != "_compile" {
-			names[i] = f.Name()
-		}
-	}
-	return
-}
-
-func getVersion(prefix string) string {
-	var stdout bytes.Buffer
-	opts := &execext.RunCommandOptions{
-		Command: fmt.Sprintf("git tag | grep %s | tail -n 1", prefix),
-		Dir:     ".",
-		Stdout:  &stdout,
-		Stderr:  execext.DevNull{},
-	}
-	if err := execext.RunCommand(context.Background(), opts); err != nil {
-		return "error"
-	}
-	return strings.TrimSuffix(strings.TrimSuffix(stdout.String(), "\r\n"), "\n")
-}
 
 func compile(name, source, target string, buildID int) error {
 
@@ -233,7 +191,6 @@ var rootCmd = &cobra.Command{
 		if len(args) > 0 {
 			sourceNames := make(map[string]string)
 			publicNames := getPublicProjects()
-			logger.Debug(publicNames)
 			// all public
 			if utils.SliceContains(args, "public") {
 				for _, name := range publicNames {
@@ -315,8 +272,24 @@ func init() {
 }
 
 func main() {
-	if err := rootCmd.Execute(); err != nil {
+	cli.VersionPrinter = func(c *cli.Context) {
+		fmt.Printf("Ver: %s (build-%s) revision=%s\n", c.App.Version, BuildID, Revision)
+	}
+	app := &cli.App{
+		Name:                       BinName,
+		Authors:                    []any{fmt.Sprintf("%s <%s>", common.Author, common.Email)},
+		Usage:                      "The Cyber Swiss Army Knife for platform",
+		Version:                    Version,
+		Suggest:                    true,
+		EnableShellCompletion:      true,
+		HideHelpCommand:            true,
+		ShellCompletionCommandName: "completion",
+	}
+
+	// HideHelpCommand
+	utils.HideHelpCommand(app.Commands)
+
+	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
-		os.Exit(1)
 	}
 }

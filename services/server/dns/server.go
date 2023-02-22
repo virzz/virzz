@@ -65,8 +65,8 @@ var (
 	cachePool *cache.Cache
 )
 
-// NewDNSServer New DNS Server
-func NewDNSServer() *dns.Server {
+// NewServer New DNS Server
+func NewServer() *dns.Server {
 
 	cachePool = cache.New(2*time.Minute, 5*time.Minute)
 

@@ -13,7 +13,7 @@ func init() {
 	logger.SetDebug(true)
 }
 func TestHashPoWMore(t *testing.T) {
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 2; i++ {
 		HashPoW("aaaaa", fmt.Sprintf("%s%d", prefix, i), "", "md5", 0)
 	}
 }

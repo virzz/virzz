@@ -77,12 +77,21 @@ func DecToHex(s string) (string, error) {
 }
 
 // HexToDec Hex -> Dec
-func HexToDec(s string) (string, error) {
+func HexToDec(s string) (*big.Int, error) {
 	s = upPadHex(s)
 	n := new(big.Int)
 	var ok bool
 	if n, ok = n.SetString(s, 16); !ok {
-		return "", fmt.Errorf("convert error")
+		return nil, fmt.Errorf("convert error")
+	}
+	return n, nil
+}
+
+// HexToDec Hex -> Dec String
+func HexToDecStr(s string) (string, error) {
+	n, err := HexToDec(s)
+	if err != nil {
+		return "", err
 	}
 	return n.String(), nil
 }

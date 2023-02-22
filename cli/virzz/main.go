@@ -23,22 +23,6 @@ var (
 	Revision string = ""
 )
 
-func init() {
-
-	// rootCmd.AddCommand(versionCmd, common.CompletionCommand(), aliasCommand())
-
-	// CMD
-	// Crypto
-	// rootCmd.AddCommand(basex.ExportCommand()...)
-	// rootCmd.AddCommand(basic.ExportCommand()...)
-	// rootCmd.AddCommand(classical.ExportCommand()...)
-	// rootCmd.AddCommand(hash.ExportCommand()...)
-	// // Tools
-	// rootCmd.AddCommand(qrcode.ExportCommand()...)
-	// rootCmd.AddCommand(netool.ExportCommand()...)
-	// rootCmd.AddCommand(dsstore.ExportCommand()...)
-}
-
 func main() {
 	cli.VersionPrinter = func(c *cli.Context) {
 		fmt.Printf("Ver: %s (build-%s) revision=%s\n", c.App.Version, BuildID, Revision)

@@ -62,7 +62,7 @@ func TestDecToHex(t *testing.T) {
 }
 
 func TestHexToDec(t *testing.T) {
-	r, err := HexToDec("0x112210f4b16c1cb1")
+	r, err := HexToDecStr("0x112210f4b16c1cb1")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

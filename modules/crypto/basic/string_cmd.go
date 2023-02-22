@@ -69,7 +69,7 @@ var hex2decCmd = &cli.Command{
 	Name:     "hex2dec",
 	Usage:    "Hex -> Dec",
 	Action: func(c *cli.Context) (err error) {
-		r, err := HexToDec(c.Args().First())
+		r, err := HexToDecStr(c.Args().First())
 		if err != nil {
 			return err
 		}

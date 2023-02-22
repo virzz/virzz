@@ -17,19 +17,10 @@ var (
 type bruteArg struct {
 	code, prefix, suffix, method string
 	start, end                   int
+	hash                         *func([]byte) (string, error)
 }
 
 func hashBrute(arg bruteArg) bool {
-	var _hash func(str []byte) string
-	switch arg.method {
-	case "sha1":
-		_hash = hash.ESha1Hash
-	case "md5":
-		_hash = hash.EMd5Hash
-	default:
-		result <- "Error hash type!"
-		return true
-	}
 	var buffer bytes.Buffer
 	for {
 		select {
@@ -45,7 +36,10 @@ func hashBrute(arg bruteArg) bool {
 			if len(arg.suffix) > 0 {
 				buffer.WriteString(arg.suffix)
 			}
-			if m := _hash(buffer.Bytes()); m[arg.start:arg.end] == arg.code {
+			// logger.Debug(arg.hash)
+			// logger.Debug(*arg.hash)
+			// logger.Debug(&arg.hash)
+			if m, _ := (*arg.hash)(buffer.Bytes()); m[arg.start:arg.end] == arg.code {
 				res := buffer.String()
 				result <- res
 				done <- struct{}{}
@@ -63,9 +57,20 @@ func hashBrute(arg bruteArg) bool {
 func HashPoW(code, prefix, suffix, method string, start int) string {
 	done = make(chan struct{}, 1)
 	result = make(chan string, 1)
+	var _hash func([]byte) (string, error)
+	switch method {
+	case "sha1":
+		_hash = hash.Sha1Hash
+	case "md5":
+		_hash = func(s []byte) (string, error) {
+			return hash.MDHash(s, 5)
+		}
+	default:
+		return "Error hash type!"
+	}
 	pool.Start(
 		hashBrute,
-		bruteArg{code, prefix, suffix, method, start, len(code) + start},
+		bruteArg{code, prefix, suffix, method, start, len(code) + start, &_hash},
 	)
 	return <-result
 }
