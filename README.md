@@ -13,35 +13,39 @@
 ## God - CLI 命令行小工具
 
 ```
-The Cyber Swiss Army Knife for terminal
+NAME:
+   god - The Cyber Swiss Army Knife for terminal
 
-Usage:
-  god [flags]
-  god [command]
+USAGE:
+   god [global options] command [command options] [arguments...]
 
-Available Commands:
-  basex       Base 16/32/58/62/64/85/91/92/100 Encode/Decode
-  basic       Some basic encodings
-  bcrypt      Bcrypt Generate/Compare
-  classical   Some classical cryptography
-  domain      Some tools for Domain/SubDomain
-  dsstore     .DS_Store Parser
-  githack     A `.git` folder disclosure exploit
-  gopher      Generate Gopher Exp
-  hash        Some hash function
-  hashpow     A tool for ctfer which make hash collision faster
-  help        Help about any command
-  hmac        Some Hmac function
-  jwttool     A jwt tool with Print/Crack/Modify
-  netool      Some net utils
-  parser      Parse some file
-  qrcode      A qrcode tool for terminal
-  version     Print the version
+VERSION:
+   latest
 
-Flags:
-  -h, --help   help for god
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
 
-Use "god [command] --help" for more information about a command.
+COMMANDS:
+   Crypto:
+     basex      Base 16/32/58/62/64/85/91/92/100 Encode/Decode
+     basic      Some basic encodings
+     classical  Classical cryptography
+     hash       Hash Function
+     bcrypt     Bcrypt Generate/Compare
+   Misc:
+     domain      Some tools for Domain/SubDomain
+     netool      Net utils for IP/Port
+     hashpow     Brute Hash Power of Work with md5/sha1
+     qrcode, qr  A qrcode tool for terminal
+     parser      Parse some file
+   Web:
+     githack       A `.git` folder disclosure exploit
+     gopher        Generate Gopher Exp
+     jwttool, jwt  A jwt tool with Print/Crack/Modify
+
+GLOBAL OPTIONS:
+   --help, -h     show help (default: false)
+   --version, -v  print the version (default: false)
 ```
 
 ## Public Projects
@@ -55,118 +59,98 @@ Use "god [command] --help" for more information about a command.
 ## githack
 
 ```
-A Git source leak exploit tool that restores the entire Git repository, including data from stash, for white-box auditing and analysis of developers' mind
+NAME:
+   githack - A `.git` folder disclosure exploit
 
-Usage:
-  githack [flags]
-  githack [command]
+USAGE:
+   githack [global options] [arguments...]
 
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  version     Print the version
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
 
-Flags:
-  -d, --delay int   Request delay (N times one second)
-  -h, --help        help for githack
-  -l, --limit int   Request limit (N times one second) (default 10)
-
-Use "githack [command] --help" for more information about a command.
+GLOBAL OPTIONS:
+   --help, -h  show help (default: false)
 ```
 
 ## gopher
 
 ```
-Generate Gopher Exp
+NAME:
+   gopher - A jwt tool with Print/Crack/Modify
 
-Usage:
-  gopher [flags]
-  gopher [command]
+USAGE:
+   gopher [global options] command [command options] [arguments...]
 
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  fcgi        Gopher Exp FastCGI
-  help        Help about any command
-  listen      Gopher Exp By Listen
-  post        Gopher Exp HTTP POST
-  redis       Gopher Exp Redis
-  upload      Gopher Exp HTTP Upload
-  version     Print the version
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
 
-Flags:
-  -f, --filename string   Filename
-  -h, --help              help for gopher
-  -e, --urlencode count   URL Encode (-e , -ee -eee)
+COMMANDS:
+   JWT:
+     print, p   Print jwt pretty
+     modify, m  Modify jwt
+     crack, c   Crack jwt
+     create, n  Create jwt
 
-Use "gopher [command] --help" for more information about a command.
+GLOBAL OPTIONS:
+   --help, -h  show help (default: false)
 ```
 
 ## hashpow
 
 ```
-A tool for ctfer which make hash collision faster
+NAME:
+   jwttool - Brute Hash Power of Work with md5/sha1
 
-Usage:
-  hashpow [flags]
-  hashpow [command]
+USAGE:
+   jwttool [global options] [arguments...]
 
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  version     Print the version
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
 
-Flags:
-  -c, --code string     part of hash code
-  -t, --hash string     hash type : md5 sha1 (default "md5")
-  -h, --help            help for hashpow
-  -i, --pos int         starting position of hash
-  -p, --prefix string   text prefix
-  -s, --suffix string   text suffix
-
-Use "hashpow [command] --help" for more information about a command.
+GLOBAL OPTIONS:
+   --help, -h  show help (default: false)
 ```
 
 ## jwttool
 
 ```
-A jwt tool with Print/Crack/Modify
+NAME:
+   jwttool - A jwt tool with Print/Crack/Modify
 
-Usage:
-  jwttool [flags]
-  jwttool [command]
+USAGE:
+   jwttool [global options] command [command options] [arguments...]
 
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  jwtc        JWT Crack
-  jwtm        JWT Modify
-  jwtp        JWT Print
-  version     Print the version
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
 
-Flags:
-  -h, --help   help for jwttool
+COMMANDS:
+   JWT:
+     print, p   Print jwt pretty
+     modify, m  Modify jwt
+     crack, c   Crack jwt
+     create, n  Create jwt
 
-Use "jwttool [command] --help" for more information about a command.
+GLOBAL OPTIONS:
+   --help, -h  show help (default: false)
 ```
 
 ## parser
 
 ```
-Parse some file
+NAME:
+   parser - Parse some file
 
-Usage:
-  parser [flags]
-  parser [command]
+USAGE:
+   parser [global options] command [command options] [arguments...]
 
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  tcp         Parse /proc/net/tcp
-  version     Print the version
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
 
-Flags:
-  -h, --help   help for parser
+COMMANDS:
+   procnet, net  Parse /proc/net/tcp|udp
+   dsstore       .DS_Store Parser
 
-Use "parser [command] --help" for more information about a command.
+GLOBAL OPTIONS:
+   --help, -h  show help (default: false)
 ```
 

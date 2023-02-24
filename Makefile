@@ -46,9 +46,17 @@ readme:
 	echo '' >> README.md; \
 	echo "Add Build Badge"; \
 	echo '[![Build](https://github.com/virzz/virzz/actions/workflows/virzz.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz.yml) [![Build Release](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml)' >> README.md; \
-	echo '' >> README.md;
+	echo '' >> README.md; \
+	echo "## Install" >> README.md; \
+	echo '' >> README.md; \
+	echo '`brew install virzz/virzz/<formula>` || `brew tap virzz/virzz; brew install <formula>`' >> README.md; \
+	echo '' >> README.md; \
+	echo '### Formulae' >> README.md; \
+	echo '' >> README.md; \
+	echo '- God `brew install virzz/virzz/god` || `brew tap virzz/virzz; brew install god`' >> README.md; \
+	echo '' >> README.md; 
 
-	@go run ./cmd/_compile god;
+	@go run ./internal/_compile god;
 	@echo "Add God"; \
 	echo '## God - CLI 命令行小工具' >> README.md; \
 	echo '' >> README.md; \
@@ -58,22 +66,29 @@ readme:
 	echo '' >> README.md; \
 
 	@echo "Compile Public Projects"
-	@go run ./cmd/_compile public;
+	@go run ./internal/_compile public;
 
 	@echo "Add Public Project List"; \
 	echo "## Public Projects" >> README.md; \
 	echo '' >> README.md; \
-	for i in `ls ./cmd/public/`; do \
+	for i in `ls -d ./cmd/public/*/`; do \
 		echo "- $$(basename $$i)" >> README.md; \
 	done; \
 	echo '' >> README.md;
 
 	@echo "Add Public Projects"; \
-	for i in `ls ./cmd/public/`; do \
+	for i in `ls -d ./cmd/public/*/`; do \
 		echo "## $$(basename $$i)" >> README.md; \
 		echo '' >> README.md; \
 		echo '```' >> README.md; \
-		echo "$$(./build/$$i -h )" >> README.md; \
+		echo "$$(./build/$$(basename $$i) -h )" >> README.md; \
 		echo '```' >> README.md; \
 		echo '' >> README.md; \
 	done;
+
+ttt:
+	cat <<EOF >> README.md.t
+	test 
+	teaedf 
+	EOF
+
