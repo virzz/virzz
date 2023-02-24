@@ -10,9 +10,9 @@ import (
 
 	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/modules/crypto/hash"
-	"github.com/virzz/virzz/services/server/dns"
-	"github.com/virzz/virzz/services/server/mariadb"
-	"github.com/virzz/virzz/services/server/web"
+	"github.com/virzz/virzz/services/dns"
+	"github.com/virzz/virzz/services/mariadb"
+	"github.com/virzz/virzz/services/web"
 	"github.com/virzz/virzz/utils"
 )
 

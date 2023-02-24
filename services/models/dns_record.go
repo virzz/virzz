@@ -1,6 +1,6 @@
 package models
 
-import "github.com/virzz/virzz/services/server/mariadb"
+import "github.com/virzz/virzz/services/mariadb"
 
 type Record struct {
 	ID      uint   `json:"id" gorm:"primaryKey"`

@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/virzz/logger"
 
-	"github.com/virzz/virzz/services/server/mariadb"
+	"github.com/virzz/virzz/services/mariadb"
 )
 
 func TestServer(t *testing.T) {

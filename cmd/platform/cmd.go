@@ -9,9 +9,9 @@ import (
 
 	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/services/server/dns"
-	"github.com/virzz/virzz/services/server/mariadb"
-	"github.com/virzz/virzz/services/server/web"
+	"github.com/virzz/virzz/services/dns"
+	"github.com/virzz/virzz/services/mariadb"
+	"github.com/virzz/virzz/services/web"
 )
 
 var Cmd = &cli.Command{

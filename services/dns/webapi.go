@@ -2,9 +2,9 @@ package dns
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/virzz/virzz/services/server/web"
-	"github.com/virzz/virzz/services/server/web/mw"
-	"github.com/virzz/virzz/services/server/web/resp"
+	"github.com/virzz/virzz/services/web"
+	"github.com/virzz/virzz/services/web/mw"
+	"github.com/virzz/virzz/services/web/resp"
 )
 
 func GetDNSLogHandle(c *gin.Context) {

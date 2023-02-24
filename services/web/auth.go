@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/virzz/logger"
 
-	"github.com/virzz/virzz/services/server/models"
-	"github.com/virzz/virzz/services/server/web/mw"
-	"github.com/virzz/virzz/services/server/web/resp"
+	"github.com/virzz/virzz/services/models"
+	"github.com/virzz/virzz/services/web/mw"
+	"github.com/virzz/virzz/services/web/resp"
 	"github.com/virzz/virzz/utils"
 )
 

@@ -9,7 +9,7 @@ import (
 	"github.com/virzz/logger"
 
 	"github.com/virzz/virzz/modules/misc/nettool"
-	"github.com/virzz/virzz/services/server/models"
+	"github.com/virzz/virzz/services/models"
 )
 
 // DOMAIN_PREFIX_*

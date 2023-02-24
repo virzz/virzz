@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
-	"github.com/virzz/virzz/services/server/mariadb"
+	"github.com/virzz/virzz/services/mariadb"
 )
 
 var dnsServer *dns.Server

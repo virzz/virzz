@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
-	"github.com/virzz/virzz/services/server/web/mw"
-	"github.com/virzz/virzz/services/server/web/resp"
+	"github.com/virzz/virzz/services/web/mw"
+	"github.com/virzz/virzz/services/web/resp"
 )
 
 // NewServer - New Web Server
