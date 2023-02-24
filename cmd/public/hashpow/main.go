@@ -10,5 +10,5 @@ var (
 )
 
 func main() {
-	public.RunCliApp(hashpow.Cmd, "jwttool", Version)
+	public.RunCliApp(hashpow.Cmd, "hashpow", Version)
 }
