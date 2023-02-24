@@ -22,6 +22,8 @@ var (
 	verbose = 0
 	release = false
 
+	gitRevision = ""
+
 	goBuilder = "go"
 	goOutput  = ""
 	goVersion = ""
@@ -54,7 +56,9 @@ func compile(name, source, target string, buildID int) error {
 		}
 		flags["-trimpath"] = ""
 		flags["-tags"] = "release"
-		flags["-ldflags"] = fmt.Sprintf("-s -w -X main.BuildID=%d -X main.Version=%s", buildID, goVersion)
+		flags["-ldflags"] = fmt.Sprintf(
+			"-s -w -X main.BuildID=%d -X main.Version=%s -X main.Revision=%s",
+			buildID, goVersion, gitRevision)
 	} else {
 		flags["-tags"] = "debug"
 		flags["-ldflags"] = fmt.Sprintf("-X main.BuildID=%d", buildID)

@@ -37,6 +37,7 @@ func main() {
 			&cli.BoolFlag{Name: "together", Aliases: []string{"t"}, Usage: "Archive all in one"},
 			&cli.BoolFlag{Name: "multi", Aliases: []string{"M"}, Usage: "Compile multi-platform binaries"},
 			&cli.BoolFlag{Name: "force", Aliases: []string{"F"}, Usage: "Force to Compile"},
+			&cli.StringFlag{Name: "revision", Aliases: []string{"G"}, Usage: "Custom Build Revision"},
 			&cli.StringFlag{Name: "version", Aliases: []string{"V"}, Usage: "Custom Build version"},
 			&cli.StringFlag{Name: "output", Aliases: []string{"O"}, Usage: "Custom output path", Value: TARGET_DIR},
 			&cli.StringFlag{Name: "builder", Aliases: []string{"B"}, Usage: "Replace `go` builder", Value: "go"},
@@ -75,6 +76,7 @@ func main() {
 			goVersion = c.String("version")
 			goOutput = c.String("output")
 			goBuilder = c.String("builder")
+			gitRevision = c.String("revision")
 			goTags = append(goTags, c.StringSlice("go-tags")...)
 
 			projs := c.Args().Slice()
