@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/virzz/virzz/cli/public"
+	"github.com/virzz/virzz/cmd/public"
 	"github.com/virzz/virzz/modules/crypto/hashpow"
 )
 
@@ -10,5 +10,5 @@ var (
 )
 
 func main() {
-	public.RunCliApp(hashpow.Cmd, "jwttool", Version)
+	public.RunCliApp(hashpow.Cmd, "hashpow", Version)
 }

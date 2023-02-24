@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/virzz/virzz/cli/public"
+	"github.com/virzz/virzz/cmd/public"
 	"github.com/virzz/virzz/modules/web/jwttool"
 )
 
@@ -10,5 +10,5 @@ var (
 )
 
 func main() {
-	public.RunCliApp(jwttool.Cmd, "jwttool", Version)
+	public.RunCliApp(jwttool.Cmd, "gopher", Version)
 }

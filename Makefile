@@ -40,7 +40,7 @@ cleanr:
 swagger:
 	@swag i -g services/web/swagger.go -o services/docs
 
-readme:
+readme: virzz
 	@echo "# Virzz" > README.md ; \
 	echo '' >> README.md;
 	@if test -f ${TARGET}/virzz ; then \

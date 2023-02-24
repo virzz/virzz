@@ -10,6 +10,7 @@ import (
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
 	"github.com/virzz/virzz/utils"
+	"github.com/virzz/virzz/utils/tongji"
 )
 
 const (
@@ -63,6 +64,9 @@ func main() {
 	app.Commands = append(app.Commands, commands...)
 	// HideHelpCommand
 	utils.HideHelpCommand(app.Commands)
+
+	// Add Tongji
+	go tongji.Tongji("http://god.tool.virzz.com", BinName, Version)
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
