@@ -21,7 +21,7 @@ default:
 
 rc-%:
 	@echo "[*] Compiling Release $(subst rc-,,$@) ..." ; \
-	go run ./internal/_compile -R $(subst rc-,,$@)
+	go run ./internal/_compile -R -G $(shell git rev-parse HEAD || echo "latest" ) $(subst rc-,,$@)
 
 i-%: rc-%
 	@export NAME='$(subst i-,,$@)'; \

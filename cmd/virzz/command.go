@@ -27,9 +27,8 @@ func init() {
 		classical.Cmd,
 		hash.Cmd,
 		hash.BcryptCmd,
-		parser.Cmd,
 		// Misc
-		// Parser
+		parser.Cmd,
 		domain.Cmd,
 		nettool.Cmd,
 		hashpow.Cmd,
