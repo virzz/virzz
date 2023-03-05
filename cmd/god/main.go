@@ -6,6 +6,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/spf13/viper"
 	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
@@ -22,6 +23,14 @@ var (
 	BuildID  string = "0"
 	Revision string = ""
 )
+
+func init() {
+	viper.AddConfigPath("$HOME/.config/virzz")
+	viper.SetConfigName("tongji")
+	viper.SetConfigType("yaml")
+	viper.AutomaticEnv()
+	viper.ReadInConfig()
+}
 
 func main() {
 	cli.VersionPrinter = func(c *cli.Context) {
@@ -66,7 +75,7 @@ func main() {
 	utils.HideHelpCommand(app.Commands)
 
 	// Add Tongji
-	go tongji.Tongji("http://god.tool.virzz.com", BinName, Version)
+	tongji.Tongji("https://god.tool.virzz.com", BinName, Version)
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
