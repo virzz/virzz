@@ -7,6 +7,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/spf13/viper"
+	"github.com/virzz/logger"
 	"github.com/virzz/virzz/modules/crypto/hash"
 	"github.com/virzz/virzz/utils"
 	"github.com/virzz/virzz/utils/httpreq"
@@ -29,11 +31,13 @@ func UniqID(name string) string {
 // Tongji 使用统计
 // 程序名/版本号/操作系统/架构/语言/设备ID
 func Tongji(url, name, ver string) {
-	if os.Getenv("VIRZZ_NO_TONGJI") != "" {
+	if os.Getenv("VIRZZ_NO_TONGJI") != "" || viper.GetBool("tongji") {
 		return
 	}
+	logger.Info("Init tongji at the first time")
 	once.Do(func() error {
-		_, err := httpreq.R().
+		logger.Info("???")
+		rrr, err := httpreq.R().
 			SetQueryParams(map[string]string{
 				"name": name,
 				"ver":  ver,
@@ -43,6 +47,12 @@ func Tongji(url, name, ver string) {
 				"id":   UniqID(name),
 				// "t":    strconv.Itoa(int(time.Now().Unix())),
 			}).Get(url)
+		logger.Info(rrr.Request.URL)
+		logger.Info(rrr.String())
+		logger.Error(err)
 		return err
 	})
+	viper.Set("tongji", true)
+	viper.WriteConfig()
+	viper.SafeWriteConfig()
 }
