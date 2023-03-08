@@ -83,7 +83,8 @@ func compile(name, source, target string, buildID int) error {
 	// Multi-platform
 	if name != target {
 		ts := strings.Split(target, "-")
-		env = append(env, "GOOS="+ts[1], "GOARCH="+ts[2])
+		tsLen := len(ts)
+		env = append(env, "GOOS="+ts[tsLen-2], "GOARCH="+ts[tsLen-1])
 	}
 
 	outputTarget := path.Join(goOutput, target)

@@ -86,9 +86,7 @@ readme:
 		echo '' >> README.md; \
 	done;
 
-ttt:
-	cat <<EOF >> README.md.t
-	test 
-	teaedf 
-	EOF
-
+ghext: rc-gh-mozhu
+	@gh extension remove gh-mozhu > /dev/null || true
+	@./build/gh-mozhu install
+	gh extension list

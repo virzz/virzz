@@ -44,8 +44,13 @@ func main() {
 			&cli.StringSliceFlag{Name: "go-tags", Aliases: []string{"T"}, Usage: "Append go build tags"},
 			&cli.BoolFlag{Name: "verbose", Aliases: []string{"v"}, Usage: "Print verbose information"},
 			&cli.BoolFlag{Name: "verbosex", Aliases: []string{"vv"}, Usage: "Print verbose information"},
+			&cli.BoolFlag{Name: "debug", Aliases: []string{"D"}, Usage: "Set logger Debug"},
 		},
 		Action: func(c *cli.Context) error {
+
+			if c.Bool("debug") {
+				logger.SetDebug(true)
+			}
 
 			// Clean Build Directory
 			if c.Bool("clean") {
