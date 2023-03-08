@@ -28,5 +28,6 @@ func RunCliApp(cmd *cli.Command, name, version string) {
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
+		os.Exit(1)
 	}
 }

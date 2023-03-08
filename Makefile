@@ -11,7 +11,7 @@ default:
 
 %:
 	@rm -f ${TARGET}/$@ ; 
-	@if [[ -d ./cli/public/$@ ]] || [[ -d ./cli/$@ ]]; then \
+	@if [[ -d ./cmd/public/$@ ]] || [[ -d ./cmd/$@ ]]; then \
 		if [[ -z "${DEBUG}" ]]; then \
 			go run -tags debug ./internal/_compile $@ ; \
 		else \
@@ -44,7 +44,7 @@ readme: virzz
 	@echo "# Virzz" > README.md ; \
 	echo '' >> README.md;
 	@if test -f ${TARGET}/virzz ; then \
-		echo '## Virzz - CLI 命令行小工具' >> README.md; \
+		echo '## Virzz - cmd 命令行小工具' >> README.md; \
 		echo '' >> README.md; \
 		echo '```' >> README.md; \
 		./build/virzz >> README.md; \
@@ -58,3 +58,8 @@ readme: virzz
 		./build/platform >> README.md; \
 		echo '```' >> README.md; \
 	fi
+
+ghext: rc-gh-mozhu
+	@gh extension remove gh-mozhu > /dev/null || true
+	@./build/gh-mozhu install
+	gh extension list

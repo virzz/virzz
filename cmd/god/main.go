@@ -79,5 +79,6 @@ func main() {
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
+		os.Exit(1)
 	}
 }

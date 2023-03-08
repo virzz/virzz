@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/virzz/virzz/cmd/public"
-	"github.com/virzz/virzz/modules/misc/parser"
+	"github.com/virzz/virzz/modules/exts/ghext"
 )
 
 var (
@@ -10,5 +10,5 @@ var (
 )
 
 func main() {
-	public.RunCliApp(parser.Cmd, "parser", Version)
+	public.RunCliApp(ghext.Cmd, "gh-mozhu", Version)
 }
