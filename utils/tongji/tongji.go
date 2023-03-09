@@ -36,21 +36,16 @@ func Tongji(url, name, ver string) {
 	}
 	logger.Info("Init tongji at the first time")
 	once.Do(func() error {
-		logger.Info("???")
-		rrr, err := httpreq.R().
-			SetQueryParams(map[string]string{
-				"name": name,
-				"ver":  ver,
-				"os":   runtime.GOOS,
-				"arch": runtime.GOARCH,
-				"ln":   strings.Split(os.Getenv("LANG"), ".")[0],
-				"id":   UniqID(name),
-				// "t":    strconv.Itoa(int(time.Now().Unix())),
-			}).Get(url)
-		logger.Info(rrr.Request.URL)
-		logger.Info(rrr.String())
-		logger.Error(err)
-		return err
+		httpreq.R().SetQueryParams(map[string]string{
+			"name": name,
+			"ver":  ver,
+			"os":   runtime.GOOS,
+			"arch": runtime.GOARCH,
+			"ln":   strings.Split(os.Getenv("LANG"), ".")[0],
+			"id":   UniqID(name),
+			// "t":    strconv.Itoa(int(time.Now().Unix())),
+		}).Get(url)
+		return nil
 	})
 	viper.Set("tongji", true)
 	viper.WriteConfig()

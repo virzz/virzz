@@ -13,6 +13,7 @@ require (
 	github.com/htruong/go-md2 v0.0.0-20170914203617-c69905b63f6f
 	github.com/manifoldco/promptui v0.9.0
 	github.com/panjf2000/ants/v2 v2.7.1
+	github.com/pkg/errors v0.9.1
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2

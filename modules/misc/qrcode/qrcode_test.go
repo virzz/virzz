@@ -1,10 +1,9 @@
 package qrcode
 
 import (
+	"fmt"
 	"os"
 	"testing"
-
-	"github.com/virzz/virzz/utils"
 )
 
 func TestZeroOneToQrcode(t *testing.T) {
@@ -12,10 +11,7 @@ func TestZeroOneToQrcode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = utils.Output(res)
-	if err != nil {
-		t.Fatal(err)
-	}
+	fmt.Println(res)
 }
 
 func TestZeroOneToQrcodeFile(t *testing.T) {
@@ -36,10 +32,7 @@ func TestParseQrcode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = utils.Output(res)
-	if err != nil {
-		t.Fatal(err)
-	}
+	fmt.Println(res)
 }
 
 func TestParseQrcodeTermial(t *testing.T) {
@@ -47,10 +40,7 @@ func TestParseQrcodeTermial(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = utils.Output(res)
-	if err != nil {
-		t.Fatal(err)
-	}
+	fmt.Println(res)
 }
 
 func TestGenerateQrcode(t *testing.T) {
@@ -58,8 +48,5 @@ func TestGenerateQrcode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = utils.Output(res)
-	if err != nil {
-		t.Fatal(err)
-	}
+	fmt.Println(res)
 }

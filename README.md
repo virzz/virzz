@@ -32,6 +32,7 @@ COMMANDS:
      classical  Classical cryptography
      hash       Hash Function
      bcrypt     Bcrypt Generate/Compare
+     hashpwd    A tool for query password hash offline
    Misc:
      domain      Some tools for Domain/SubDomain
      netool      Net utils for IP/Port
@@ -50,11 +51,36 @@ GLOBAL OPTIONS:
 
 ## Public Projects
 
+- gh-mozhu
 - githack
 - gopher
 - hashpow
+- hashpwd
 - jwttool
 - parser
+
+## gh-mozhu
+
+```
+NAME:
+   gh-mozhu - A little toolkit using GitHub API
+
+USAGE:
+   gh-mozhu [global options] command [command options] [arguments...]
+
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
+
+COMMANDS:
+   install   Install this
+   orgs      List organizations for the authenticated user
+   transfer  Transfer a repository
+   Ext:
+     commit, gcmt  Generate Commit Message
+
+GLOBAL OPTIONS:
+   --help, -h  show help (default: false)
+```
 
 ## githack
 
@@ -99,13 +125,33 @@ GLOBAL OPTIONS:
 
 ```
 NAME:
-   jwttool - Brute Hash Power of Work with md5/sha1
+   hashpow - Brute Hash Power of Work with md5/sha1
 
 USAGE:
-   jwttool [global options] [arguments...]
+   hashpow [global options] [arguments...]
 
 AUTHOR:
    陌竹(@mozhu1024) <mozhu233@outlook.com>
+
+GLOBAL OPTIONS:
+   --help, -h  show help (default: false)
+```
+
+## hashpwd
+
+```
+NAME:
+   hashpwd - A tool for query password hash offline
+
+USAGE:
+   hashpwd [global options] command [command options] [arguments...]
+
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
+
+COMMANDS:
+   generate, g  Generate password hash form password dict
+   lookup, l    Generate password hash form password dict
 
 GLOBAL OPTIONS:
    --help, -h  show help (default: false)

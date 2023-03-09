@@ -17,7 +17,7 @@ var (
 type bruteArg struct {
 	code, prefix, suffix, method string
 	start, end                   int
-	hash                         *func([]byte) (string, error)
+	hash                         *func([]byte, ...bool) (string, error)
 }
 
 func hashBrute(arg bruteArg) bool {
@@ -57,12 +57,12 @@ func hashBrute(arg bruteArg) bool {
 func HashPoW(code, prefix, suffix, method string, start int) string {
 	done = make(chan struct{}, 1)
 	result = make(chan string, 1)
-	var _hash func([]byte) (string, error)
+	var _hash func([]byte, ...bool) (string, error)
 	switch method {
 	case "sha1":
 		_hash = hash.Sha1Hash
 	case "md5":
-		_hash = func(s []byte) (string, error) {
+		_hash = func(s []byte, isRaw ...bool) (string, error) {
 			return hash.MDHash(s, 5)
 		}
 	default:

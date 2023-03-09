@@ -29,10 +29,9 @@ func _prompt(isHideEmoji bool) (err error) {
 func init() {
 	// commit - Generate Commit Message
 	commitCmd := &cli.Command{
-		Category: "Ext",
-		Name:     "commit",
-		Usage:    "Generate Commit Message",
-		Aliases:  []string{"gcmt"},
+		Name:    "commit",
+		Usage:   "Generate Commit Message",
+		Aliases: []string{"gcmt"},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "scope",
@@ -111,15 +110,14 @@ func init() {
 			Usage: fmt.Sprintf("Commit Type %s", MsgType(i)),
 		})
 		commitTypeItems = append(commitTypeItems, MsgType(i).String())
-		logger.Debug(MsgType(i))
 	}
 	Cmd.Commands = append(Cmd.Commands, commitCmd)
 }
 
 var Cmd = &cli.Command{
 	Category: "GitHub",
-	Name:     "gh-mozhu", // For GitHub command-line tool
-	Aliases:  []string{"ghext"},
+	Name:     "ghext", // For GitHub command-line tool
+	Aliases:  []string{"gh-mozhu"},
 	Usage:    "A little toolkit using GitHub API",
 	Commands: []*cli.Command{
 		// install - Install this

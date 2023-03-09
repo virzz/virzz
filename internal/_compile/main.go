@@ -105,14 +105,9 @@ func main() {
 
 			// Compile
 			for name, source := range sourceNames {
-				buildID, err := BuildID.Inc(name)
-				if err != nil {
-					logger.Error(err)
-				}
-
 				if c.Bool("multi") {
 					logger.InfoF("Start compiling %s for all platforms", name)
-					if len(multiCompile(name, source, buildID)) == 6 {
+					if len(multiCompile(name, source)) == 6 {
 						logger.Success("All platforms compiled successfully")
 						if c.Bool("archive") {
 							if c.Bool("together") {
@@ -128,7 +123,7 @@ func main() {
 
 				} else {
 					logger.InfoF("Start compiling %s", name)
-					if err := compile(name, source, name, buildID); err != nil {
+					if err := compile(name, source, name); err != nil {
 						logger.ErrorF("Compile %s fail: %v", name, err)
 						continue
 					}

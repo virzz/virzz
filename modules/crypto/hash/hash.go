@@ -9,6 +9,7 @@ import (
 	"fmt"
 
 	"github.com/htruong/go-md2"
+
 	//lint:ignore SA1019 Ignore deprecated md4 package
 	"golang.org/x/crypto/md4"
 	//lint:ignore SA1019 Ignore deprecated ripemd160 package
@@ -16,8 +17,11 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func Sha1Hash(s []byte) (string, error) {
+func Sha1Hash(s []byte, isRaw ...bool) (string, error) {
 	has := sha1.Sum(s)
+	if len(isRaw) > 0 && isRaw[0] {
+		return string(has[:]), nil
+	}
 	return hex.EncodeToString(has[:]), nil
 }
 
@@ -75,7 +79,7 @@ func Ripemd160Hash(s []byte) (string, error) {
 	return hex.EncodeToString(h.Sum(nil)), nil
 }
 
-func MDHash(s []byte, typ int) (string, error) {
+func MDHash(s []byte, typ int, isRaw ...bool) (string, error) {
 	var res []byte
 	switch typ {
 	case 2:
@@ -91,6 +95,9 @@ func MDHash(s []byte, typ int) (string, error) {
 		res = dst[:]
 	default:
 		return "", fmt.Errorf("not found md%d", typ)
+	}
+	if len(isRaw) > 0 && isRaw[0] {
+		return string(res), nil
 	}
 	return hex.EncodeToString(res), nil
 }

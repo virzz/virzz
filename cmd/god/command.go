@@ -6,8 +6,10 @@ import (
 	"github.com/virzz/virzz/modules/crypto/basic"
 	"github.com/virzz/virzz/modules/crypto/classical"
 	"github.com/virzz/virzz/modules/crypto/hash"
-	"github.com/virzz/virzz/modules/crypto/hashpow"
+	"github.com/virzz/virzz/modules/crypto/hashpwd"
+	"github.com/virzz/virzz/modules/exts/ghext"
 	"github.com/virzz/virzz/modules/misc/domain"
+	"github.com/virzz/virzz/modules/misc/hashpow"
 	"github.com/virzz/virzz/modules/misc/nettool"
 	"github.com/virzz/virzz/modules/misc/parser"
 	"github.com/virzz/virzz/modules/misc/qrcode"
@@ -27,12 +29,14 @@ func init() {
 		classical.Cmd,
 		hash.Cmd,
 		hash.BcryptCmd,
+		hashpwd.Cmd,
 		// Misc
 		domain.Cmd,
 		nettool.Cmd,
 		hashpow.Cmd,
 		qrcode.Cmd,
 		parser.Cmd,
+		ghext.Cmd,
 		// Web
 		githack.Cmd,
 		gopher.Cmd,

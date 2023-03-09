@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/virzz/virzz/cmd/public"
-	"github.com/virzz/virzz/modules/misc/hashpow"
+	"github.com/virzz/virzz/modules/crypto/hashpwd"
 )
 
 var (
@@ -10,5 +10,5 @@ var (
 )
 
 func main() {
-	public.RunCliApp(hashpow.Cmd, "hashpow", Version)
+	public.RunCliApp(hashpwd.Cmd, "hashpwd", Version)
 }

@@ -1,4 +1,4 @@
-// Package base36, form from https://github.com/martinlindhe/base36
+// Package base36, form https://github.com/martinlindhe/base36
 package base36
 
 import (
