@@ -37,6 +37,11 @@ var Cmd = &cli.Command{
 					Usage:   "Hmac Key",
 					Value:   "",
 				},
+				&cli.BoolFlag{
+					Name:    "raw",
+					Usage:   "Print raw data",
+					Aliases: []string{"r"},
+				},
 			},
 			Action: func(c *cli.Context) (err error) {
 				code, err := utils.GetArgFilePipe(c.Args().First())
@@ -48,7 +53,11 @@ var Cmd = &cli.Command{
 				if key != "" {
 					r, _ = HmacMDHash(code, []byte(key), c.Int("type"))
 				} else {
-					r, _ = MDHash(code, c.Int("type"))
+					r, _ = MDHash(code, c.Int("type"), c.Bool("raw"))
+				}
+				if c.Bool("raw") {
+					_, err = fmt.Print(r)
+					return
 				}
 				_, err = fmt.Println(r)
 				return
@@ -61,6 +70,11 @@ var Cmd = &cli.Command{
 			Name:     "sha1",
 			Usage:    "SHA1 algorithm",
 			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name:    "raw",
+					Usage:   "Print raw data",
+					Aliases: []string{"r"},
+				},
 				&cli.StringFlag{
 					Name:    "hmac",
 					Aliases: []string{"s"},
@@ -78,7 +92,11 @@ var Cmd = &cli.Command{
 				if key != "" {
 					r, _ = HmacSha1Hash(code, []byte(key))
 				} else {
-					r, _ = Sha1Hash(code)
+					r, _ = Sha1Hash(code, c.Bool("raw"))
+				}
+				if c.Bool("raw") {
+					_, err = fmt.Print(r)
+					return
 				}
 				_, err = fmt.Println(r)
 				return
@@ -197,6 +215,52 @@ var Cmd = &cli.Command{
 					r, _ = Ripemd160Hash(code)
 				}
 				_, err = fmt.Println(r)
+				return
+			},
+		},
+
+		// mysql
+		&cli.Command{
+			Category: "Hash",
+			Name:     "mysql",
+			Usage:    "MySQL Hash password using before 4.1",
+			Action: func(c *cli.Context) (err error) {
+				code, err := utils.GetArgFilePipe(c.Args().First())
+				if err != nil {
+					return err
+				}
+				_, err = fmt.Println(MySQLHash(code))
+				return
+			},
+		},
+
+		// mysql5
+		&cli.Command{
+			Category: "Hash",
+			Name:     "mysql5",
+			Usage:    "MySQL5 Hash password using 4.1+ method (SHA1)",
+			Action: func(c *cli.Context) (err error) {
+				code, err := utils.GetArgFilePipe(c.Args().First())
+				if err != nil {
+					return err
+				}
+				_, err = fmt.Println(MySQL5Hash(code))
+				return
+			},
+		},
+
+		// ntlm
+		&cli.Command{
+			Category: "Hash",
+			Name:     "ntlm",
+			Aliases:  []string{"ntlm"},
+			Usage:    "NTLM Hash password (MD4(utf16))",
+			Action: func(c *cli.Context) (err error) {
+				code, err := utils.GetArgFilePipe(c.Args().First())
+				if err != nil {
+					return err
+				}
+				_, err = fmt.Println(NTLMv1Hash(code))
 				return
 			},
 		},

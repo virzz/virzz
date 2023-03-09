@@ -93,15 +93,6 @@ func GetFirstArg(args []string) (string, error) {
 	return "", fmt.Errorf("not found args")
 }
 
-// Output -
-func Output(s string) error {
-	outBuf := bufio.NewWriter(os.Stdout)
-	outBuf.WriteString(s)
-	outBuf.WriteString("\n")
-	outBuf.Flush()
-	return nil
-}
-
 // OutputBytes -
 func OutputBytes(s []byte) error {
 	outBuf := bufio.NewWriter(os.Stdout)

@@ -19,6 +19,7 @@ require (
 	github.com/miekg/dns v1.1.50
 	github.com/panjf2000/ants/v2 v2.7.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/pkg/errors v0.9.1
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
@@ -36,7 +37,6 @@ require (
 
 require (
 	fyne.io/systray v1.10.1-0.20230207085535-4a244dbb9d03 // indirect
-	github.com/aymanbagabas/go-osc52 v1.2.2 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/benoitkugler/textlayout v0.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
