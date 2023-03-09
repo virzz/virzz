@@ -13,4 +13,4 @@ jobs:
       - uses: actions/checkout@v2
       - uses: cli/gh-extension-precompile@v1
         with:
-          build_script_override: "cmd/public/gh-mozhu/build_and_release.sh"
+          build_script_override: "cmd/public/gh-mozhu/script.sh"
