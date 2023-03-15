@@ -30,7 +30,7 @@ var (
 	goTags    = []string{}
 )
 
-func compile(name, source, target string, buildID int) error {
+func compile(name, source, target string) error {
 
 	flags := make(map[string]string)
 
@@ -57,11 +57,9 @@ func compile(name, source, target string, buildID int) error {
 		flags["-trimpath"] = ""
 		flags["-tags"] = "release"
 		flags["-ldflags"] = fmt.Sprintf(
-			"-s -w -X main.BuildID=%d -X main.Version=%s -X main.Revision=%s",
-			buildID, goVersion, gitRevision)
+			"-s -w -X main.Version=%s -X main.Revision=%s", goVersion, gitRevision)
 	} else {
 		flags["-tags"] = "debug"
-		flags["-ldflags"] = fmt.Sprintf("-X main.BuildID=%d", buildID)
 	}
 
 	if len(goTags) > 0 {
@@ -110,12 +108,12 @@ func compile(name, source, target string, buildID int) error {
 	return nil
 }
 
-func multiCompile(name, source string, buildID int) []string {
+func multiCompile(name, source string) []string {
 	targes := make([]string, 0, MULTI_COUNT)
 	for _, goos := range OSS {
 		for _, goarch := range ARCHES {
 			target := fmt.Sprintf("%s-%s-%s", name, goos, goarch)
-			if err := compile(name, source, target, buildID); err != nil {
+			if err := compile(name, source, target); err != nil {
 				logger.Error(err)
 			} else {
 				targes = append(targes, target)
