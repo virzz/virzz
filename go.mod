@@ -19,7 +19,7 @@ require (
 	github.com/stretchr/testify v1.8.2
 	github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d
 	github.com/urfave/cli/v3 v3.0.0-alpha2
-	github.com/virzz/logger v0.1.7
+	github.com/virzz/logger v0.1.8
 	golang.org/x/crypto v0.7.0
 	golang.org/x/text v0.8.0
 	mvdan.cc/sh/v3 v3.6.0

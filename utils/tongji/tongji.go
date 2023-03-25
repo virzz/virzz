@@ -31,7 +31,8 @@ func UniqID(name string) string {
 // Tongji 使用统计
 // 程序名/版本号/操作系统/架构/语言/设备ID
 func Tongji(url, name, ver string) {
-	if os.Getenv("VIRZZ_NO_TONGJI") != "" || viper.GetBool("tongji") {
+	tj := viper.New()
+	if os.Getenv("VIRZZ_NO_TONGJI") != "" || tj.GetBool("tongji") {
 		return
 	}
 	logger.Info("Init tongji at the first time")
@@ -47,7 +48,7 @@ func Tongji(url, name, ver string) {
 		}).Get(url)
 		return nil
 	})
-	viper.Set("tongji", true)
-	viper.WriteConfig()
-	viper.SafeWriteConfig()
+	tj.Set("tongji", true)
+	tj.WriteConfig()
+	tj.SafeWriteConfig()
 }

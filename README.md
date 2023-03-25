@@ -33,6 +33,8 @@ COMMANDS:
      hash       Hash Function
      bcrypt     Bcrypt Generate/Compare
      hashpwd    A tool for query password hash offline
+   GitHub:
+     ghext, gh-mozhu  A little toolkit using GitHub API
    Misc:
      domain      Some tools for Domain/SubDomain
      netool      Net utils for IP/Port
@@ -72,11 +74,10 @@ AUTHOR:
    陌竹(@mozhu1024) <mozhu233@outlook.com>
 
 COMMANDS:
-   install   Install this
-   orgs      List organizations for the authenticated user
-   transfer  Transfer a repository
-   Ext:
-     commit, gcmt  Generate Commit Message
+   install       Install this
+   orgs          List organizations for the authenticated user
+   transfer      Transfer a repository
+   commit, gcmt  Generate Commit Message
 
 GLOBAL OPTIONS:
    --help, -h  show help (default: false)
