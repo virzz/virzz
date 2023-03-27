@@ -24,7 +24,7 @@ func RunCliApp(cmd *cli.Command, name, version string) {
 	}
 
 	// Add Tongji
-	go tongji.Tongji("http://god.tool.virzz.com", name, app.Version)
+	go tongji.Tongji("http://virzz.tool.virzz.com", name, app.Version)
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)

@@ -21,8 +21,8 @@ jobs:
           check-latest: true
           cache: true
 
-      - name: Build God
-        run: go run ./internal/_compile -R -M -A god
+      - name: Build Enyo
+        run: go run ./internal/_compile -R -M -A enyo
 
       - name: Upload Release Qiniu
         if: always() && github.event_name == 'pull_request'
@@ -31,8 +31,8 @@ jobs:
           access_key: ${{ secrets.QINIU_ACCESS_KEY }}
           secret_key: ${{ secrets.QINIU_SECRET_KEY }}
           bucket: ${{ secrets.QINIU_BUCKET }}
-          source_dir: release/god
-          dest_dir: /tools/virzz/god
+          source_dir: release/enyo
+          dest_dir: /tools/virzz/enyo
           overwrite: ture
 
       - name: Create Release and Upload Release Asset

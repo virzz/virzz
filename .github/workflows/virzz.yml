@@ -18,5 +18,5 @@ jobs:
           check-latest: true
           cache: true
 
-      - name: Build God & Public
-        run: go run ./internal/_compile god public
+      - name: Build Enyo & Public
+        run: go run ./internal/_compile enyo public

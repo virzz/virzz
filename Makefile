@@ -4,9 +4,9 @@ TARGET=./build
 
 default:
 	@if [[ -z "${DEBUG}" ]]; then \
-		go run -tags debug ./internal/_compile god ; \
+		go run -tags debug ./internal/_compile enyo ; \
 	else \
-		go run ./internal/_compile god ; \
+		go run ./internal/_compile enyo ; \
 	fi;
 
 %:
@@ -53,15 +53,15 @@ readme:
 	echo '' >> README.md; \
 	echo '### Formulae' >> README.md; \
 	echo '' >> README.md; \
-	echo '- God `brew install virzz/virzz/god` || `brew tap virzz/virzz; brew install god`' >> README.md; \
+	echo '- Enyo `brew install virzz/virzz/enyo` || `brew tap virzz/virzz; brew install enyo`' >> README.md; \
 	echo '' >> README.md; 
 
-	@go run ./internal/_compile god;
-	@echo "Add God"; \
-	echo '## God - CLI 命令行小工具' >> README.md; \
+	@go run ./internal/_compile enyo;
+	@echo "Add Enyo"; \
+	echo '## Enyo - CLI 命令行小工具' >> README.md; \
 	echo '' >> README.md; \
 	echo '```' >> README.md; \
-	./build/god >> README.md; \
+	./build/enyo >> README.md; \
 	echo '```' >> README.md; \
 	echo '' >> README.md; \
 

@@ -8,16 +8,16 @@
 
 ### Formulae
 
-- God `brew install virzz/virzz/god` || `brew tap virzz/virzz; brew install god`
+- Enyo `brew install virzz/virzz/enyo` || `brew tap virzz/virzz; brew install enyo`
 
-## God - CLI 命令行小工具
+## Enyo - CLI 命令行小工具
 
 ```
 NAME:
-   god - The Cyber Swiss Army Knife for terminal
+   enyo - The Cyber Swiss Army Knife for terminal
 
 USAGE:
-   god [global options] command [command options] [arguments...]
+   enyo [global options] command [command options] [arguments...]
 
 VERSION:
    latest
