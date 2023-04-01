@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/url"
@@ -13,6 +12,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils/downloader"
 	"github.com/virzz/virzz/utils/execext"
