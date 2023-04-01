@@ -27,7 +27,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d
 	github.com/urfave/cli/v3 v3.0.0-alpha2
-	github.com/virzz/logger v0.1.5
+	github.com/virzz/logger v0.2.2
 	golang.org/x/crypto v0.4.0
 	golang.org/x/text v0.8.0
 	gorm.io/driver/mysql v1.4.4
@@ -61,7 +61,6 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/goki/freetype v0.0.0-20220119013949-7a161fd3728c // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gookit/color v1.5.2 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/henvic/httpretty v0.1.0 // indirect
@@ -98,7 +97,6 @@ require (
 	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.4 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/yuin/goldmark v1.4.13 // indirect
 	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539 // indirect

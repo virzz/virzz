@@ -5,6 +5,7 @@ import (
 	"github.com/virzz/virzz/modules/crypto/basex"
 	"github.com/virzz/virzz/modules/crypto/basic"
 	"github.com/virzz/virzz/modules/crypto/classical"
+	"github.com/virzz/virzz/modules/crypto/encrypt"
 	"github.com/virzz/virzz/modules/crypto/hash"
 	"github.com/virzz/virzz/modules/misc/domain"
 	"github.com/virzz/virzz/modules/misc/hashpow"
@@ -27,6 +28,7 @@ func init() {
 		classical.Cmd,
 		hash.Cmd,
 		hash.BcryptCmd,
+		encrypt.Cmd,
 		// Misc
 		parser.Cmd,
 		domain.Cmd,

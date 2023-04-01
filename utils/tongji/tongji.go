@@ -54,7 +54,7 @@ func Tongji(url, name, ver string) {
 			}).Get(url)
 		return err
 	})
-	viper.Set("tongji", true)
-	viper.WriteConfig()
-	viper.SafeWriteConfig()
+	tj.Set("tongji", true)
+	tj.WriteConfig()
+	tj.SafeWriteConfig()
 }
