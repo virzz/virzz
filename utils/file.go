@@ -17,9 +17,12 @@ func CopyFile(dest, src string) error {
 	}
 	defer in.Close()
 
-	os.MkdirAll(path.Dir(dest), 0755)
-
-	out, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	fi, err := in.Stat()
+	if err != nil {
+		return err
+	}
+	os.MkdirAll(path.Dir(dest), 0o755)
+	out, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, fi.Mode())
 	if err != nil {
 		return err
 	}
