@@ -1,6 +1,8 @@
 package ghext
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"os"
 	"path"
@@ -10,6 +12,7 @@ import (
 	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
+	"github.com/virzz/virzz/utils/execext"
 )
 
 func _prompt(isHideEmoji bool) (err error) {
@@ -31,24 +34,25 @@ func init() {
 	commitCmd := &cli.Command{
 		Name:    "commit",
 		Usage:   "Generate Commit Message",
-		Aliases: []string{"gcmt"},
+		Aliases: []string{"gcmt", "c"},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "scope",
 				Usage: "Scope",
-				Value: "-",
+				Value: "*",
 			},
 			&cli.StringFlag{
-				Name:  "subject",
-				Usage: "subject",
+				Name:    "subject",
+				Usage:   "Subject",
+				Aliases: []string{"sub"},
 			},
 			&cli.StringFlag{
 				Name:  "body",
-				Usage: "body",
+				Usage: "Body",
 			},
 			&cli.StringFlag{
 				Name:  "footer",
-				Usage: "footer",
+				Usage: "Footer",
 			},
 			&cli.BoolFlag{
 				Name:  "hide-emoji",
@@ -56,11 +60,14 @@ func init() {
 			},
 			&cli.BoolFlag{
 				Name:  "prompt",
-				Usage: "Prompt",
+				Usage: "Prompt Mode",
+			},
+			&cli.BoolFlag{
+				Name:  "commit",
+				Usage: "Auto git commit",
 			},
 		},
 		Action: func(c *cli.Context) (err error) {
-			var res = ""
 			if c.Bool("prompt") {
 				return _prompt(c.Bool("hide-emoji"))
 			}
@@ -72,18 +79,42 @@ func init() {
 					break
 				}
 			}
+			if typ == 0 {
+				err = fmt.Errorf("commit type is required")
+				return
+			}
+			// 优先级 c.String("subject") > c.Args().Get(0)
+			subject := c.String("subject")
+			if len(subject) == 0 && c.NArg() > 0 {
+				subject = c.Args().Get(0)
+			}
 			// typ, scope, subject, body, footer
-			res, err = CommitTemplate(
+			msg, err := CommitTemplate(
 				typ,
 				c.String("scope"),
-				c.String("subject"),
+				subject,
 				c.String("body"),
 				c.String("footer"),
 				c.Bool("hide-emoji"))
 			if err != nil {
 				return err
 			}
-			_, err = fmt.Print(res)
+			if c.Bool("commit") {
+				var stderr bytes.Buffer
+				err := execext.RunCommand(context.Background(), &execext.RunCommandOptions{
+					Command: fmt.Sprintf(`git commit -m '%s'`, msg),
+					// Stdout:  os.Stdout,
+					Stderr: &stderr,
+				})
+				if stderr.Len() > 0 {
+					return fmt.Errorf(strings.TrimSpace(stderr.String()))
+				}
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err = fmt.Print(msg)
+			}
 			return
 		},
 		Commands: []*cli.Command{
@@ -107,7 +138,7 @@ func init() {
 	for i := 1; i < len(_MsgType_index); i++ {
 		commitCmd.Flags = append(commitCmd.Flags, &cli.BoolFlag{
 			Name:  strings.ToLower(MsgType(i).String()),
-			Usage: fmt.Sprintf("Commit Type %s", MsgType(i)),
+			Usage: fmt.Sprintf("%-9s", MsgType(i)),
 		})
 		commitTypeItems = append(commitTypeItems, MsgType(i).String())
 	}
