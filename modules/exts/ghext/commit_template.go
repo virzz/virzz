@@ -45,7 +45,7 @@ func CommitTemplate(typ int, scope, subject, body, footer string, isHideEmoji bo
 	msg := commitTemplate[MsgType(typ)]
 	if subject == "" {
 		if typ == int(Init) {
-			subject = "Initial commit "
+			subject = "Initial commit"
 		} else {
 			return "", fmt.Errorf("subject is empty")
 		}
@@ -54,7 +54,7 @@ func CommitTemplate(typ int, scope, subject, body, footer string, isHideEmoji bo
 		msg.Icon = ""
 	}
 	line := fmt.Sprintf(
-		"%s%s(%s): %s ",
+		"%s%s(%s): %s",
 		msg.Icon, msg.Type, scope, subject,
 	)
 	if body != "" {
