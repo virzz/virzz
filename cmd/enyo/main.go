@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	BinName = "god"
+	BinName = "enyo"
 )
 
 var (
@@ -75,7 +75,7 @@ func main() {
 	utils.HideHelpCommand(app.Commands)
 
 	// Add Tongji
-	tongji.Tongji("https://god.tool.virzz.com", BinName, Version)
+	tongji.Tongji("https://virzz.tool.virzz.com", BinName, Version)
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)
