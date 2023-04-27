@@ -7,6 +7,20 @@ import (
 	"github.com/virzz/virzz/utils"
 )
 
+var flags = []cli.Flag{
+	&cli.StringFlag{
+		Name:    "hmac",
+		Aliases: []string{"s"},
+		Usage:   "Hmac Key",
+		Value:   "",
+	},
+	&cli.BoolFlag{
+		Name:    "raw",
+		Usage:   "Print raw data",
+		Aliases: []string{"r"},
+	},
+}
+
 var Cmd = &cli.Command{
 	Category: "Crypto",
 	Name:     "hash",
@@ -15,34 +29,9 @@ var Cmd = &cli.Command{
 		// md5
 		&cli.Command{
 			Category: "Hash",
-			Name:     "md",
-			Aliases:  []string{"md5"},
-			Usage:    "MDX algorithm",
-			Flags: []cli.Flag{
-				&cli.IntFlag{
-					Name:    "type",
-					Aliases: []string{"t"},
-					Usage:   "Type of hash md5/4/2",
-					Value:   5,
-					Action: func(c *cli.Context, t int) error {
-						if t == 2 || t == 4 || t == 5 {
-							return nil
-						}
-						return fmt.Errorf("invalid method type: %d", t)
-					},
-				},
-				&cli.StringFlag{
-					Name:    "hmac",
-					Aliases: []string{"s"},
-					Usage:   "Hmac Key",
-					Value:   "",
-				},
-				&cli.BoolFlag{
-					Name:    "raw",
-					Usage:   "Print raw data",
-					Aliases: []string{"r"},
-				},
-			},
+			Name:     "md5",
+			Usage:    "MD5 algorithm",
+			Flags:    flags,
 			Action: func(c *cli.Context) (err error) {
 				code, err := utils.GetArgFilePipe(c.Args().First())
 				if err != nil {
@@ -51,9 +40,61 @@ var Cmd = &cli.Command{
 				key := c.String("hmac")
 				var r string
 				if key != "" {
-					r, _ = HmacMDHash(code, []byte(key), c.Int("type"))
+					r, _ = HmacMDHash(code, []byte(key), 5)
 				} else {
-					r, _ = MDHash(code, c.Int("type"), c.Bool("raw"))
+					r, _ = MDHash(code, 5, c.Bool("raw"))
+				}
+				if c.Bool("raw") {
+					_, err = fmt.Print(r)
+					return
+				}
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+		// md4
+		&cli.Command{
+			Category: "Hash",
+			Name:     "md4",
+			Usage:    "MD4 algorithm",
+			Flags:    flags,
+			Action: func(c *cli.Context) (err error) {
+				code, err := utils.GetArgFilePipe(c.Args().First())
+				if err != nil {
+					return err
+				}
+				key := c.String("hmac")
+				var r string
+				if key != "" {
+					r, _ = HmacMDHash(code, []byte(key), 4)
+				} else {
+					r, _ = MDHash(code, 4, c.Bool("raw"))
+				}
+				if c.Bool("raw") {
+					_, err = fmt.Print(r)
+					return
+				}
+				_, err = fmt.Println(r)
+				return
+			},
+		},
+		// md2
+		&cli.Command{
+			Category: "Hash",
+			Name:     "md2",
+			Usage:    "MD2 algorithm",
+			Flags:    flags,
+			Action: func(c *cli.Context) (err error) {
+				code, err := utils.GetArgFilePipe(c.Args().First())
+				if err != nil {
+					return err
+				}
+				key := c.String("hmac")
+				var r string
+				if key != "" {
+					r, _ = HmacMDHash(code, []byte(key), 2)
+				} else {
+					r, _ = MDHash(code, 2, c.Bool("raw"))
 				}
 				if c.Bool("raw") {
 					_, err = fmt.Print(r)
@@ -69,19 +110,7 @@ var Cmd = &cli.Command{
 			Category: "Hash",
 			Name:     "sha1",
 			Usage:    "SHA1 algorithm",
-			Flags: []cli.Flag{
-				&cli.BoolFlag{
-					Name:    "raw",
-					Usage:   "Print raw data",
-					Aliases: []string{"r"},
-				},
-				&cli.StringFlag{
-					Name:    "hmac",
-					Aliases: []string{"s"},
-					Usage:   "Hmac Key",
-					Value:   "",
-				},
-			},
+			Flags:    flags,
 			Action: func(c *cli.Context) (err error) {
 				code, err := utils.GetArgFilePipe(c.Args().First())
 				if err != nil {
@@ -108,13 +137,7 @@ var Cmd = &cli.Command{
 			Category: "Hash",
 			Name:     "sha2",
 			Usage:    "SHA2 224|256|384|512|512224|512256",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "hmac",
-					Aliases: []string{"s"},
-					Usage:   "Hmac Key",
-					Value:   "",
-				},
+			Flags: append(flags,
 				&cli.IntFlag{
 					Name:    "type",
 					Aliases: []string{"t"},
@@ -128,7 +151,7 @@ var Cmd = &cli.Command{
 						return fmt.Errorf("invalid type: %d", t)
 					},
 				},
-			},
+			),
 			Action: func(c *cli.Context) (err error) {
 				code, err := utils.GetArgFilePipe(c.Args().First())
 				if err != nil {
@@ -151,13 +174,7 @@ var Cmd = &cli.Command{
 			Category: "Hash",
 			Name:     "sha3",
 			Usage:    "SHA3 224|256|384|512",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "hmac",
-					Aliases: []string{"s"},
-					Usage:   "Hmac Key",
-					Value:   "",
-				},
+			Flags: append(flags,
 				&cli.IntFlag{
 					Name:    "type",
 					Aliases: []string{"t"},
@@ -170,7 +187,7 @@ var Cmd = &cli.Command{
 						return fmt.Errorf("invalid size: %d", s)
 					},
 				},
-			},
+			),
 			Action: func(c *cli.Context) (err error) {
 				code, err := utils.GetArgFilePipe(c.Args().First())
 				if err != nil {
@@ -191,17 +208,23 @@ var Cmd = &cli.Command{
 		// ripemd160
 		&cli.Command{
 			Category: "Hash",
-			Name:     "ripemd160",
-			Aliases:  []string{"ripemd"},
+			Name:     "ripemd",
+			Aliases:  []string{"ripemd160"},
 			Usage:    "RIPEMD160 algorithm",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "hmac",
-					Aliases: []string{"s"},
-					Usage:   "Hmac Key",
-					Value:   "",
+			Flags: append(flags,
+				&cli.IntFlag{
+					Name:    "type",
+					Aliases: []string{"t"},
+					Usage:   "Type of hash",
+					Value:   256,
+					Action: func(c *cli.Context, s int) error {
+						if s == 224 || s == 256 || s == 384 || s == 512 {
+							return nil
+						}
+						return fmt.Errorf("invalid size: %d", s)
+					},
 				},
-			},
+			),
 			Action: func(c *cli.Context) (err error) {
 				code, err := utils.GetArgFilePipe(c.Args().First())
 				if err != nil {

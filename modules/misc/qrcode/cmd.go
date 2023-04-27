@@ -16,8 +16,9 @@ var Cmd = &cli.Command{
 	Commands: []*cli.Command{
 		// bs
 		&cli.Command{
-			Name:  "bs",
-			Usage: "Bin String (0,1) to Qrcode Image",
+			Name:    "qrbs",
+			Aliases: []string{"bs"},
+			Usage:   "Bin String (0,1) to Qrcode Image",
 			Flags: []cli.Flag{
 				&cli.BoolFlag{
 					Name:    "exchange",
@@ -45,9 +46,9 @@ var Cmd = &cli.Command{
 		},
 		// parse
 		&cli.Command{
-			Name:    "parse",
+			Name:    "qrparse",
 			Usage:   "Parse qrcode image",
-			Aliases: []string{"p"},
+			Aliases: []string{"parse", "p"},
 			Flags: []cli.Flag{
 				&cli.BoolFlag{
 					Name:    "terminal",
@@ -72,9 +73,9 @@ var Cmd = &cli.Command{
 		},
 		// generate
 		&cli.Command{
-			Name:    "generate",
+			Name:    "qrgen",
 			Usage:   "Generate qrcode image",
-			Aliases: []string{"gen", "g"},
+			Aliases: []string{"generate", "gen", "g"},
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:    "output",

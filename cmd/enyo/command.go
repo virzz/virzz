@@ -22,7 +22,7 @@ var commands = []*cli.Command{}
 
 func init() {
 	// Add SubCommands
-	commands = append(commands,
+	commands = append(commands, aliasCmd,
 		// Crypto
 		basex.Cmd,
 		basic.Cmd,

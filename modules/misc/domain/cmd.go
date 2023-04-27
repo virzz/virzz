@@ -39,14 +39,5 @@ var Cmd = &cli.Command{
 				return
 			},
 		},
-		&cli.Command{
-			Category: "Domain",
-			Name:     "todo",
-			Usage:    "TODO",
-			Flags:    []cli.Flag{},
-			Action: func(c *cli.Context) (err error) {
-				return fmt.Errorf("TODO")
-			},
-		},
 	},
 }
