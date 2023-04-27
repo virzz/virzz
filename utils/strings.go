@@ -1,26 +1,32 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
 	"regexp"
 )
 
-var defaultLetters = []byte("0123456789abcdefghijklmnopqrstuvwxyz")
-
-// RandomString 随机字符串
-func RandomString() string {
-	return RandomStringByLength(8)
+func GenerateAlphabet(regex string) []byte {
+	letters := make([]byte, 256)
+	for i := 0; i < 256; i++ {
+		letters[i] = byte(i)
+	}
+	return regexp.MustCompile(fmt.Sprintf(`[^%s]`, regex)).ReplaceAll(letters, nil)
 }
 
 // RandomBytesByLength 随机字符串
-func RandomBytesByLength(n int, allowedChars ...[]byte) []byte {
+func RandomBytesByLength(n int, regex ...string) []byte {
 	var letters []byte
-	if len(allowedChars) == 0 {
-		letters = defaultLetters
-	} else {
-		letters = allowedChars[0]
+	if len(regex) > 0 && len(regex[0]) > 0 {
+		letters = GenerateAlphabet(regex[0])
+	}
+	if len(letters) == 0 {
+		letters = GenerateAlphabet(`a-z0-9`)
 	}
 	l := len(letters)
+	if n == 0 {
+		n = 8
+	}
 	b := make([]byte, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(l)]
@@ -29,8 +35,13 @@ func RandomBytesByLength(n int, allowedChars ...[]byte) []byte {
 }
 
 // RandomStringByLength 随机字符串
-func RandomStringByLength(n int, allowedChars ...[]byte) string {
-	return string(RandomBytesByLength(n, allowedChars...))
+func RandomStringByLength(n int, regex ...string) string {
+	return string(RandomBytesByLength(n, regex...))
+}
+
+// RandomString 随机字符串
+func RandomString() string {
+	return RandomStringByLength(8)
 }
 
 func AnsiStrip(str string) string {

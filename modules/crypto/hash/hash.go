@@ -25,7 +25,7 @@ func Sha1Hash(s []byte, isRaw ...bool) (string, error) {
 	return hex.EncodeToString(has[:]), nil
 }
 
-func Sha2Hash(b []byte, size int) (string, error) {
+func Sha2Hash(b []byte, size int, isRaw ...bool) (string, error) {
 	var res []byte
 	switch size {
 	case 224:
@@ -49,10 +49,13 @@ func Sha2Hash(b []byte, size int) (string, error) {
 	default:
 		return "", fmt.Errorf("not found size: %d", size)
 	}
+	if len(isRaw) > 0 && isRaw[0] {
+		return string(res), nil
+	}
 	return hex.EncodeToString(res), nil
 }
 
-func Sha3Hash(b []byte, size int) (string, error) {
+func Sha3Hash(b []byte, size int, isRaw ...bool) (string, error) {
 	var res []byte
 	switch size {
 	case 224:
@@ -70,13 +73,20 @@ func Sha3Hash(b []byte, size int) (string, error) {
 	default:
 		return "", fmt.Errorf("not found size: %d", size)
 	}
+	if len(isRaw) > 0 && isRaw[0] {
+		return string(res), nil
+	}
 	return hex.EncodeToString(res), nil
 }
 
-func Ripemd160Hash(s []byte) (string, error) {
+func Ripemd160Hash(s []byte, isRaw ...bool) (string, error) {
 	h := ripemd160.New()
 	h.Write(s)
-	return hex.EncodeToString(h.Sum(nil)), nil
+	res := h.Sum(nil)
+	if len(isRaw) > 0 && isRaw[0] {
+		return string(res), nil
+	}
+	return hex.EncodeToString(res), nil
 }
 
 func MDHash(s []byte, typ int, isRaw ...bool) (string, error) {

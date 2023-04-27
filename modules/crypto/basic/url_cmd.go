@@ -8,8 +8,8 @@ import (
 
 var urlencodeCmd = &cli.Command{
 	Category: "URL",
-	Name:     "urlencode",
-	Aliases:  []string{"urle"},
+	Name:     "urle",
+	Aliases:  []string{"urlencode"},
 	Usage:    "URL Encode",
 	Flags: []cli.Flag{
 		&cli.BoolFlag{
@@ -30,8 +30,8 @@ var urlencodeCmd = &cli.Command{
 
 var urldecodeCmd = &cli.Command{
 	Category: "URL",
-	Name:     "urldecode",
-	Aliases:  []string{"urld"},
+	Name:     "urld",
+	Aliases:  []string{"urldecode"},
 	Usage:    "URL Decode",
 	Action: func(c *cli.Context) (err error) {
 		r, err := URLDecode(c.Args().First())

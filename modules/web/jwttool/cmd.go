@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli/v3"
-	"github.com/virzz/logger"
 )
 
 var (
@@ -29,16 +28,14 @@ var Cmd = &cli.Command{
 		// Print
 		&cli.Command{
 			Category: "JWT",
-			Name:     "print",
-			Aliases:  []string{"p"},
+			Name:     "jwtp",
+			Aliases:  []string{"print", "p"},
 			Usage:    "Print jwt pretty",
 			Flags: []cli.Flag{
 				tokenFlag,
 				secretFlag,
 			},
 			Action: func(c *cli.Context) (err error) {
-				logger.Debug("args = ", c.Args().Tail())
-				logger.Debug("secret = ", c.String("secret"))
 				token := c.String("token")
 				if token == "" {
 					if c.NArg() < 1 {
@@ -58,8 +55,8 @@ var Cmd = &cli.Command{
 		// Modify
 		&cli.Command{
 			Category: "JWT",
-			Name:     "modify",
-			Aliases:  []string{"m"},
+			Name:     "jwtm",
+			Aliases:  []string{"modify", "m"},
 			Usage:    "Modify jwt",
 			Flags: []cli.Flag{
 				tokenFlag,
@@ -104,8 +101,8 @@ var Cmd = &cli.Command{
 		// Crack
 		&cli.Command{
 			Category: "JWT",
-			Name:     "crack",
-			Aliases:  []string{"c"},
+			Name:     "jwtc",
+			Aliases:  []string{"crack", "c"},
 			Usage:    "Crack jwt",
 			Flags: []cli.Flag{
 				tokenFlag,
@@ -156,12 +153,12 @@ var Cmd = &cli.Command{
 			},
 		},
 
-		// Create
+		// Create/Generate
 		&cli.Command{
 			Category: "JWT",
-			Name:     "create",
-			Aliases:  []string{"n"},
-			Usage:    "Create jwt",
+			Name:     "jwtg",
+			Aliases:  []string{"generate", "create", "n"},
+			Usage:    "Create/Generate jwt",
 			Flags: []cli.Flag{
 				secretFlag,
 				&cli.StringFlag{
