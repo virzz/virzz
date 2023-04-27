@@ -44,7 +44,7 @@ readme: virzz
 	@echo "# Virzz" > README.md ; \
 	echo '' >> README.md;
 	@if test -f ${TARGET}/virzz ; then \
-		echo '## Virzz - cmd 命令行小工具' >> README.md; \
+		echo '## Virzz - CLI 命令行小工具' >> README.md; \
 		echo '' >> README.md; \
 		echo '```' >> README.md; \
 		./build/virzz >> README.md; \

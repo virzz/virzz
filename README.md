@@ -22,6 +22,7 @@ COMMANDS:
      classical  Classical cryptography
      hash       Hash Function
      bcrypt     Bcrypt Generate/Compare
+     encrypt    Encrypt data by aes and compress by zstd
    Misc:
      parser      Parse some file
      domain      Some tools for Domain/SubDomain
