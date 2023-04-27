@@ -74,10 +74,10 @@ AUTHOR:
    陌竹(@mozhu1024) <mozhu233@outlook.com>
 
 COMMANDS:
-   install       Install this
-   orgs          List organizations for the authenticated user
-   transfer      Transfer a repository
-   commit, gcmt  Generate Commit Message
+   install          Install this
+   orgs             List organizations for the authenticated user
+   transfer         Transfer a repository
+   commit, gcmt, c  Generate Commit Message
 
 GLOBAL OPTIONS:
    --help, -h  show help (default: false)
@@ -103,7 +103,7 @@ GLOBAL OPTIONS:
 
 ```
 NAME:
-   gopher - A jwt tool with Print/Crack/Modify
+   gopher - Generate Gopher Exp
 
 USAGE:
    gopher [global options] command [command options] [arguments...]
@@ -112,11 +112,17 @@ AUTHOR:
    陌竹(@mozhu1024) <mozhu233@outlook.com>
 
 COMMANDS:
-   JWT:
-     print, p   Print jwt pretty
-     modify, m  Modify jwt
-     crack, c   Crack jwt
-     create, n  Create jwt
+   HTTP:
+     post    HTTP Post
+     upload  HTTP Upload
+   Other:
+     fastcgi, fcgi  FastCGI
+   Redis:
+     listen    By Listen redis-cli command
+     write     Redis Write File
+     webshell  Redis Write Webshell
+     write     Redis Write Crontab
+     reverse   Redis Write File
 
 GLOBAL OPTIONS:
    --help, -h  show help (default: false)
@@ -172,10 +178,10 @@ AUTHOR:
 
 COMMANDS:
    JWT:
-     print, p   Print jwt pretty
-     modify, m  Modify jwt
-     crack, c   Crack jwt
-     create, n  Create jwt
+     jwtp, print, p             Print jwt pretty
+     jwtm, modify, m            Modify jwt
+     jwtc, crack, c             Crack jwt
+     jwtg, generate, create, n  Create/Generate jwt
 
 GLOBAL OPTIONS:
    --help, -h  show help (default: false)
