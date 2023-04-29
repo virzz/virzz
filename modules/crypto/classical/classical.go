@@ -17,7 +17,7 @@ func _caesar(s string, step rune) string {
 	}
 	dst := make([]rune, len(s))
 	for i, c := range s {
-		if ('a' <= c && c >= 'z') || ('A' <= c && c >= 'Z') {
+		if ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') {
 			dst[i] = c + step
 			if (dst[i] > 90 && dst[i] < 97) || dst[i] > 122 {
 				dst[i] -= 26
