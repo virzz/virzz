@@ -13,6 +13,7 @@ import (
 	"github.com/virzz/virzz/modules/misc/nettool"
 	"github.com/virzz/virzz/modules/misc/parser"
 	"github.com/virzz/virzz/modules/misc/qrcode"
+	"github.com/virzz/virzz/modules/misc/resh"
 	"github.com/virzz/virzz/modules/web/githack"
 	"github.com/virzz/virzz/modules/web/gopher"
 	"github.com/virzz/virzz/modules/web/jwttool"
@@ -37,6 +38,7 @@ func init() {
 		qrcode.Cmd,
 		parser.Cmd,
 		ghext.Cmd,
+		resh.Cmd,
 		// Web
 		githack.Cmd,
 		gopher.Cmd,
