@@ -20,6 +20,7 @@ func RunCliApp(cmd *cli.Command, name, version string) {
 		HideVersion:     true,
 		HideHelpCommand: true,
 		Suggest:         true,
+		Flags:           cmd.Flags,
 	}
 
 	if len(cmd.Commands) == 0 {
