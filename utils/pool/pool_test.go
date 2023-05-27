@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	logger.SetDebug(true)
+	logger.SetDevFlags()
 }
 
 var (

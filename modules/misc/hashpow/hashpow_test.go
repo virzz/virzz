@@ -10,7 +10,7 @@ import (
 var prefix = "orzz"
 
 func init() {
-	logger.SetDebug(true)
+	logger.SetDevFlags()
 }
 func TestHashPoWMore(t *testing.T) {
 	for i := 0; i < 2; i++ {

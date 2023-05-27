@@ -76,11 +76,6 @@ func init() {
 	if viper.GetBool("modify") {
 		logger.Fatal("You must remove the key 'modify'")
 	}
-
-	if common.DebugMode {
-		logger.SetDebug(true)
-	}
-
 }
 
 func main() {

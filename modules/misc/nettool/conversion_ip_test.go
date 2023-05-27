@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	logger.SetDebug(true)
+	logger.SetDevFlags()
 }
 
 func TestIP2Dec(t *testing.T) {

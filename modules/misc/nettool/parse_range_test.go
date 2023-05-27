@@ -17,7 +17,7 @@ var hosts = map[string]int{
 }
 
 func init() {
-	logger.SetDebug(true)
+	logger.SetDevFlags()
 }
 
 func TestParseHost(t *testing.T) {

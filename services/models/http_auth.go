@@ -31,7 +31,7 @@ func NewAuth(username, password, email string) (auth Auth, err error) {
 	}
 	token := ""
 	for {
-		token = utils.RandomStringByLength(8, tokenLetters)
+		token = utils.RandomStringByLength(8, `a-z0-9`)
 		if DB().First(&auth, &Auth{Token: token}).RowsAffected == 0 {
 			logger.DebugF("token: %s", token)
 			break

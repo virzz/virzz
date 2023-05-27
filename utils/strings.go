@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"math/rand"
 	"regexp"
+	"strings"
 )
 
 func GenerateAlphabet(regex string) []byte {
+	if strings.HasPrefix(regex, "[") && strings.HasSuffix(regex, "]") {
+		regex = regex[1 : len(regex)-1]
+	}
 	letters := make([]byte, 256)
 	for i := 0; i < 256; i++ {
 		letters[i] = byte(i)
