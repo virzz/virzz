@@ -20,7 +20,13 @@ func RunCliApp(cmd *cli.Command, name, version string) {
 		HideVersion:     true,
 		HideHelpCommand: true,
 		Suggest:         true,
-		Commands:        cmd.Commands,
+		Flags:           cmd.Flags,
+	}
+
+	if len(cmd.Commands) == 0 {
+		app.Action = cmd.Action
+	} else {
+		app.Commands = cmd.Commands
 	}
 
 	// Add Tongji
