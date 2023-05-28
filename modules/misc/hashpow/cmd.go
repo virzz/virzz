@@ -51,7 +51,7 @@ var Cmd = &cli.Command{
 			Aliases: []string{"m"},
 			Value:   "md5",
 			Usage:   "Hash method: <sha1|md5>",
-			Action: func(c *cli.Context, m string) error {
+			Action: func(_ *cli.Context, m string) error {
 				if utils.SliceContains([]string{"md5", "sha1"}, m) {
 					return nil
 				}

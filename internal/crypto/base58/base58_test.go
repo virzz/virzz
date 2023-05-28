@@ -6,15 +6,6 @@ import (
 	"testing"
 )
 
-// var (
-// 	// FlickrEncoding -
-// 	FlickrEncoding = newEncoding(encodeFlickr)
-// 	// RippleEncoding -
-// 	RippleEncoding = newEncoding(encodeRipple)
-// 	// BitcoinEncoding -
-// 	BitcoinEncoding = newEncoding(encodeBitcoin)
-// )
-
 var testStr = []byte("test_base58_string")
 var encStr = []byte("5q1dAkvfMPRxpkkujHtkssust")
 

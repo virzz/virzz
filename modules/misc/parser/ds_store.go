@@ -76,7 +76,7 @@ func fetchAndParseDSStore(base string, uris []string, client *downloader.Downloa
 	}
 }
 
-func DSStore(s string, download bool) (string, error) {
+func DSStore(s string) (string, error) {
 	var data []byte
 	// Web
 	if err := utils.ValidArg(s, "url"); err == nil && strings.HasPrefix(s, "http") {

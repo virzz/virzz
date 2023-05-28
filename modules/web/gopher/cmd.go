@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v3"
-	"github.com/virzz/logger"
 	"github.com/virzz/virzz/utils"
 )
 
@@ -19,10 +18,6 @@ var (
 		Value:      0,
 		Usage:      "Urlencode count",
 		Persistent: true,
-		Action: func(c *cli.Context, f int) error {
-			logger.Debug(f)
-			return nil
-		},
 	}
 
 	targetAddrFlag = &cli.StringFlag{
@@ -92,7 +87,7 @@ var Cmd = &cli.Command{
 	Commands: []*cli.Command{
 
 		// fastcgi
-		&cli.Command{
+		{
 			Category: "Other",
 			Name:     "fastcgi",
 			Aliases:  []string{"fcgi"},
@@ -124,7 +119,7 @@ var Cmd = &cli.Command{
 		},
 
 		// http post
-		&cli.Command{
+		{
 			Category: "HTTP",
 			Name:     "post",
 			Usage:    "HTTP Post",
@@ -157,7 +152,7 @@ var Cmd = &cli.Command{
 		},
 
 		// http upload
-		&cli.Command{
+		{
 			Category: "HTTP",
 			Name:     "upload",
 			Usage:    "HTTP Upload",
@@ -191,7 +186,7 @@ var Cmd = &cli.Command{
 		},
 
 		// listen
-		&cli.Command{
+		{
 			Category: "Redis",
 			Name:     "listen",
 			Usage:    "By Listen redis-cli command",
@@ -232,7 +227,7 @@ var Cmd = &cli.Command{
 		},
 
 		// Write
-		&cli.Command{
+		{
 			Category: "Redis",
 			Name:     "write",
 			Usage:    "Redis Write File",
@@ -262,7 +257,7 @@ var Cmd = &cli.Command{
 		},
 
 		// Webshell
-		&cli.Command{
+		{
 			Category: "Redis",
 			Name:     "webshell",
 			Usage:    "Redis Write Webshell",
@@ -292,7 +287,7 @@ var Cmd = &cli.Command{
 		},
 
 		// Crontab
-		&cli.Command{
+		{
 			Category: "Redis",
 			Name:     "write",
 			Usage:    "Redis Write Crontab",
@@ -322,7 +317,7 @@ var Cmd = &cli.Command{
 		},
 
 		// Crontab Reverse
-		&cli.Command{
+		{
 			Category: "Redis",
 			Name:     "reverse",
 			Usage:    "Redis Write File",

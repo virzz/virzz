@@ -21,13 +21,13 @@ type (
 var (
 	samples = []pair{}
 	funcs   = map[string]funx{
-		"base16":  funx{Base16Encode, Base16Decode},
-		"base36":  funx{Base36Encode, Base36Decode},
-		"base62":  funx{Base62Encode, Base62Decode},
-		"base85":  funx{Base85Encode, Base85Decode},
-		"base91":  funx{Base91Encode, Base91Decode},
-		"base92":  funx{Base92Encode, Base92Decode},
-		"base100": funx{Base100Encode, Base100Decode},
+		"base16":  {Base16Encode, Base16Decode},
+		"base36":  {Base36Encode, Base36Decode},
+		"base62":  {Base62Encode, Base62Decode},
+		"base85":  {Base85Encode, Base85Decode},
+		"base91":  {Base91Encode, Base91Decode},
+		"base92":  {Base92Encode, Base92Decode},
+		"base100": {Base100Encode, Base100Decode},
 	}
 )
 

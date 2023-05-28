@@ -14,7 +14,7 @@ func TestDSStore(t *testing.T) {
 		return
 	}
 	filename := filepath.Join(homePath, ".DS_Store")
-	r, err := DSStore(filename, false)
+	r, err := DSStore(filename)
 	if err != nil {
 		t.Error(err)
 		return
@@ -23,7 +23,7 @@ func TestDSStore(t *testing.T) {
 }
 
 func TestWebDSStore(t *testing.T) {
-	r, err := DSStore("http://www.virzz.com/", false)
+	r, err := DSStore("http://www.virzz.com/")
 	if err != nil {
 		t.Error(err)
 		return

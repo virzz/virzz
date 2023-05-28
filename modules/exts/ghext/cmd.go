@@ -118,7 +118,7 @@ func init() {
 			return
 		},
 		Commands: []*cli.Command{
-			&cli.Command{
+			{
 				Name:    "prompt",
 				Usage:   "Prompt",
 				Aliases: []string{"p"},
@@ -152,10 +152,10 @@ var Cmd = &cli.Command{
 	Usage:    "A little toolkit using GitHub API",
 	Commands: []*cli.Command{
 		// install - Install this
-		&cli.Command{
+		{
 			Name:  "install",
 			Usage: "Install this",
-			Action: func(c *cli.Context) (err error) {
+			Action: func(*cli.Context) (err error) {
 				binName := path.Base(os.Args[0])
 				if !strings.HasPrefix(binName, "gh-") {
 					err = fmt.Errorf("extension name [%s] is error", binName)
@@ -174,10 +174,10 @@ var Cmd = &cli.Command{
 			},
 		},
 		// orgs - List organizations for the authenticated user
-		&cli.Command{
+		{
 			Name:  "orgs",
 			Usage: "List organizations for the authenticated user",
-			Action: func(c *cli.Context) (err error) {
+			Action: func(*cli.Context) (err error) {
 				res, err := ListUserOrganizations()
 				if err != nil {
 					return
@@ -187,7 +187,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// transfer - Transfer a repository
-		&cli.Command{
+		{
 			Name:  "transfer",
 			Usage: "Transfer a repository",
 			Flags: []cli.Flag{

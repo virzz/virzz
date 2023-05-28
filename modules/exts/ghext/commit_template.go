@@ -27,18 +27,18 @@ type MessageTemplate struct {
 }
 
 var commitTemplate = map[MsgType]MessageTemplate{
-	Init:     MessageTemplate{Icon: "🎉 ", Type: Init},
-	Feat:     MessageTemplate{Icon: "✨ ", Type: Feat},
-	Fix:      MessageTemplate{Icon: "🐞 ", Type: Fix},
-	Docs:     MessageTemplate{Icon: "📃 ", Type: Docs},
-	Style:    MessageTemplate{Icon: "🌈 ", Type: Style},
-	Refactor: MessageTemplate{Icon: "🦄 ", Type: Refactor},
-	Perf:     MessageTemplate{Icon: "🎈 ", Type: Perf},
-	Test:     MessageTemplate{Icon: "🧪 ", Type: Test},
-	Build:    MessageTemplate{Icon: "🔧 ", Type: Build},
-	CI:       MessageTemplate{Icon: "🐎 ", Type: CI},
-	Chore:    MessageTemplate{Icon: "🐳 ", Type: Chore},
-	Revert:   MessageTemplate{Icon: "↩ ", Type: Revert},
+	Init:     {Icon: "🎉 ", Type: Init},
+	Feat:     {Icon: "✨ ", Type: Feat},
+	Fix:      {Icon: "🐞 ", Type: Fix},
+	Docs:     {Icon: "📃 ", Type: Docs},
+	Style:    {Icon: "🌈 ", Type: Style},
+	Refactor: {Icon: "🦄 ", Type: Refactor},
+	Perf:     {Icon: "🎈 ", Type: Perf},
+	Test:     {Icon: "🧪 ", Type: Test},
+	Build:    {Icon: "🔧 ", Type: Build},
+	CI:       {Icon: "🐎 ", Type: CI},
+	Chore:    {Icon: "🐳 ", Type: Chore},
+	Revert:   {Icon: "↩ ", Type: Revert},
 }
 
 func CommitTemplate(typ int, scope, subject, body, footer string, isHideEmoji bool) (string, error) {

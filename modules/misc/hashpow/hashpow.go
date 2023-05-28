@@ -50,7 +50,6 @@ func hashBrute(arg bruteArg) bool {
 			}
 		}
 	}
-	return true
 }
 
 // HashPoW Brute Hash Power of Work with md5/sha1

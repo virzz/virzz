@@ -13,7 +13,7 @@ var Cmd = &cli.Command{
 	Usage:    "Net utils for IP/Port",
 	Commands: []*cli.Command{
 		// ip2oct
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "ip2oct",
 			Aliases:  []string{"oct"},
@@ -32,7 +32,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// ip2dec
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "ip2dec",
 			Aliases:  []string{"dec"},
@@ -51,7 +51,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// ip2hex
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "ip2hex",
 			Aliases:  []string{"hex"},
@@ -70,7 +70,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// ip2all
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "ip2all",
 			Aliases:  []string{"all"},
@@ -90,7 +90,7 @@ var Cmd = &cli.Command{
 		},
 
 		// hex2ip
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "hex2ip",
 			Usage:    "Hex -> IPv4",
@@ -107,7 +107,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// oct2ip
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "oct2ip",
 			Usage:    "Oct -> IPv4",
@@ -124,7 +124,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// dec2ip
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "dec2ip",
 			Usage:    "Dec -> IPv4",
@@ -141,7 +141,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// any2ip
-		&cli.Command{
+		{
 			Category: "IP",
 			Name:     "dec2ip",
 			Usage:    "Any {Hex|Oct|Dec|...} -> IPv4",
@@ -159,7 +159,7 @@ var Cmd = &cli.Command{
 		},
 
 		// mac2dec
-		&cli.Command{
+		{
 			Category: "MAC",
 			Name:     "mac2dec",
 			Usage:    "MAC Address -> Dec",
@@ -177,7 +177,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// dec2mac
-		&cli.Command{
+		{
 			Category: "MAC",
 			Name:     "dec2mac",
 			Usage:    "Dec -> MAC Address",

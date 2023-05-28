@@ -3,8 +3,6 @@ package nettool
 import (
 	"fmt"
 	"testing"
-
-	"github.com/virzz/logger"
 )
 
 var hosts = map[string]int{
@@ -14,10 +12,6 @@ var hosts = map[string]int{
 	"192.168.1-12.8":                  12,
 	"192.168.1-18.1-8":                18 * 8,
 	"192.168.3.1-5,192.168.1-20.1-12": 5 + 20*12,
-}
-
-func init() {
-	logger.SetDebug(true)
 }
 
 func TestParseHost(t *testing.T) {

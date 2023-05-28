@@ -15,7 +15,7 @@ func utf16le(s []byte) []byte {
 	}
 	return u16
 }
-func NTLMv1Hash(s []byte) (string) {
+func NTLMv1Hash(s []byte) string {
 	hash := md4.New()
 	hash.Write(utf16le(s))
 	ntlmHash := hash.Sum(nil)

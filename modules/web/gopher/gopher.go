@@ -51,8 +51,8 @@ func GenGopherExpByListen(targetAddr string, port int, noQuit bool) (string, err
 			buff := make([]byte, 2048)
 			n, err := conn.Read(buff)
 			if err != nil {
-				break
 				logger.Error(err)
+				break
 			}
 			tmp := string(buff[:n])
 			logger.DebugF("buff = %s", tmp)

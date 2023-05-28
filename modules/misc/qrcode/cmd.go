@@ -15,7 +15,7 @@ var Cmd = &cli.Command{
 	Usage:    "A qrcode tool for terminal",
 	Commands: []*cli.Command{
 		// bs
-		&cli.Command{
+		{
 			Name:    "qrbs",
 			Aliases: []string{"bs"},
 			Usage:   "Bin String (0,1) to Qrcode Image",
@@ -45,7 +45,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// parse
-		&cli.Command{
+		{
 			Name:    "qrparse",
 			Usage:   "Parse qrcode image",
 			Aliases: []string{"parse", "p"},
@@ -72,7 +72,7 @@ var Cmd = &cli.Command{
 			},
 		},
 		// generate
-		&cli.Command{
+		{
 			Name:    "qrgen",
 			Usage:   "Generate qrcode image",
 			Aliases: []string{"generate", "gen", "g"},

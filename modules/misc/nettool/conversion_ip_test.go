@@ -3,13 +3,7 @@ package nettool
 import (
 	"fmt"
 	"testing"
-
-	"github.com/virzz/logger"
 )
-
-func init() {
-	logger.SetDebug(true)
-}
 
 func TestIP2Dec(t *testing.T) {
 	r, err := IP2Dec("192.168.1.1")

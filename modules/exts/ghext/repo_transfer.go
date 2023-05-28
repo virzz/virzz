@@ -40,7 +40,7 @@ func TransferRepository(newOwner, owner, repoName string) (res string, err error
 	if repoName == "" && currRepo != nil {
 		repoName = currRepo.Name()
 	}
-	if repoName == "" || owner == "" || repoName == "" {
+	if repoName == "" || owner == "" || newOwner == "" {
 		err = fmt.Errorf("repo name or owner or new owner is empty")
 		return
 	}

@@ -15,7 +15,7 @@ var DsStoreCmd = &cli.Command{
 		if err := utils.ValidArg(target, "url|file"); err != nil {
 			return err
 		}
-		r, err := DSStore(target, false)
+		r, err := DSStore(target)
 		if err != nil {
 			return err
 		}

@@ -26,7 +26,7 @@ var Cmd = &cli.Command{
 	Usage:    "A jwt tool with Print/Crack/Modify",
 	Commands: []*cli.Command{
 		// Print
-		&cli.Command{
+		{
 			Category: "JWT",
 			Name:     "jwtp",
 			Aliases:  []string{"print", "p"},
@@ -53,7 +53,7 @@ var Cmd = &cli.Command{
 		},
 
 		// Modify
-		&cli.Command{
+		{
 			Category: "JWT",
 			Name:     "jwtm",
 			Aliases:  []string{"modify", "m"},
@@ -99,7 +99,7 @@ var Cmd = &cli.Command{
 		},
 
 		// Crack
-		&cli.Command{
+		{
 			Category: "JWT",
 			Name:     "jwtc",
 			Aliases:  []string{"crack", "c"},
@@ -154,7 +154,7 @@ var Cmd = &cli.Command{
 		},
 
 		// Create/Generate
-		&cli.Command{
+		{
 			Category: "JWT",
 			Name:     "jwtg",
 			Aliases:  []string{"generate", "create", "n"},

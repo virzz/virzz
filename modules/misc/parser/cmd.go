@@ -13,7 +13,7 @@ var Cmd = &cli.Command{
 	Usage:    "Parse some file",
 	Commands: []*cli.Command{
 		// /proc/net/tcp|udp
-		&cli.Command{
+		{
 			Name:    "procnet",
 			Aliases: []string{"net"},
 			Usage:   "Parse /proc/net/tcp|udp",

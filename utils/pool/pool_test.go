@@ -9,10 +9,6 @@ import (
 	"github.com/virzz/virzz/utils/pool"
 )
 
-func init() {
-	logger.SetDebug(true)
-}
-
 var (
 	done    = make(chan struct{}, 1)
 	argFunc = func(arg string) bool {
