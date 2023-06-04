@@ -33,6 +33,8 @@ COMMANDS:
      hash       Hash Function
      bcrypt     Bcrypt Generate/Compare
      hashpwd    A tool for query password hash offline
+   Ext:
+     gostrip, strip  Strip golang binary file
    GitHub:
      gh-mozhu, ghext  A little toolkit using GitHub API
    Misc:
