@@ -4,18 +4,36 @@ import (
 	"fmt"
 	"math/rand"
 	"regexp"
+	"strings"
+	"sync"
+
+	"golang.org/x/exp/constraints"
+)
+
+var (
+	lock          sync.Mutex
+	alphabetCache = make(map[string][]byte)
 )
 
 func GenerateAlphabet(regex string) []byte {
+	if v, ok := alphabetCache[regex]; ok {
+		return v
+	}
+	if strings.HasPrefix(regex, "[") && strings.HasSuffix(regex, "]") {
+		regex = regex[1 : len(regex)-1]
+	}
 	letters := make([]byte, 256)
 	for i := 0; i < 256; i++ {
 		letters[i] = byte(i)
 	}
-	return regexp.MustCompile(fmt.Sprintf(`[^%s]`, regex)).ReplaceAll(letters, nil)
+	lock.Lock()
+	alphabetCache[regex] = regexp.MustCompile(fmt.Sprintf(`[^%s]`, regex)).ReplaceAll(letters, nil)
+	lock.Unlock()
+	return alphabetCache[regex]
 }
 
 // RandomBytesByLength 随机字符串
-func RandomBytesByLength(n int, regex ...string) []byte {
+func RandomBytesByLength[T constraints.Integer](n T, regex ...string) []byte {
 	var letters []byte
 	if len(regex) > 0 && len(regex[0]) > 0 {
 		letters = GenerateAlphabet(regex[0])
@@ -35,7 +53,7 @@ func RandomBytesByLength(n int, regex ...string) []byte {
 }
 
 // RandomStringByLength 随机字符串
-func RandomStringByLength(n int, regex ...string) string {
+func RandomStringByLength[T constraints.Integer](n T, regex ...string) string {
 	return string(RandomBytesByLength(n, regex...))
 }
 

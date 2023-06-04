@@ -32,9 +32,10 @@ func _prompt(isHideEmoji bool) (err error) {
 func init() {
 	// commit - Generate Commit Message
 	commitCmd := &cli.Command{
-		Name:    "commit",
-		Usage:   "Generate Commit Message",
-		Aliases: []string{"gcmt", "c"},
+		Category: "Ext",
+		Name:     "commit",
+		Usage:    "Generate Commit Message",
+		Aliases:  []string{"gcmt", "c"},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "scope",
@@ -147,15 +148,15 @@ func init() {
 
 var Cmd = &cli.Command{
 	Category: "GitHub",
-	Name:     "ghext", // For GitHub command-line tool
-	Aliases:  []string{"gh-mozhu"},
+	Name:     "gh-mozhu", // For GitHub command-line tool
+	Aliases:  []string{"ghext"},
 	Usage:    "A little toolkit using GitHub API",
 	Commands: []*cli.Command{
 		// install - Install this
 		{
 			Name:  "install",
 			Usage: "Install this",
-			Action: func(*cli.Context) (err error) {
+			Action: func(_ *cli.Context) (err error) {
 				binName := path.Base(os.Args[0])
 				if !strings.HasPrefix(binName, "gh-") {
 					err = fmt.Errorf("extension name [%s] is error", binName)

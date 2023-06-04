@@ -8,6 +8,7 @@ import (
 	"github.com/virzz/virzz/modules/crypto/hash"
 	"github.com/virzz/virzz/modules/crypto/hashpwd"
 	"github.com/virzz/virzz/modules/exts/ghext"
+	"github.com/virzz/virzz/modules/exts/gostrip"
 	"github.com/virzz/virzz/modules/misc/domain"
 	"github.com/virzz/virzz/modules/misc/hashpow"
 	"github.com/virzz/virzz/modules/misc/nettool"
@@ -43,5 +44,7 @@ func init() {
 		githack.Cmd,
 		gopher.Cmd,
 		jwttool.Cmd,
+		// Ext
+		gostrip.Cmd,
 	)
 }

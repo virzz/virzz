@@ -21,7 +21,7 @@ default:
 
 rc-%:
 	@echo "[*] Compiling Release $(subst rc-,,$@) ..." ; \
-	go run ./internal/_compile -R $(subst rc-,,$@)
+	go run ./internal/_compile -R -G $(shell git rev-parse HEAD || echo "latest" ) $(subst rc-,,$@)
 
 i-%: rc-%
 	@export NAME='$(subst i-,,$@)'; \
@@ -40,7 +40,7 @@ cleanr:
 swagger:
 	@swag i -g services/web/swagger.go -o services/docs
 
-readme:
+readme: enyo
 	@echo "Add Title"; \
 	echo "# Virzz" > README.md ; \
 	echo '' >> README.md; \

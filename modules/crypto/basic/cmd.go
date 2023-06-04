@@ -18,6 +18,7 @@ var Cmd = &cli.Command{
 		hex2strCmd, str2hexCmd,
 		hex2decCmd, dec2hexCmd, hex2bytesCmd,
 		bytes2hexCmd, bytes2strCmd,
+		// random
 		randStrCmd,
 	},
 }

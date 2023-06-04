@@ -47,7 +47,6 @@ func main() {
 			&cli.BoolFlag{Name: "debug", Aliases: []string{"D"}, Usage: "Set logger Debug"},
 		},
 		Action: func(c *cli.Context) error {
-
 			// Clean Build Directory
 			if c.Bool("clean") {
 				if err := os.RemoveAll(TARGET_DIR); err != nil {

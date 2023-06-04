@@ -34,13 +34,14 @@ COMMANDS:
      bcrypt     Bcrypt Generate/Compare
      hashpwd    A tool for query password hash offline
    GitHub:
-     ghext, gh-mozhu  A little toolkit using GitHub API
+     gh-mozhu, ghext  A little toolkit using GitHub API
    Misc:
-     domain      Some tools for Domain/SubDomain
-     netool      Net utils for IP/Port
-     hashpow     Brute Hash Power of Work with md5/sha1
-     qrcode, qr  A qrcode tool for terminal
-     parser      Parse some file
+     domain         Some tools for Domain/SubDomain
+     netool         Net utils for IP/Port
+     hashpow        Brute Hash Power of Work with md5/sha1
+     qrcode, qr     A qrcode tool for terminal
+     parser         Parse some file
+     resh, reshell  Reverse Shell Template Generator
    Web:
      githack       A `.git` folder disclosure exploit
      gopher        Generate Gopher Exp
@@ -56,6 +57,7 @@ GLOBAL OPTIONS:
 - gh-mozhu
 - githack
 - gopher
+- gostrip
 - hashpow
 - hashpwd
 - jwttool
@@ -74,10 +76,11 @@ AUTHOR:
    陌竹(@mozhu1024) <mozhu233@outlook.com>
 
 COMMANDS:
-   install          Install this
-   orgs             List organizations for the authenticated user
-   transfer         Transfer a repository
-   commit, gcmt, c  Generate Commit Message
+   install   Install this
+   orgs      List organizations for the authenticated user
+   transfer  Transfer a repository
+   Ext:
+     commit, gcmt, c  Generate Commit Message
 
 GLOBAL OPTIONS:
    --help, -h  show help (default: false)
@@ -96,7 +99,10 @@ AUTHOR:
    陌竹(@mozhu1024) <mozhu233@outlook.com>
 
 GLOBAL OPTIONS:
-   --help, -h  show help (default: false)
+   --limit value, -l value    Request limit (default: 10)
+   --delay value, -d value    Request delay (default: 0)
+   --timeout value, -t value  Request timeout (default: 10)
+   --help, -h                 show help (default: false)
 ```
 
 ## gopher
@@ -125,7 +131,25 @@ COMMANDS:
      reverse   Redis Write File
 
 GLOBAL OPTIONS:
-   --help, -h  show help (default: false)
+   --urlencode value, -e value  Urlencode count (default: 0)
+   --help, -h                   show help (default: false)
+```
+
+## gostrip
+
+```
+NAME:
+   gostrip - Strip golang binary file
+
+USAGE:
+   gostrip [global options] [arguments...]
+
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
+
+GLOBAL OPTIONS:
+   --force, -f  Force to strip 'Go Struct Name' (未完全测试,请谨慎使用) (default: false)
+   --help, -h   show help (default: false)
 ```
 
 ## hashpow
@@ -141,7 +165,12 @@ AUTHOR:
    陌竹(@mozhu1024) <mozhu233@outlook.com>
 
 GLOBAL OPTIONS:
-   --help, -h  show help (default: false)
+   --code value, -c value    Request code
+   --pos value, -i value     Starting position of hash (default: 0)
+   --prefix value, -p value  Hash prefix
+   --suffix value, -s value  Hash suffix
+   --method value, -m value  Hash method: <sha1|md5> (default: "md5")
+   --help, -h                show help (default: false)
 ```
 
 ## hashpwd
