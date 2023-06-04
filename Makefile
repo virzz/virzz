@@ -47,6 +47,8 @@ readme: enyo
 	echo "Add Build Badge"; \
 	echo '[![Build](https://github.com/virzz/virzz/actions/workflows/virzz.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz.yml) [![Build Release](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml)' >> README.md; \
 	echo '' >> README.md; \
+	echo '- [Virzz](#virzz)' >> README.md; \
+	echo '' >> README.md; \
 	echo "## Install" >> README.md; \
 	echo '' >> README.md; \
 	echo '`brew install virzz/virzz/<formula>` || `brew tap virzz/virzz; brew install <formula>`' >> README.md; \
@@ -54,6 +56,10 @@ readme: enyo
 	echo '### Formulae' >> README.md; \
 	echo '' >> README.md; \
 	echo '- Enyo `brew install virzz/virzz/enyo` || `brew tap virzz/virzz; brew install enyo`' >> README.md; \
+	echo '' >> README.md; \
+	echo '## Compile' >> README.md; \
+	echo '' >> README.md; \
+	echo 'Read [Makefile](Makefile)' >> README.md; \
 	echo '' >> README.md; 
 
 	@go run ./internal/_compile enyo;
@@ -70,15 +76,10 @@ readme: enyo
 
 	@echo "Add Public Project List"; \
 	echo "## Public Projects" >> README.md; \
-	echo '' >> README.md; \
-	for i in `ls -d ./cmd/public/*/`; do \
-		echo "- $$(basename $$i)" >> README.md; \
-	done; \
 	echo '' >> README.md;
-
 	@echo "Add Public Projects"; \
 	for i in `ls -d ./cmd/public/*/`; do \
-		echo "## $$(basename $$i)" >> README.md; \
+		echo "### $$(basename $$i)" >> README.md; \
 		echo '' >> README.md; \
 		echo '```' >> README.md; \
 		echo "$$(./build/$$(basename $$i) -h )" >> README.md; \

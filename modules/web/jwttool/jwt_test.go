@@ -29,7 +29,7 @@ func TestJWTCrack(t *testing.T) {
 }
 
 func TestJWTModify(t *testing.T) {
-	r, err := JWTModify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidmlyaW5rIiwicm9sZSI6Imd1ZXN0In0.bPb06hMv6GA73WNOEO1D_HMyal6hS1ofBDIsRL3vszg", true, "", map[string]string{"role": "admin"}, "")
+	r, err := JWTModify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidmlyaW5rIiwicm9sZSI6Imd1ZXN0In0.bPb06hMv6GA73WNOEO1D_HMyal6hS1ofBDIsRL3vszg", true, "", nil, map[string]string{"role": "admin"}, "", false)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

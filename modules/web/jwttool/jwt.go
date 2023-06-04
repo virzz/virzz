@@ -2,9 +2,11 @@ package jwttool
 
 import (
 	"bytes"
-	"encoding/base64"
 	"fmt"
+	"os"
+	"os/signal"
 	"strings"
+	"time"
 
 	"github.com/goccy/go-json"
 	"github.com/golang-jwt/jwt/v4"
@@ -24,53 +26,59 @@ func JWTPrint(token string, secret ...string) (string, error) {
 	_token, err := jwt.Parse(strings.TrimSpace(token), func(*jwt.Token) (interface{}, error) {
 		return secretByte, nil
 	})
-	if err != nil && err.Error() != jwt.ErrSignatureInvalid.Error() {
-		return "", err
+	if err != nil {
+		logger.Warn(err)
 	}
 	res, err := json.MarshalIndent(_token, "", "    ")
 	return string(res), err
 }
 
 // JWTModify Modify JWT
-func JWTModify(s string, none bool, secret string, claims map[string]string, method string) (string, error) {
-	var t *jwt.Token
-	newClaims := jwt.MapClaims{}
-	if t, _ = jwt.ParseWithClaims(strings.TrimSpace(s), newClaims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
-	}); t == nil {
-		return "", fmt.Errorf("token is malformed")
+func JWTModify(s string, none bool, secret string, headers, claims map[string]string, method string, isPrint bool) (string, error) {
+	t, _, err := jwt.NewParser().ParseUnverified(strings.TrimSpace(s), jwt.MapClaims{})
+	if err != nil {
+		return "", err
+	}
+	for k, v := range headers {
+		t.Header[k] = v
 	}
 	for k, v := range claims {
-		newClaims[k] = v
+		t.Claims.(jwt.MapClaims)[k] = v
 	}
 	if none {
-		t.Header["alg"] = "none"
-		h, err := json.Marshal(t.Header)
+		method = "none"
+		t.Method = jwt.SigningMethodNone
+		tokenString, err := t.SignedString(jwt.UnsafeAllowNoneSignatureType)
 		if err != nil {
 			return "", err
 		}
-		c, err := json.Marshal(newClaims)
-		if err != nil {
-			return "", err
-		}
-		b64e := base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString
-		return fmt.Sprintf("%s.%s.", b64e(h), b64e(c)), nil
+		return tokenString, nil
+	}
+	if method == "" {
+		method = t.Header["alg"].(string)
 	}
 
-	var newToken *jwt.Token
 	switch method {
 	case "HS256":
-		newToken = jwt.NewWithClaims(jwt.SigningMethodHS256, newClaims)
+		t.Method = jwt.SigningMethodHS256
 	case "HS384":
-		newToken = jwt.NewWithClaims(jwt.SigningMethodHS384, newClaims)
+		t.Method = jwt.SigningMethodHS384
 	case "HS512":
-		newToken = jwt.NewWithClaims(jwt.SigningMethodHS512, newClaims)
+		t.Method = jwt.SigningMethodHS512
 	default:
 		return "", fmt.Errorf("the method %s is not support", method)
 	}
-	tokenString, err := newToken.SignedString([]byte(secret))
+	tokenString, err := t.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
+	}
+	if isPrint {
+		s, err := JWTPrint(tokenString, secret)
+		if err != nil {
+			logger.Warn(err)
+		} else {
+			logger.Info(s)
+		}
 	}
 	return tokenString, nil
 }
@@ -104,11 +112,12 @@ func JWTCrack(s string, minLen, maxLen int, alphabet, prefix, suffix string) (st
 	tokenStr := strings.TrimSpace(s)
 	alphabetByte := []byte(alphabet)
 
+	sig := make(chan os.Signal, 1)
 	done := make(chan struct{}, 1)
 	result := make(chan []byte, 1)
 
-	count := utils.CalcPermutationMore(len(alphabet), minLen, maxLen)
-	logger.WarnF("Total crack count: %d", count)
+	signal.Notify(sig, os.Interrupt)
+	defer signal.Stop(sig)
 
 	var _crack func([]byte)
 	_crack = func(secret []byte) {
@@ -127,7 +136,7 @@ func JWTCrack(s string, minLen, maxLen int, alphabet, prefix, suffix string) (st
 			secretByte := _secret.Bytes()
 
 			if len(secretByte) >= minLen {
-				t, _ := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+				t, _ := jwt.Parse(tokenStr, func(_ *jwt.Token) (interface{}, error) {
 					return secretByte, nil
 				})
 				if t.Valid {
@@ -153,6 +162,10 @@ func JWTCrack(s string, minLen, maxLen int, alphabet, prefix, suffix string) (st
 		args[i] = string(alphabet[i])
 	}
 
+	count := utils.CalcPermutationMore(len(alphabet), minLen, maxLen)
+	logger.WarnF("Total crack count: %d", count)
+	defer func(t int64) { logger.InfoF("Use time: %d s", time.Now().Unix()-t) }(time.Now().Unix())
+
 	pool.Start(doCrackV2, args...)
 
 	select {
@@ -164,5 +177,8 @@ func JWTCrack(s string, minLen, maxLen int, alphabet, prefix, suffix string) (st
 	case <-done:
 		close(done)
 		return "", fmt.Errorf("crack failed")
+	case <-sig:
+		close(done)
+		return "", fmt.Errorf("cancel by interrupt")
 	}
 }

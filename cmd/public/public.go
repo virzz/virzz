@@ -7,7 +7,6 @@ import (
 	"github.com/urfave/cli/v3"
 	"github.com/virzz/logger"
 	"github.com/virzz/virzz/common"
-	"github.com/virzz/virzz/utils/tongji"
 )
 
 func RunCliApp(cmd *cli.Command, name, version string) {
@@ -28,9 +27,6 @@ func RunCliApp(cmd *cli.Command, name, version string) {
 	} else {
 		app.Commands = cmd.Commands
 	}
-
-	// Add Tongji
-	go tongji.Tongji("http://virzz.tool.virzz.com", name, app.Version)
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Error(err)

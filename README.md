@@ -2,6 +2,8 @@
 
 [![Build](https://github.com/virzz/virzz/actions/workflows/virzz.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz.yml) [![Build Release](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml/badge.svg)](https://github.com/virzz/virzz/actions/workflows/virzz_release.yml)
 
+- [Virzz](#virzz)
+
 ## Install
 
 `brew install virzz/virzz/<formula>` || `brew tap virzz/virzz; brew install <formula>`
@@ -9,6 +11,10 @@
 ### Formulae
 
 - Enyo `brew install virzz/virzz/enyo` || `brew tap virzz/virzz; brew install enyo`
+
+## Compile
+
+Read [Makefile](Makefile)
 
 ## Enyo - CLI 命令行小工具
 
@@ -56,16 +62,7 @@ GLOBAL OPTIONS:
 
 ## Public Projects
 
-- gh-mozhu
-- githack
-- gopher
-- gostrip
-- hashpow
-- hashpwd
-- jwttool
-- parser
-
-## gh-mozhu
+### gh-mozhu
 
 ```
 NAME:
@@ -88,7 +85,7 @@ GLOBAL OPTIONS:
    --help, -h  show help (default: false)
 ```
 
-## githack
+### githack
 
 ```
 NAME:
@@ -107,7 +104,7 @@ GLOBAL OPTIONS:
    --help, -h                 show help (default: false)
 ```
 
-## gopher
+### gopher
 
 ```
 NAME:
@@ -137,7 +134,40 @@ GLOBAL OPTIONS:
    --help, -h                   show help (default: false)
 ```
 
-## gostrip
+### gormgen
+
+```
+NAME:
+   gormgen - Gen Tool For Gorm
+
+USAGE:
+   gormgen [global options] [arguments...]
+
+AUTHOR:
+   陌竹(@mozhu1024) <mozhu233@outlook.com>
+
+GLOBAL OPTIONS:
+   --config value, -c value  is path for gen.yml
+   --dsn value               consult[https://gorm.io/docs/connecting_to_the_database.html]
+   --db value                input mysql|postgres|sqlite|sqlserver. (default: "mysql")
+   --tables value            input tables name, split by ','
+   --onlyModel               only generate models (without query file) (default: false)
+   --outPath value           specify a directory for output (default: "./query")
+   --outFile value           query code file name (default: "gen.go")
+   --modelPkgName value      generated model code's package name (default: "model")
+   --withUnitTest            generate unit test for query code (default: false)
+   --fieldNullable           generate with pointer when field is nullable (default: false)
+   --fieldWithIndexTag       generate field with gorm index tag (default: true)
+   --fieldWithTypeTag        generate field with gorm column type tag (default: true)
+   --fieldSignable           detect integer field's unsigned type, adjust generated data type (default: false)
+   --WithDefaultQuery        create default query in generated code (default: false)
+   --WithoutContext          generate code without context constrain (default: false)
+   --WithQueryInterface      generate code with exported interface object (default: false)
+   --template                generate config template (default: false)
+   --help, -h                show help (default: false)
+```
+
+### gostrip
 
 ```
 NAME:
@@ -154,7 +184,7 @@ GLOBAL OPTIONS:
    --help, -h   show help (default: false)
 ```
 
-## hashpow
+### hashpow
 
 ```
 NAME:
@@ -175,7 +205,7 @@ GLOBAL OPTIONS:
    --help, -h                show help (default: false)
 ```
 
-## hashpwd
+### hashpwd
 
 ```
 NAME:
@@ -195,7 +225,7 @@ GLOBAL OPTIONS:
    --help, -h  show help (default: false)
 ```
 
-## jwttool
+### jwttool
 
 ```
 NAME:
@@ -218,7 +248,7 @@ GLOBAL OPTIONS:
    --help, -h  show help (default: false)
 ```
 
-## parser
+### parser
 
 ```
 NAME:

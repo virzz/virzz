@@ -2,8 +2,10 @@ package jwttool
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/urfave/cli/v3"
+	"github.com/virzz/logger"
 )
 
 var (
@@ -11,6 +13,11 @@ var (
 		Name:    "secret",
 		Aliases: []string{"s"},
 		Usage:   "JWT secret",
+	}
+	secretFileFlag = &cli.StringFlag{
+		Name:    "secret-file",
+		Aliases: []string{"sf"},
+		Usage:   "JWT secret from file",
 	}
 	tokenFlag = &cli.StringFlag{
 		Name:    "token",
@@ -43,7 +50,17 @@ var Cmd = &cli.Command{
 					}
 					token = c.Args().First()
 				}
-				r, err := JWTPrint(token, c.String("secret"))
+				secret := c.String("secret")
+				secretFile := c.String("secret-file")
+				if secretFile != "" {
+					buf, err := os.ReadFile(secretFile)
+					if err == nil {
+						secret = string(buf)
+					} else {
+						logger.Warn(err)
+					}
+				}
+				r, err := JWTPrint(token, secret)
 				if err != nil {
 					return err
 				}
@@ -61,11 +78,17 @@ var Cmd = &cli.Command{
 			Flags: []cli.Flag{
 				tokenFlag,
 				secretFlag,
+				secretFileFlag,
 				&cli.BoolFlag{
 					Name:    "none",
 					Aliases: []string{"n"},
 					Value:   false,
 					Usage:   "Set none method and no signature. (Deprecated)",
+				},
+				&cli.BoolFlag{
+					Name:  "print",
+					Value: false,
+					Usage: "JWTPrint result token",
 				},
 				&cli.StringFlag{
 					Name:    "method",
@@ -77,6 +100,11 @@ var Cmd = &cli.Command{
 					Aliases: []string{"c"},
 					Usage:   "modify or add claims",
 				},
+				&cli.StringMapFlag{
+					Name:    "headers",
+					Aliases: []string{"p", "H"},
+					Usage:   "modify or add headers",
+				},
 			},
 			Action: func(c *cli.Context) (err error) {
 				token := c.String("token")
@@ -86,9 +114,20 @@ var Cmd = &cli.Command{
 					}
 					token = c.Args().First()
 				}
+				secret := c.String("secret")
+				secretFile := c.String("secret-file")
+				if secretFile != "" {
+					buf, err := os.ReadFile(secretFile)
+					if err == nil {
+						secret = string(buf)
+					} else {
+						logger.Warn(err)
+					}
+				}
 				r, err := JWTModify(
-					token, c.Bool("none"), c.String("secret"),
-					c.StringMap("claims"), c.String("method"),
+					token, c.Bool("none"), secret,
+					c.StringMap("headers"), c.StringMap("claims"), c.String("method"),
+					c.Bool("print"),
 				)
 				if err != nil {
 					return
@@ -161,6 +200,7 @@ var Cmd = &cli.Command{
 			Usage:    "Create/Generate jwt",
 			Flags: []cli.Flag{
 				secretFlag,
+				secretFileFlag,
 				&cli.StringFlag{
 					Name:    "method",
 					Aliases: []string{"m"},
@@ -173,8 +213,18 @@ var Cmd = &cli.Command{
 				},
 			},
 			Action: func(c *cli.Context) (err error) {
+				secret := c.String("secret")
+				secretFile := c.String("secret-file")
+				if secretFile != "" {
+					buf, err := os.ReadFile(secretFile)
+					if err == nil {
+						secret = string(buf)
+					} else {
+						logger.Warn(err)
+					}
+				}
 				r, err := JWTCreate(
-					c.StringMap("claims"), c.String("method"), c.String("secret"),
+					c.StringMap("claims"), c.String("method"), secret,
 				)
 				if err != nil {
 					return
